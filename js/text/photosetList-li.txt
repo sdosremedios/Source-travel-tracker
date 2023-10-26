@@ -1,0 +1,6 @@
+<li class="photosetItem">
+    <a class="highslide " title="[title]" onclick="return hs.expand(this, { slideshowGroup: &quot;[photoset]&quot; })" href="[imagefile]">
+        <img src="[thumbnail]" title="[title]" alt="[title]">
+    </a><br>
+    <span class="caption">[title]</span>
+</li>        

@@ -1,0 +1,4 @@
+[Launch]
+ProgramExecutable={execPath}\{executableFile}.exe
+DirectoryMoveOK=yes
+SupportsUNC=yes

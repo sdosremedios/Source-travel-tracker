@@ -1,0 +1,31 @@
+local deviceNo = 22 
+local period = 15   
+local SS_SID = "urn:micasaverde-com:serviceId:SecuritySensor1" -- Security Sensor Service ID   
+local armed = luup.variable_get (SS_SID, "Armed", deviceNo) 
+if (armed == "1") then 
+	local lastTrip = luup.variable_get (SS_SID, "LastTrip", deviceNo) or os.time() 
+	lastTrip = tonumber (lastTrip) 
+	if ((os.difftime (os.time(), lastTrip) / 60) >= period) then 
+		return true 
+	end 
+end   
+return false
+
+local sensorDeviceNo = 44 -- Motion Sensor device number 
+local lightDeviceNo = 43 -- Light device number 
+local period = 10 -- Minutes   
+local SS_SID = "urn:micasaverde-com:serviceId:SecuritySensor1" -- Security Sensor Service ID 
+local SP_SID = "urn:upnp-org:serviceId:SwitchPower1" -- Switch Power Service ID   
+
+function checkLastTrip() 
+	local lastTrip = luup.variable_get (SS_SID, "LastTrip", sensorDeviceNo) or os.time() 
+	if (os.difftime (os.time(), tonumber (lastTrip)) / 60 >= period) then 
+		luup.call_action (SP_SID, "SetTarget", {["newTargetValue"] = 0}, lightDeviceNo) -- Turn off the light. 
+	else 
+		luup.call_delay ("checkLastTrip", period * 60) -- Check when the sensor was last tripped every <period> seconds. 
+	end 
+end
+
+luup.call_delay ("checkLastTrip", period * 60)
+
+return true

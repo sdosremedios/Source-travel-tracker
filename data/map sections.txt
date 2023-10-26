@@ -1,0 +1,12 @@
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.84,-122.32
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.84,-122.22
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.84,-122.12
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.79,-122.32
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.79,-122.22
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.79,-122.12
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.74,-122.32
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.74,-122.22
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.74,-122.12
+
+
+http://maps.googleapis.com/maps/api/staticmap?zoom=13&size=640x640&scale=2&sensor=false&center=37.79,-122.22&markers=color:blue|size:tiny|37.79571, -122.17651|37.81882, -122.23712

@@ -1,0 +1,196 @@
+/* --------------------------------------------------------- */
+/* COOKIE CONSENT STYLES
+/* --------------------------------------------------------- */
+#cookieConsent {
+    background-color: rgba(20,20,20,1);
+    min-height: 26px;
+    font-size: 14px;
+    color: #ccc;
+    line-height: 26px;
+    padding: 8px 0 8px 30px;
+    font-family: "Trebuchet MS",Helvetica,sans-serif;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: none;
+    z-index: 9999;
+}
+#cookieConsent a {
+    color: #4B8EE7;
+    text-decoration: none;
+}
+#closeCookieConsent {
+    float: right;
+    display: inline-block;
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    margin: -15px 0 0 0;
+    font-weight: bold;
+}
+#closeCookieConsent:hover {
+    color: #FFF;
+}
+#cookieConsent a.cookieConsentOK {
+    background-color: #F1D600;
+    color: #000;
+    display: inline-block;
+    border-radius: 5px;
+    padding: 0 20px;
+    cursor: pointer;
+    float: right;
+    margin: 0 60px 0 10px;
+}
+#cookieConsent a.cookieConsentOK:hover {
+    background-color: #E0C91F;
+}
+/* --------------------------------------------------------- */
+/* ACCORDION STYLES
+/* --------------------------------------------------------- */
+    .accordion {
+        clear: both;
+        display: block;
+        padding-left: 30px;
+        background: url(/docs/css/accordion-24x24.png) no-repeat;
+        line-height: 20px;
+        font-size: 18px;
+        cursor: pointer;
+    }
+    .accordion.minus {
+        background-position: 0 -24px;
+    }
+    .accordion.plus {
+        background-position: 0 0;
+    }
+
+/* --------------------------------------------------------- */
+/* HIGHSLIDE STYLES
+/* --------------------------------------------------------- */
+    .highslide-wrapper {
+        background-color: white;
+    }
+    a.highslide img {
+        width: 240px;
+        padding: 0;
+        margin: 0;
+    }
+
+/* --------------------------------------------------------- */
+/* PHOTO STYLES
+/* --------------------------------------------------------- */
+    p.photoRight, p.photoLeft {
+        display: inline-block;
+        width: 240px;
+        padding: 0;
+        font-size: 12px;
+        line-height: 16px;
+    }
+    p.photoRight {
+        float: right;
+        margin: 0 0 10px 10px;
+    }
+    .locationPhoto,
+    p.photoLeft {
+        float: left;
+        margin: 0 10px 10px 0;
+    }
+/* --------------------------------------------------------- */
+/* MISC STYLES
+/* --------------------------------------------------------- */
+    .clear {
+        clear: both;
+        padding: 10px 0;
+    }
+    .center {
+        text-align: center;
+    }
+    .strong {
+        font-weight: bold;
+    }
+
+/* --------------------------------------------------------- */
+/* ICON STYLES
+/* --------------------------------------------------------- */
+    .balloonIcon {
+        background: url(/docs/images/balloon.png);
+    }
+    .cameraIcon {
+        background: url(/docs/images/camera.png);
+    }
+    .handIcon {
+        background: url(/docs/images/hand-point.png);
+    }
+    .cameraIcon,
+    .balloonIcon,
+    .handIcon {
+        background-repeat: no-repeat;
+        line-height: 32px;
+    }
+    .iconLeft {
+        display: inline-block;
+        padding-left: 40px;
+    }
+
+/* --------------------------------------------------------- */
+/* SIDEBAR STYLES
+/* --------------------------------------------------------- */
+    .sideBarLeft {
+        display: block;
+        margin: 10px 20px 20px 0;
+        padding: 10px;
+        text-align: center;
+        float: left;
+        width: 33%;
+        background-color: #fffcd5;
+        color: #7a3118;
+        border: 1px solid #000;
+    }
+    .sideBarRight,
+    .sideBar {
+        display: block;
+        margin: 0 0 20px 20px;
+        text-align: center;
+        float: right;
+        width: 33%;
+        background-color: #fffcd5;
+        color: #7a3118;
+        border: 1px solid #000;
+    }
+
+/* --------------------------------------------------------- */
+/* HAIKU STYLES
+/* --------------------------------------------------------- */
+	div.haiku {
+		display: block;
+		float: left;
+		width: 50%;
+		padding: 64px 0 0 0;
+		margin: 0;
+		font-size: 24px;
+		line-height: 30px;
+	}
+	div.haiku p {
+		text-align: right;
+		margin-right: 32px;
+	}
+/* --------------------------------------------------------- */
+/* VIDEO STYLES
+/* --------------------------------------------------------- */
+div.videoBox, div.photoBox {
+	display: inline-block;
+	width: 320px;
+	vertical-align: top;
+	margin: 10px 0;
+	padding: 10px;
+	box-sizing: content-box;
+	border: 1px solid #ccc;
+}
+div.videoBox video {
+	width: 320px;
+	height: 240px;
+}
+div.photoBox img {
+	width: 320px;
+	height: 240px;
+}

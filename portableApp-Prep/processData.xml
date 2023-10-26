@@ -1,0 +1,22 @@
+<fields>
+    <field name="AppName"/></field>
+    <field name="HomePage"/></field>
+    <field name="Category"/></field>
+    <field name="Description"/></field>
+    <field name="Language"/></field>
+    <field name="PackageVersion"/></field>
+    <field name="DisplayVersion"/></field>
+    <field name="Author"/></field>
+    <field name="HelpURL"/></field>
+    <field name="LongDescription"><![CDATA[...abc...]]></field>
+</fields>
+<files>
+    <file name="[AppName]Portable\App\AppInfo\appinfo.ini" />
+    <file name="[AppName]Portable\App\AppInfo\Launcher\PuTTYPortable.ini" />
+    <file name="[AppName]Portable\Data\settings\[AppName]PortableSettings.ini" />
+</files>
+<folders>
+    <folder name="[AppName]Portable\App\[AppName]" />
+    <folder name="[AppName]Portable" />
+</folders>
+<location src="D:\SdosRemedios\Documents\Source\portableApp-Prep" dest="D:\SdosRemedios\Desktop\[AppName]"/>

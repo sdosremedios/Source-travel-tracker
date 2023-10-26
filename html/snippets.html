@@ -1,0 +1,528 @@
+<!-- Snippets for Cookie consent -->
+<!-- /templates/t3_bs3_blank/html/mod_footer/default.php -->
+<div id="cookieConsent">
+    <div id="closeCookieConsent">x</div>
+    This website is using cookies. 
+	<a href="index.php/privacy" target="_self">More info</a>. 
+	<a class="cookieConsentOK">I Accept Cookies</a>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){   
+	var domain = 'stevendosremedios.com';
+	if (getCookie(domain) != 1) $("#cookieConsent").fadeIn(200);
+    $("#closeCookieConsent").click(function() {
+    	setCookie(domain,0,0);
+        $("#cookieConsent").fadeOut(200);
+    }); 
+    $(".cookieConsentOK").click(function() {
+    	setCookie(domain,1,30);
+        $("#cookieConsent").fadeOut(200);
+    }); 
+}); 
+
+function setCookie(key, value, days) {
+    var expires = new Date();
+    if (days) {
+        expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+        document.cookie = key + '=' + value + ';expires=' + expires.toUTCString();
+    } else {
+        document.cookie = key + '=' + value + ';expires=Fri, 30 Dec 9999 23:59:59 GMT;';
+    }
+}
+function getCookie(key) {
+    var keyValue = document.cookie.match('(^|;) ?' + key + '=([^;]*)(;|$)');
+    return keyValue ? keyValue[2] : null;
+}
+</script>
+<!-- Snippets for IntroJS -->
+<script type="text/javascript" src="/docs/scripts/intro.js"></script>
+<link type="text/css" rel="stylesheet" href="/docs/css/introjs.css" />
+<p><a class="btn btn-default" title="Help" onclick="introPano();">
+	Help with this page</a>
+</p>
+<p id="step1">{ggpkg file="wave"}</p>
+<script>
+function introPano(){
+	var intro = introJs();
+	intro.setOptions({
+		steps: [
+			{
+				element: '#step1',
+				intro: '<strong>Panorama</strong><br/>Drag your cursor on the image to look around<br/>
+					Use the Shift/Ctl keys to zoom in and out<br/><strong>Map</strong><br/>
+					Select a map marker to display a panorama.<br/>
+					The panorama orientation is displayed on the map.'
+			}
+			{
+				element: '#step2',
+				intro: 'Yada yada yada',
+				position: 'right'
+			}
+		]
+	});
+	intro.start();
+}
+</script>
+<!-- Snippets for Joomla template -->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/docs/scripts/highslide/highslide-full.js"></script>
+<script type="text/javascript" src="/docs/scripts/highslide/highslide.config.js"></script>
+<script type="text/javascript" src="/docs/scripts/photoset.js"></script>
+<script type="text/javascript" src="/docs/scripts/site.js"></script>
+
+<link type="text/css" rel="stylesheet" href="/docs/css/photoset.css" />
+<link type="text/css" rel="stylesheet" href="/docs/scripts/highslide/highslide.css" />
+<link  rel="stylesheet" type="text/css" href="/docs/css/site.css"/>
+<link rel="shortcut icon" href="/images/favicon.ico"/>
+
+<!-- Snippet for https forwarding  -->
+if (location.protocol != 'https:') {
+		location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+}
+<!-- Snippet for Haiku -->
+<p class="photoRight">
+	<a class="highslide" title="Click to enlarge" href="docs/images/in-the-presence-of-trees/p01.jpg"> 
+		<img src="docs/images/in-the-presence-of-trees/p01.jpg" alt="Title" /> 
+	</a><br />
+	Title
+</p>
+<div class="haiku">
+	<p>Line_1</p>
+	<p>Line_2</p>
+	<p>Line_3</p>
+</div>
+<!-- -->
+<!-- Snippet for Highslide script inclusion -->
+    <script type="text/javascript" src="/docs/js/highslide/highslide-full.min.js"></script>
+<!-- -->
+<!-- Snippet for Highslide jQuery -->
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("a.highslide").attr("onclick","return hs.expand(this)");
+		jQuery("iframe.highslide").parent("a").attr("onclick","return hs.htmlExpand(this,{objectType: 'iframe'})");
+	});
+// /docs/scripts/highslide/highslide.config.js	
+	hs.graphicsDir = '/docs/scripts/highslide/graphics/';
+	hs.outlineType = 'rounded-white';
+	hs.showCredits = false;
+	hs.captionEval = 'this.thumb.alt';
+	hs.align = 'center';
+//	hs.allowSizeReduction = false;
+	
+	hs.dimmingOpacity = 0.8;
+	hs.fadeInOut = true;
+	hs.numberPosition = 'caption';
+	
+	hs.transitions = ['expand', 'crossfade'];
+
+	hs.addSlideshow({
+//		slideshowGroup: 'photoset',
+		interval: 5000,
+		repeat: true,
+		useControls: true,
+		fixedControls: 'fit',
+		overlayOptions: {
+			className: 'text-controls',
+			opacity: 0.5,
+			position: 'bottom center',
+			offsetX: 0,
+			offsetY: -10,
+			hideOnMouseOut: true
+		}
+	});
+
+</script>
+<!-- -->
+<!-- Snippet for Accordion jQuery -->
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("a.highslide").attr("onclick","return hs.expand(this)");
+		jQuery("iframe.highslide").parent("a").attr("onclick","return hs.htmlExpand(this,{objectType: 'iframe'})");
+		jQuery('h3.accordion').next().hide();
+		jQuery('h3.accordion').click(function(){
+			var $this = jQuery(this);
+			if ($this.next().is(':visible')) {
+				$this.removeClass('minus').addClass('plus');
+				$this.next().hide();
+			}
+			else {
+				jQuery('.accordion').removeClass('minus').addClass('plus').next().hide();
+				$this.removeClass('plus').addClass('minus');
+				$this.next().show();
+			}
+		});
+	});
+</script>
+<!-- -->
+<!-- Snippet for Accordion -->
+<h3 class=accordion>Title Text</h3>
+<div>
+	<p>Accordion Body Text
+	</p>
+</div>
+<!-- -->
+
+<!-- Best photo entry -->
+<a class="highslide" href="LARGE.jpg" title="Click to enlarge"> <img src="THUMBNAIL.jpg" alt="TITLE" style="width: 240px;" /> </a>TITLE
+
+
+<!-- Snippet for Travel Article on travelShot -->
+<p class="photoBig">
+	<a class="highslide" href="LARGE.jpg" title="Click to enlarge"> 
+		<img src="THUMBNAIL.jpg" alt="TITLE" style="width: 240px;" /> 
+	</a><br />TITLE
+</p>
+<p>
+	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
+	incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+	exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
+	irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+	nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+	qui officia deserunt mollit anim id est laborum.
+</p>
+<hr id="system-readmore" />
+<p>
+	Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor 
+	incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud 
+	exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute 
+	irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat 
+	nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa 
+	qui officia deserunt mollit anim id est laborum.
+</p>
+<div id="72157716997962793" class="photoset" title="Palm Desert 2020">Palm Desert 2020</div>
+<!-- -->
+
+<!-- Snippet for Flickr Photoset Javascript on travelShot -->
+
+<head>
+<!--script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript" src="/docs/scripts/photoset.js"></script>
+<script type="text/javascript" src="/docs/scripts/photostream.js"></script>
+<script type="text/javascript" src="/docs/scripts/highslide/highslide-full.min.js"></script>
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery(".readmore span").text('See more ...');
+		jQuery("a.highslide").attr("onclick","return hs.expand(this)");
+		jQuery('div.photoset').each(function(){
+			$setid = jQuery(this).attr('title');
+			$divid = jQuery(this).attr('id');
+			displayPhotoSet($setid, $divid, 120);
+		});
+		jQuery('div.photostream').each(function(){
+			$userid = jQuery(this).attr('title');
+			$divid = jQuery(this).attr('id');
+			displayPhotoStream($userid, $divid, 30);
+		});
+	});
+	
+	hs.graphicsDir = '/docs/scripts/highslide/graphics/';
+	hs.outlineType = 'rounded-white';
+	hs.showCredits = false;
+	hs.captionEval = 'this.thumb.alt';
+	hs.align = 'center';
+	hs.allowSizeReduction = false;
+	
+	hs.dimmingOpacity = 0.8;
+	hs.fadeInOut = true;
+	hs.numberPosition = 'caption';
+	
+	hs.transitions = ['expand', 'crossfade'];
+
+	hs.addSlideshow({
+		slideshowGroup: 'photoset',
+		interval: 5000,
+		repeat: true,
+		useControls: true,
+		fixedControls: 'fit',
+		overlayOptions: {
+			opacity: .6,
+			position: 'bottom center',
+			hideOnMouseOut: true
+		}
+	});
+</script>
+
+<link type="text/css" rel="stylesheet" href="/docs/css/photoset.css" />
+<link type="text/css" rel="stylesheet" href="/docs/scripts/highslide/highslide.css" />
+</head>
+
+<body>
+<div id="72157708791439606" class="photoset" title="Milan">Milan Gallery</div>
+<div id="72157708791732506" class="photoset" title="Tirano">Tirano Gallery</div>
+<div id="72157708792065442" class="photoset" title="Iseo">Iseo Gallery</div>
+<div id="72157708792065442" class="photoset" title="Verona">Verona Gallery</div>
+<div id="72157708792466461" class="photoset" title="Brixen">Brixen Gallery</div>
+<div id="72157710178675226" class="photoset" title="Amsterdam">Amsterdam Gallery</div>
+<div id="72157711484126873" class="photoset" title="Amsterdam">Inverness</div>
+<div id="72157711484148803" class="photoset" title="Amsterdam">St Andrews</div>
+<div id="72157711482115171" class="photoset" title="Amsterdam">Edinburgh</div>
+<div id="72157711482746432" class="photoset" title="Amsterdam">Glasgow</div>
+<div id="72157711482268661" class="photoset" title="Amsterdam">Oban</div>
+<div id="72157711482279091" class="photoset" title="Amsterdam">Glencoe</div>
+<div id="88827093@N00" class="photostream" title="Steven dosRemedios"></div>
+</body>
+
+<!-- Snippet for Highslide on travelShot -->
+
+<p class="photoLeft">
+     <a class="highslide" href="large.jpg" title="Click to enlarge">
+		 <img src="thumbnail.jpg" alt="TITLE" style="width: 240px" />
+     </a><br/>TITLE
+</p>
+
+
+<p class="photoLeft">
+     <a class="highslide" href="https://farm5.static.flickr.com/4876/45752794132_61f0f9f02f_b.jpg" title="Click to enlarge">
+		 <img src="https://farm5.static.flickr.com/4876/45752794132_61f0f9f02f_b.jpg" alt="Chefchaouen" style="width: 240px" />
+     </a><br/>Chefchaouen
+</p>
+
+<p class="photoRight">
+     <a class="highslide" href="large.jpg" title="Click to enlarge">
+		 <img src="thumbnail.jpg" alt="TITLE" style="width: 240px" />
+     </a><br/>TITLE
+</p>
+
+
+<p class="photoRight">
+     <a class="highslide" href="large.jpg" title="Click to enlarge">
+		 <img src="thumbnail.jpg" alt="TITLE" style="width: 240px" />
+     </a><br/>TITLE
+</p>
+
+<p class="photoLeft">
+     <a class="highslide" href="large.jpg" title="Click to enlarge">
+		 <img src="thumbnail.jpg" alt="TITLE" style="width: 240px" />
+     </a><br/>TITLE
+</p>
+
+<p class="photoRight">
+     <a class="highslide" href="large.jpg" title="Click to enlarge">
+     <img src="thumbnail.jpg" alt="TITLE" style="width: 240px" />
+     </a><br/>TITLE
+</p>
+
+<p class="mapRight">
+	<a class="highslide" href="large.jpg" title="Click to enlarge"> 
+		<img src="thumbnail.jpg" alt="Map" style="width: 160px;" /> 
+	</a>
+	<br />Map
+</p>
+
+<!-- Snippet for embedded video on travelShot -->
+
+<div class="videoBox">
+	<h4>Video Slideshow</h4>
+	<iframe width="270" height="152" src="https://youtube.com/embed/VIDEO_ID?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"></iframe>
+	<p>For best results, play fullscreen at the highest resolution your network connection permits. Click on CC icon to view captions.</p>
+</div>
+
+<!-- Video Box -->
+<div class="videoBox" id="VIDEO_ID" title="Click on CC icon to view captions.">Video Slideshow</div>
+
+
+
+<p><video controls="controls" width="560" height="315">
+  <source src="docs/media/video/Italy%202017.mp4" type="video/mp4" />
+  Your browser does not support the video tag.</video></p>
+<p>For best results, download this video and play it on your computer; otherwise just click the fullscreen button then click play.</p>
+
+<!-- Snippet for Showmore ... on travelShot  homepage articles -->
+
+<p><a class="btn btn-default" title="TITLE" href="index.php/photographs/120-chicago" rel="alternate">See more ...</a></p>
+
+<!-- Snippet for Fandango css link -->
+
+<link type="text/css" rel="stylesheet" href="/docs/css/fandango.css" />
+
+<!-- Snippet for embedded html5 video -->
+
+<div class="videoBox">
+	<h4>Video Slideshow</h4>
+	<video controls="controls" width="540" height="304">
+		<source src="docs/media/video/VIDEO_FILE" type="video/mp4" />
+		Your browser does not support the video tag.
+	</video>
+	<p>For best results, download this video and play it on your computer; otherwise just click the fullscreen button then click play.</p>
+</div>
+
+<div class="videoBox">
+	<h4>Video Slideshow</h4>
+	<iframe width="540" height="304" src="https://www.youtube.com/embed/VIDEO_FILE?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"></iframe>
+	<p>For best results, play fullscreen at the highest resolution your network connection permits. 
+	 Click on CC icon to view captions.</p>
+</div>
+
+<div class="photoBox">
+	<h4>Webcam Image</h4>
+	<p class="webcam">
+		<a class="highslide" href="large.jpg" title="Click to enlarge">
+		<img src="thumbnail.jpg" alt="TITLE" style="width: 320px" />
+		</a><br/>TITLE
+	</p>
+</div>
+
+<!-- Snippet for IntroJS -->
+<head>
+	<link href="docs/css/IntroJS.css" rel="stylesheet">
+</head>
+<body>
+	<div class="masthead">
+		<p><a class="btn btn-default" title="Help" onclick="startIntro();">Help with this page</a></p>
+		<ul id="step2" class="nav nav-pills pull-right">
+			<li><a href="https://github.com/usablica/intro.js/tags"><i class='icon-black icon-download-alt'></i> Download</a></li>
+			<li><a href="https://github.com/usablica/intro.js">Github</a></li>
+			<li><a href="https://twitter.com/usablica">@usablica</a></li>
+		</ul>
+		<h3 class="muted">Intro.js</h3>
+	</div>
+
+	<hr>
+
+	<div class="jumbotron">
+		<h1 id="step1">HTML in tooltip</h1>
+		<p id="step3" class="lead">We're going to use HTML codes in tooltips via Programmatic API</p>
+		<a class="btn btn-large btn-success" href="javascript:void(0);" onclick="startIntro();">Show me how</a>
+	</div>
+
+	<!-- ... -->
+
+    <script type="text/javascript" src="/docs/scripts/IntroJS.js"></script>
+    <script type="text/javascript">
+		function startIntro(){
+			var intro = introJs();
+			intro.setOptions({
+				steps: [
+					{
+						element: '#step1',
+						intro: 'This is a <b>bold</b> tooltip.<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis mollis augue a neque cursus ac blandit orci faucibus. Phasellus nec metus purus.</p>'
+					},
+					{
+						element: '#step2',
+						intro: "Ok, <i>wasn&apos;t</i> that fun?",
+						position: 'right'
+					},
+					{
+						element: '#step3',
+						intro: 'More features, more <span style="color: red;">f</span><span style="color: green;">u</span><span style="color: blue;">n</span>.',
+						position: 'left'
+					},
+					{
+						element: '#step4',
+						intro: '<span style="font-family: Courier New">Another step with new font!</span>',
+						position: 'bottom'
+					},
+					{
+						element: '#step5',
+						intro: '<strong>Get</strong> it, <strong>use</strong> it.'
+					}
+				]
+			});
+
+			intro.start();
+		}
+    </script>
+</body>
+<!-- Snippet for New TravelShot article -->
+<p class="photoLeft">
+	<a class="highslide" href="IMAGE_URL" title="Click to enlarge"> 
+		<img src="IMAGE_URL" alt="TITLE" style="width: 240px;" /> 
+	</a><br />TITLE
+</p>
+<p>Intro text.</p>
+<hr id="system-readmore" />
+<!-- p><a class="btn btn-default" title="Photographs" href="index.php/ARTICLE_PAGE" rel="alternate">See more ...</a></p -->
+<p>Detail text.</p>
+<div id="PHOTSET_ID" class="photoset" title="GALLERY_NAME">GALLERY_NAME</div>
+<!-- Snippet for New TravelShot Homepage article -->
+<p>{loadmodule mod_custom,Article Description}</p>
+<div class="videoBox">
+<h4>Video Slideshow</h4>
+<iframe width="540" height="304" src="https://www.youtube.com/embed/VIDEO_URL?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen="allowfullscreen"></iframe>
+<p>For best results, play fullscreen at the highest resolution your network connection permits. Click on CC icon to view captions.</p>
+</div>
+<p><a class="btn btn-default" title="Photographs" href="index.php/ARTICLE_PAGE" rel="alternate">See more ...</a></p>
+
+<!-- Snippet for New StevenDosRemedios.com article -->
+<p class="photosetItem">
+	<a class="highslide" href="IMAGE_URL" title="Click to enlarge"> 
+		<img src="THUMB_URL" alt="TITLE" style="width: 256px;" /> 
+	</a>
+	<span class="photoTitle"><br />TITLE</span>
+	<span class="photoCaption"><br />CAPTION</span>
+</p>
+<p>Blah blah blah</p>
+<hr id="system-readmore" />
+<hr class="clear" />
+<p>{source}&lt;?php $dir=dirname(__DIR__,1); require_once "{$dir}/images/photoLib.php"; generatePage("{$dir}/images/CATEGORY/photoset.xml"); ?&gt;{/source}</p>
+
+
+<p class="photoLeft">
+	<a class="highslide" href="IMAGE_URL" title="Click to enlarge"> 
+		<img src="THUMB_URL" alt="TITLE" style="width: 256px;" /> 
+	</a><br />TITLE
+</p>
+
+<p class="photoRight">
+	<a class="highslide" href="IMAGE_URL" title="Click to enlarge"> 
+		<img src="THUMB_URL" alt="TITLE" style="width: 256px;" /> 
+	</a><br />TITLE
+</p>
+
+<!-- Snippet for auto redirect -->
+<meta http-equiv="refresh" content="5; url=http://example.com/" />
+
+<!-- Snippet for OpenSeadragon -->
+<script type="text/javascript" defer>
+    var viewer = OpenSeadragon({
+        id: "openseadragon1",
+        prefixUrl: "/openseadragon/images/",
+        tileSources: "/images/openSeadragon/caldera/image.xml"
+    });
+</script>
+<script src="/openseadragon/openseadragon.min.js" defer></script>
+<style type="text/css">
+	div.borderedBox {
+		border:thin gray solid;
+		padding:10px;
+	}
+</style>
+<div id="openseadragon1" style="width: 800px; height: 600px;"></div>
+<h3 class="accordion"><span class="glyphicon glyphicon-zoom-in">
+	</span>&nbsp;View a superzoomable image
+</h3>
+<div class="borderedBox">
+	<div id="openseadragon1" style="width: 800px; height: 600px;"></div>
+	<br /><span class="caption">View from atop Deacon Peak</span>
+</div>
+
+<!-- Snippet for PayPal -->
+<div class="paypalForm" title="TITLE" data-sku="SKU_ID" data-price="$100.00" >
+	 <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_blank" name="buyPrint">
+		  <input type="hidden" name="cmd" value="_xclick" />
+		  <input type="hidden" name="business" value="steven@meetthere.com" />
+		  <input type="hidden" name="item_name" value="TITLE ~ 11x14 on 16x20 matte media, unframed" />
+		  <input type="hidden" name="item_number" value="SKU-SKU_ID-MU16x20" />
+		  <input type="hidden" name="no_shipping" value="2" />
+		  <input type="hidden" name="handling" value="$10.00" />
+		  <input type="hidden" name="no_note" value="1" />
+		  <input type="hidden" name="currency_code" value="USD" />
+		  <input type="hidden" name="bn" value="PP-BuyNowBF" />
+		  <input type="hidden" name="amount" value="PRICE" />
+		  <input type="submit" name="submit" value="Buy Print" class="btn payPalButton" title="~ 11x14 on 16x20 matte media, unframed: $100 + shipping" />
+	 </form>
+	<p>TITLE<br/>SKU-SKU_ID-MU16x20</p>
+</div>
+
+<!-- Snippet for Travelshot Homepage -->
+<p>TRIP_NAME</p>
+<!-- Video Box -->
+<h5 class="accordion show">Video Slideshow</h5>
+<div id="s_61hZ4rqiM" class="videoBox" title="Click on CC icon to view captions."></div>
+<hr id="system-readmore" />
+<h5 class="accordion">Gallery</h5>
+<div id="72177720304348153" class="photoset" title="Gallery">GALLERY_NAME</div>
+
+

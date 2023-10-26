@@ -1,0 +1,17 @@
+.photoset {
+	display: block;
+/*	clear:both; */
+	float: left;
+	width: 100%;
+}
+.photosetList {
+	list-style:none;
+	padding:0;
+}
+.photosetItem {
+	display:inline-block;
+	margin: 0 10px 10px 0;
+}
+.photosetItem span.caption {
+	display:none;
+}

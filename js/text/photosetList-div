@@ -1,0 +1,40 @@
+<div id="[photoset-id]" class="photoset" title="[photoset-title]">
+    <h4 class="photosetTitle">[photoset-title]</h4>
+    <ul class="photosetList">
+        [photoset-li]
+    </ul>
+</div>
+Escaped quotes ======================
+<div id=\"{$photosetID}\" class=\"photoset\" title=\"{$photosetTitle}\">
+    <h4 class=\"photosetTitle\">{$photosetTitle}</h4>
+    <ul class=\"photosetList\">
+		<li class=\"photosetItem\">
+		    <a class=\"highslide \" title=\"{$photoTitle}\" onclick=\"return hs.expand(this, { slideshowGroup: &quot;{$photosetID}&quot; })\" href=\"{$photoFile}\">
+		        <img src=\"{$photoThumbnail}\" title=\"{$photoTitle}\" alt=\"{$photoTitle}\">
+		    </a><br/>
+		    <span class=\"photoTitle\">{$photoTitle}<br/></span>
+		    <span class=\"caption\">{$photoCaption}<br/></span>
+		    <span class=\"photoDate\">{$photoDate}<br/></span>
+		    <span class=\"photoCopyright\">{$photoCopyright}<br/></span>
+		    <span class=\"photoKeywords\">{$photoKeywords}<br/></span>
+		</li>        
+    </ul>
+</div>
+CSS ==================================
+.photoset {
+	display: block;
+/*	clear:both; */
+	float: left;
+	width: 100%;
+}
+.photosetList {
+	list-style:none;
+	padding:0;
+}
+.photosetItem {
+	display:inline-block;
+	margin: 0 10px 0 0;
+}
+.photosetItem span.caption {
+	display:none;
+}
