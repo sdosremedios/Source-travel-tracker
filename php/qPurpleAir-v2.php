@@ -2,7 +2,7 @@
 /* *****************************************************************************
 	qPurpleAir-v2.php
 
-	(c) Steven dos Remedios										06 March 2021
+	(c) Steven dos Remedios										25 November 2023
 	
 	Query AirNow air quality index for specific sensors; categorize into
 	level 1, 2, or 3; then notify IFTTT to update status of Echo Glow color
@@ -11,11 +11,11 @@
 /* *****************************************************************************
 	Air Quality Index Scale
 	0-50	Good			1
-	51-100	Moderate		1
-	101-150	Sensitive		2
-	151-200	Unhealthy		2
-	201-300	Very unhealthy	3
-	301-500 Hazardous		3
+	51-100	Moderate		2
+	101-150	Sensitive		3
+	151-200	Unhealthy		4
+	201-300	Very unhealthy	4
+	301-500 Hazardous		4
 /* *****************************************************************************
 
 	Legacy url
@@ -39,8 +39,11 @@ if ($AQI >= 0) {
 	case 2:
 		$event .= 'Fair';
 		break;
-	default:
+	case 3:
 		$event .= 'Poor';
+		break;
+		default:
+		$event .= 'Unhealthy';
 	}
 	
 	$url = str_replace('{EVENT}',$event,$IFTTT);
@@ -85,10 +88,11 @@ function getLevel($url) {
 			*/
 			if ($AQI <= 50) return 1;
 			if ($AQI <= 100) return 2;
-			return 3;
+			if ($AQI <= 150) return 3;
+			return 4;
 		}
 	}
-	return 3;
+	return 4;
 };
 /* *****************************************************************************
 Good                               0 - 50     0.0 - 15.0     0.0 – 12.0
