@@ -20,6 +20,9 @@
 
 	Legacy url
 	Purple air JSON https://www.purpleair.com/json?show=64489
+
+	Redwood Hills	= 64489
+	Purple Haze		= 65787
 	
 */
 $URL ='https://api.purpleair.com/v1/sensors?fields=name%2Cchannel_state%2Cchannel_flags%2Cpm2.5_10minute&location_type=0&show_only=64489%2C65787&api_key=EFFF1049-7DF4-11EB-8C3A-42010A800259';
