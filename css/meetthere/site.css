@@ -1,0 +1,383 @@
+@charset "UTF-8";
+@import url("/docs/scripts/highslide/highslide.css");
+@import url("/docs/css/photoset.css");
+/* --------------------------------------------------------- */
+/* SITE COLORS
+/* --------------------------------------------------------- */
+:root {
+	--t4-blue: #0d6efd;
+	--t4-indigo: #020202;
+	--t4-purple: #6f42c1;
+	--t4-pink: #d63384;
+	--t4-red: #dc3545;
+	--t4-orange: #fd7e14;
+	--t4-yellow: #ffc107;
+	--t4-green: #198754;
+	--t4-teal: #20c997;
+	--t4-cyan: #0dcaf0;
+	--t4-white: #fff;
+	--t4-gray: #6c757d;
+	--t4-gray-dark: #343a40;
+	--t4-gray-100: #f8f9fa;
+	--t4-gray-200: #e9ecef;
+	--t4-gray-300: #dee2e6;
+	--t4-gray-400: #ced4da;
+	--t4-gray-500: #adb5bd;
+	--t4-gray-600: #6c757d;
+	--t4-gray-700: #495057;
+	--t4-gray-800: #343a40;
+	--t4-gray-900: #212529;
+	--t4-primary: #0d6efd;
+	--t4-secondary: #6c757d;
+	--t4-success: #198754;
+	--t4-info: #0dcaf0;
+	--t4-warning: #ffc107;
+	--t4-danger: #dc3545;
+	--t4-light: #f8f9fa;
+	--t4-dark: #212529;
+	--t4-primary-rgb: 13, 110, 253;
+	--t4-secondary-rgb: 108, 117, 125;
+	--t4-success-rgb: 25, 135, 84;
+	--t4-info-rgb: 13, 202, 240;
+	--t4-warning-rgb: 255, 193, 7;
+	--t4-danger-rgb: 220, 53, 69;
+	--t4-light-rgb: 248, 249, 250;
+	--t4-dark-rgb: 33, 37, 41;
+	--t4-white-rgb: 255, 255, 255;
+	--t4-black-rgb: 0, 0, 0;
+	--t4-body-color-rgb: 33, 37, 41;
+	--t4-body-bg-rgb: 255, 255, 255;
+	--t4-font-sans-serif: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans",
+		"Liberation Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--t4-font-monospace: SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+	--t4-gradient: linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0));
+	--t4-body-font-family: var(--t4-font-sans-serif);
+	--t4-body-font-size: 1rem;
+	--t4-body-font-weight: 400;
+	--t4-body-line-height: 1.5;
+	--t4-body-color: #212529;
+	--t4-body-bg: #fff;
+	--color-primary: #0a58ca;
+	--color-secondary: #6c757d;
+	--color-success: #198754;
+	--color-info: #0dcaf0;
+	--color-warning: #fd7e14;
+	--color-danger: #dc3545;
+	--color-light: #f8f9fa;
+	--color-dark: #212529;
+	--color-white: #ffffff;
+	--color-black: #000000;
+	--body-bg-color: #ffffff;
+	--body-text-color: #000000;
+	--body-link-color: #0a58ca;
+	--body-link-hover-color: #084298;
+	--mainnav-text-color: #000000;
+	--mainnav-link-color: #495057;
+	--mainnav-link-hover-color: #0a58ca;
+	--mainnav-link-active-color: #0a58ca;
+	--footer-bg-color: #212529;
+	--footer-text-color: #6c757d;
+	--footer-link-color: #6c757d;
+	--footer-link-hover-color: #ffffff;
+	--thumbnail-width: 240px;
+}
+/* --------------------------------------------------------- */
+/* PAGE STYLES
+/* --------------------------------------------------------- */
+.body {
+	font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande", "Lucida Sans Unicode", Geneva, Verdana,
+		sans-serif !important;
+}
+.screenTop {
+	top: 0;
+}
+.screenAuto {
+	top: auto;
+}
+.footer2 {
+	display: none;
+}
+.breadcrumb {
+	padding: 8px;
+}
+.menu a,
+.module-title a {
+	color: #003399;
+}
+div.OpenSeadragon {
+	overflow: hidden;
+	padding: 10px;
+}
+div.openSeadragonViewer {
+	width: 800px;
+	height: 600px;
+	overflow: hidden;
+}
+div.borderedBox,
+div.videoBox,
+div.deepZoom,
+div.panoBox {
+	border: thin #ccc solid;
+	padding: 10px;
+}
+div.borderedBox,
+div.videoBox {
+	width: auto;
+	max-width: 580px;
+	margin-bottom: 10px;
+}
+div.videoBox p {
+	margin: 0;
+}
+div.panoBox {
+	width: 660px;
+	height: auto;
+}
+.page-subtitle {
+	color: #333333;
+}
+a.helpButton {
+	display: inline-block;
+	width: 24px;
+	height: 24px;
+	background: url(/docs/css/help.png) left center no-repeat;
+}
+div#photoHelp {
+	width: 300px;
+	height: 300px;
+	display: block;
+	border: 1px solid #ccc;
+	padding: 10px;
+	background: white;
+	opacity: 100%;
+}
+iframe.video {
+	max-width: 560px;
+}
+.t4-header,
+.t4-main-body,
+header,
+.category-desc {
+	padding: 0;
+}
+#t4-masthead,
+.module-title,
+.module-masthead {
+	background-color: white;
+	color: black !important;
+	padding-top: 10px;
+}
+/*
+    --footer-text-color: #6c757d;
+    --footer-link-color: #6c757d;
+    --footer-link-hover-color: #ffffff;
+*/
+#t4-footer .t4-row {
+	background-color: var(--footer-bg-color);
+	color: var(--footer-text-color);
+}
+li.list-group-item.list-group-item-action {
+	display: block;
+	float: left;
+	width: 30%;
+	margin: 0 10px 10px 0 !important;
+	padding: 0 20px !important;
+	border: thin #ddd solid !important;
+	background-color: #eee;
+}
+div.tag-category h3 a {
+	font-size: 18px;
+}
+p.readmore .btn {
+	background-color: var(--t4-green);
+	color: var(--t4-gray-100);
+}
+.properName {
+	text-transform: capitalize;
+}
+.allCaps {
+	text-transform: uppercase;
+}
+.noCaps {
+	text-transform: lowercase;
+}
+/* --------------------------------------------------------- */
+/* FORUM STYLES
+/* --------------------------------------------------------- */
+.mod-kunena-breadcrumbs li,
+.fa-solid,
+.list-inline li,
+label {
+	margin-right: 10px;
+}
+/* --------------------------------------------------------- */
+/* PHOTO STYLES
+mod-kunena-breadcrumbs breadcrumb
+/* --------------------------------------------------------- */
+p.photoRight,
+p.photoLeft {
+	max-width: var(--thumbnail-width);
+	max-height: var(--thumbnail-width);
+	display: inline-block;
+	padding: 0;
+	margin: 0;
+	font-size: 12px;
+	line-height: 16px;
+	overflow: hidden;
+}
+p.photoRight {
+	float: right;
+	padding: 0 0 10px 10px;
+}
+.locationPhoto,
+p.photoLeft {
+	float: left;
+	padding: 0 10px 10px 0;
+}
+p.photoBig {
+	width: 100%;
+}
+p.photoSmall {
+	width: 33%;
+}
+p.photoTall,
+p.photoHalf {
+	width: 50%;
+}
+p.photoBig img,
+p.photoSmall img {
+	width: 99%;
+}
+p.thumbnail,
+img.thumbnail {
+	max-width: var(--thumbnail-width);
+	max-height: var(--thumbnail-width);
+	overflow: hidden;
+}
+/* --------------------------------------------------------- */
+/* ACCORDION STYLES
+/* --------------------------------------------------------- */
+.accordion {
+	clear: both;
+	display: block;
+	color: black;
+	padding: 0 0 0 30px;
+	background: url(/docs/css/accordion-24x24.png) no-repeat;
+	background-position: 0 0;
+	line-height: 20px !important;
+	font-size: 18px !important;
+	cursor: pointer;
+}
+.accordion.show,
+.accordion.visible {
+	background-position: 0 -24px;
+}
+.accordion.hide {
+	background-position: 0 0;
+}
+/* --------------------------------------------------------- */
+/*  mastodon link
+/* --------------------------------------------------------- */
+a.iconLeft {
+	display: inline-block;
+	padding-left: 24px;
+	height: 24px;
+	font-size: 14px;
+}
+a.iconMastodon {
+	background: url(/docs/css/mastodon-16.png) left center no-repeat;
+}
+/* --------------------------------------------------------- */
+/* TAGS STYLES
+/* --------------------------------------------------------- */
+h3.item-tag-title,
+div.tag-category h3 {
+	font-size: 14px;
+}
+/* --------------------------------------------------------- */
+/* COOKIE CONSENT STYLES
+/* --------------------------------------------------------- */
+div#cookieConsent {
+	border: thin black solid;
+	background-color: rgba(0, 0, 0, 1) !important;
+	clear: both;
+	min-height: 26px;
+	font-size: 14px;
+	color: #ccc;
+	line-height: 26px;
+	padding: 8px 0 8px 30px;
+	font-family: "Trebuchet MS", Helvetica, sans-serif;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	display: none !important;
+	z-index: 9999;
+}
+#cookieConsent a {
+	color: #4b8ee7;
+	text-decoration: none;
+}
+#closeCookieConsent {
+	float: right;
+	display: block;
+	cursor: pointer;
+	height: 20px;
+	width: 20px;
+	margin: -15px 0 0 0;
+	font-weight: bold;
+}
+#closeCookieConsent:hover {
+	color: #fff;
+}
+#cookieConsent a.cookieConsentOK {
+	background-color: #f1d600;
+	color: #000;
+	display: block;
+	border-radius: 5px;
+	padding: 0 20px;
+	cursor: pointer;
+	float: right;
+	margin: 0 60px 0 10px;
+}
+#cookieConsent a.cookieConsentOK:hover {
+	background-color: #e0c91f;
+}
+hr {
+	clear: both;
+	height: 2px;
+}
+hr.black {
+	border-top-color: black;
+}
+.black {
+	color: black;
+}
+p.mapRight,
+p.mapLeft {
+	display: inline-block;
+	width: 160px;
+	padding: 0;
+	font-size: 10px;
+	line-height: 12px;
+}
+.emphasis {
+	font-style: italic;
+}
+.strong {
+	font-weight: bold;
+}
+table.refTable {
+	padding: 4px 8px;
+}
+th,
+td {
+	padding: 10px;
+	vertical-align: top;
+}
+div.message {
+	padding: 10px;
+	background-color: #ffffcc;
+	border: thin black solid;
+	color: black;
+}

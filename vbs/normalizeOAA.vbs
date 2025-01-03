@@ -2,7 +2,7 @@ option explicit
 '==============================================================================
 '	normalizeOAA
 '
-'	Center artwork in square canvas
+'	Position artwork in upper left of square 800x800 canvas
 '
 '	mogrify -gravity NorthWest -background transparent -extent 800x800 -format png *.jpg
 '==============================================================================
