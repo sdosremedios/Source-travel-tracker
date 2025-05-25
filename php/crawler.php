@@ -109,8 +109,8 @@ foreach ($all_links as $currentlink)
 
 foreach ($all_links as $currentlink)
 {
-	$live = urlExists($currentlink) ? " live" : " broken"; 
-	echo $currentlink . $live . "<br>";
+	$live = urlExists($currentlink) ? "live:   " : "broken: "; 
+	echo $live . $currentlink . "<br>";
 	$linkscount[] += $currentlink;
 }
 
