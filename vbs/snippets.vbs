@@ -40,9 +40,28 @@ end class
 class vbsLib
 	public debug
 	public fs
+	public args
+
 	private sub class_Initialize()
+		dim i
 		debug = false
 		set fs = createObject("scripting.fileSystemObject")
+		if wscript.arguments.count = 0 then
+			display "No arguments provided!"
+			exit sub
+		end if
+		for i = 0 to wscript.arguments.count - 1
+			select case i
+				case 0
+					' Arg 1
+				case 1
+					' Arg 2
+					end if
+				case else
+					display "Too many arguments provided!"
+					exit sub
+			end select
+		next
 	end sub
 
 	private sub class_Terminate()
@@ -85,6 +104,19 @@ class vbsLib
 		next
 		substitute = s
 	end function
+
+	public sub getArgs()
+		dim i, s
+		if wscript.arguments.count = 0 then
+			display "No arguments provided!"
+			exit sub
+		end if
+		s = ""
+		for i = 0 to wscript.arguments.count - 1
+			s = s & "Argument " & i & ": " & wscript.arguments(i) & vbcrlf
+		next
+		display s
+	end sub
 			
 	public function httpGet(URL)
 		dim oXMLhttp : set oXMLhttp = CreateObject("msxml2.xmlhttp")

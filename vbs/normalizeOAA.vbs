@@ -6,128 +6,126 @@ option explicit
 '
 '	mogrify -gravity NorthWest -background transparent -extent 800x800 -format png *.jpg
 '==============================================================================
-dim lib			: set lib		= new vbsLib
-dim myObject	: set myObject	= new someObject
+dim oaa	: set oaa = new oaaLib
+
+oaa.resize
+
 
 '==============================================================================
-'	class definition
+'	oaaLib definition
 '==============================================================================
-class someObject
-	private letValue
-	private objValue
-	public args
+class oaaLib
+	public debug
+	private objShell
+	private inputFolder
+	private doWatermark
+	private rotate
+
+	private workingDrive
+	private watermarkFile 
+	private inputImages 
+	private outputFolder 
+	private watermarkFolder  
+
 	private sub class_Initialize()
-		set args = wscript.arguments
+		dim i, arg3
+		debug = false
+		rotate = " "
+		workingDrive = "D:"
+		watermarkFile = "D:\Data\Nextcloud\Photos\OAA\OAA-watermark.png"
+		'const inputImages = "\*.jpg"
+		inputImages = "\*.jpeg \*.jpg \*.png \*.tif"
+		outputFolder = ".\web"
+		watermarkFolder = ".\watermark"
+		set objShell = createObject("WScript.Shell")
+		' Check if arguments exist
+		if wscript.arguments.count = 0 then
+			display "No arguments provided!"
+			bail()
+			exit sub
+		end if
+		for i = 0 to wscript.arguments.count - 1
+			select case i
+				case 0
+					' Path to images
+					inputFolder = wscript.arguments(i)
+				case 1
+					' Watermark enable
+					if LCase(wscript.arguments(i)) = "true" then
+						doWatermark = True
+					end if
+				case 2
+					' Rotation required
+					arg3 = LCase(wscript.arguments(i))
+					select case arg3
+						case "left"
+							' Rotate images
+							rotate = " -rotate -90"
+						case "right"
+							' Rotate images
+							rotate = " -rotate 90"
+						case "180"
+							' Rotate images
+							rotate = " -rotate 180"
+						case else
+							display "Invalid rotation argument! Use 'left', 'right' or '180'."
+							bail()
+							exit sub
+					end select 
+				case else
+					display "Too many arguments provided!"
+					bail()
+					exit sub
+			end select
+		next
+	' Ensure output directory exists
+	objShell.Run "cmd /c " & workingDrive, 0, True
+
+	' Change to input directory
+	objShell.Run "cmd /c cd " & inputfolder, 0, True
+	objShell.Run "cmd /c cd"
+	objShell.Run "cmd /c d:"	'fix for running from other drives
+
+	' Ensure output directories exists
+	objShell.Run "cmd /c mkdir """ & outputFolder & """", 0, True
+	if doWatermark then objShell.Run "cmd /c mkdir """ & watermarkFolder & """", 0, True
+
 	end sub
 	private sub class_Terminate()
-		set args = nothing
+		set objShell = nothing
 	end sub
-	public property GET propValue()
-		propValue = "property value"
-	end property
-	public property SET setName(anObject)
-		set objValue = anObject
-	end property
-	public property LET letName(aValue)
-		letValue = aValue
-	end property
+
+	private sub bail()
+		' Stop script execution
+		WScript.Quit 1
+	end sub
+
+	public sub resize()
+		' Convert to 800x800 transparent PNG
+		WScript.echo "magick mogrify -path """ & outputFolder & """ -resize 800x800" & rotate  & " -quality 100 -format png " & inputImages
+		objShell.Run "cmd /c magick mogrify -path """ & outputFolder & """ -resize 800x800" & rotate  & " -quality 100 -format png " & inputImages, 0, True
+
+		' Make transparent background
+		WScript.echo "magick mogrify -path .\web -gravity NorthWest -background transparent -extent 800x800 .\web\*.png"
+		objShell.Run "cmd /c magick mogrify -path .\web -gravity NorthWest -background transparent -extent 800x800 .\web\*.png", 0, True
+		if doWatermark then
+			watermark()
+		end if	
+	end sub
+	private sub watermark()
+		' copy to watermark folder
+		if doWatermark then 
+			WScript.echo "cmd /c copy """ & outputFolder & "\*.png"" """ & watermarkFolder & """ /Y"
+			objShell.Run "cmd /c copy """ & outputFolder & "\*.png"" """ & watermarkFolder & """ /Y", 0, True
+			' Add watermark
+			WScript.echo "for %i in (watermark\*.png) do magick convert ""%i"" """ & watermarkFile & """ -gravity NorthWest -composite ""%i"""
+			objShell.Run "cmd /c for %i in (watermark\*.png) do magick convert ""%i"" """ & watermarkFile & """ -gravity NorthWest -composite ""%i""", 0, True
+		end if
+	end sub
 	private sub Log(name, text)
 		display right(space(20) & name, 20) & ": " & text
 	end sub
 	private sub display(text)
-		wscript.echo text
-	end sub
-end class
-'==============================================================================
-'	vbsLib class definition
-'==============================================================================
-class vbsLib
-	public debug
-	public fs
-	private sub class_Initialize()
-		debug = false
-		set fs = createObject("scripting.fileSystemObject")
-	end sub
-
-	private sub class_Terminate()
-		set fs = nothing
-	end sub
-
-    public sub createFolders(folderName)	'RECURSIVE!!
-		dim d, f, e
-		if fs.folderExists(folderName) then
-			exit sub
-		else 
-			createFolders fs.GetParentFolderName (folderName)
-		end if
-		log "create folder", folderName
-		fs.createFolder(folderName)
-	end sub
-	
-	public function checkFolder(folderName, delete)
-		if fs.folderExists(folderName) then
-			if delete then 
-				fs.deleteFolder(folderName)
-			end if
-		end if
-		createFolders folderName
-		set checkFolder = fs.getFolder(folderName)
-	end function
-
-	public function getFileText(fileName)
-		dim ts : set ts = fs.openTextFile(fileName)
-		getFileText = ts.readAll
-		ts.close
-		set ts = nothing
-	end function
-
-	public function substitute(aString,paramsArray)	'replace text in aString with values from paramsArray
-		dim i, s : s = aString
-		for i = 0 to ubound(paramsArray)
-		dim token : token = "{" & CStr(i) & "}"
-		s = replace(s,token,paramsArray(i))
-		next
-		substitute = s
-	end function
-			
-	public function httpGet(URL)
-		dim oXMLhttp : set oXMLhttp = CreateObject("msxml2.xmlhttp")
-		oXMLhttp.Open "GET", URL, False 
-		oXMLhttp.Send
-		If (Err.Number <> 0) or (oXMLhttp.Status <> "200") Then 
-			httpGet = "HTTP Error: " & err.number
-		else
-			httpGet = oXMLhttp.responseText
-		end if 
-	end function
-
-	public function Z2(n)
-		Z2 = right("00" & CStr(n),2)
-	end function
-	
-	public function Z4(n)
-		Z4 = right("0000" & CStr(n),4)
-	end function
-
-	public sub displayHeader(text)
-		displayBars
-		display text
-		displayBars
-	end sub
-
-	public sub displayBars()
-		display string(80,"=")
-	end sub
-
-	public sub displayLog(name, text)
-		display right(space(20) & name, 20) & ": " & text
-	end sub
-	
-	public sub ASSERT(name, text)
-		if debug then displayLog name, text
-	end sub
-	
-	public sub display(text)
 		wscript.echo text
 	end sub
 end class
