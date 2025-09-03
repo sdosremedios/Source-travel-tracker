@@ -11,8 +11,9 @@ Option Explicit
 '
 ' Arguments:
 '   <inputFolder>    - Path to the folder containing images to process
-'   <watermarkFile>  - Path to the watermark image or "True" to enable default watermark
+'   <watermarkFile>  - Optional Path to a watermark image or "True" to enable default watermark
 '   [rotation]       - Optional rotation direction: "left", "right", or "180"
+'   [QRcode]         - Optional "True" to use generate QR codes for images
 '
 ' The script will:
 '   - Resize images to fit in a 800x800 transparent square  
@@ -36,7 +37,7 @@ oaa.resize()
 '==============================================================================
 Class oaaLib
     Public debug
-    Private objShell, inputFolder, doWatermark, rotate
+    Private objShell, inputFolder, doWatermark, rotate, QRcode
     Private workingDrive, watermarkFile, inputImages, outputFolder, watermarkFolder
 
     ' Initialize configuration and arguments
@@ -44,6 +45,7 @@ Class oaaLib
         Dim i, arg3
         debug = False
         rotate = ""
+        QRcode = False
         workingDrive = "D:"
         watermarkFile = "D:\Data\Nextcloud\Photos\OAA\OAA-watermark.png"
         inputImages = "\*.jpeg \*.jpg \*.png \*.tif"
@@ -67,19 +69,28 @@ Class oaaLib
                 Case 1
                     ' Watermark enable
                     If LCase(WScript.Arguments(i)) <> "true" Then
-                        watermarkFile = WScript.Arguments(i)
+                        If LCase(WScript.Arguments(i)) <> "false" Then
+                            watermarkFile = WScript.Arguments(i)
+                            doWatermark = True  
+                        End If
+                    else
+                        doWatermark = True
                     End If
-                    doWatermark = True  
                 Case 2
-                    arg3 = LCase(WScript.Arguments(i))
-                    Select Case arg3
+                    Select Case LCase(WScript.Arguments(i))
                         Case "left"  : rotate = " -rotate -90"
                         Case "right" : rotate = " -rotate 90"
                         Case "180"   : rotate = " -rotate 180"
+                        Case "none"  : rotate = ""
                         Case Else
-                            display "Invalid rotation. Use 'left', 'right', or '180'."
+                            display "Invalid rotation. Use 'left', 'right', '180', or 'none'."
                             bail()
                     End Select
+                case 3
+                    ' Optional QR code argument
+                    If LCase(WScript.Arguments(i)) = "true" Then
+                        QRcode = True
+                    End If
                 Case Else
                     display "Too many arguments provided."
                     bail()
