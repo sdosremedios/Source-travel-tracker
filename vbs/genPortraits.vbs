@@ -55,7 +55,7 @@ class exifObject
         Dim shell, command, output, exec, template
         template = "-X -XMP:Title -XMP:Description -FileName -DateTimeOriginal" ' XML parameters
         Set shell = CreateObject("WScript.Shell")
-        command = """" & strExifTool & """ " & template & " """ & strFolderPath & """ > """ & strXMLPath & """"
+        command = "cmd.exe /c exiftool.exe " & template & " """ & strFolderPath & """ > """ & strXMLPath & """"
         display "Running command: " & command
         shell.Run command, 0, True
         Set shell = Nothing
