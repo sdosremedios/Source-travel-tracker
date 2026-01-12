@@ -58,8 +58,8 @@ class exifObject
         command = "cmd.exe /c exiftool.exe " & template & " """ & strFolderPath & """ > """ & strXMLPath & """"
         display "Running command: " & command
         shell.Run command, 0, True
+        WScript.Echo "Portrait XML data generated at: " & strXMLPath
         Set shell = Nothing
-        WScript.Echo "Portrait XML data generated at: " & strXMLPath    
     end sub
 	private sub Log(name, text)
 		display right(space(20) & name, 20) & ": " & text
