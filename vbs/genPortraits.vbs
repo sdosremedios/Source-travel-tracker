@@ -62,7 +62,7 @@ class exifObject
         if strExifOverride <> "" then
             template = strExifOverride
         else
-            template = "-X -ImageDataHash -imageHashType MD5 -XMP:Title -XMP:Description -FileName -DateTimeOriginal" ' XML parameters
+            template = "-X -ImageDataHash -imageHashType MD5 -XMP:Title -XMP:Description -XMP:Subject -FileName -DateTimeOriginal" ' XML parameters
         end if
         Set shell = CreateObject("WScript.Shell")
         command = "cmd.exe /c exiftool.exe " & template & " """ & strFolderPath & """ > """ & strXMLPath & """"
