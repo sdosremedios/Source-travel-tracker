@@ -25,16 +25,21 @@ class exifObject
 	private objValue
 	private propValue
 	public args
-    Dim strFolderPath, strXMLPath, strExifTool   
+    Dim strFolderPath, strXMLPath, strExifTool, strExifOverride
 	private sub class_Initialize()
         strExifTool = "C:\Program Files\PhotomatixPro6\exiftool.exe"
 		set args = wscript.arguments
         if args.count < 2 then
-            display "Usage: cscript genPortraits.vbs <ImageFolderPath> <OutputXMLPath>"
+            display "Usage: cscript genPortraits.vbs <ImageFolderPath> <OutputXMLPath> [ExifOverrideParameters]"
             wscript.quit 1
         end if
         strFolderPath = args(0)
         strXMLPath = args(1)
+        if args.count >= 3 then
+            strExifOverride = args(2)
+        else
+            strExifOverride = ""
+        end if
 
         Set objFSO = CreateObject("Scripting.FileSystemObject")
         Set objFolder = objFSO.GetFolder(strFolderPath)
@@ -46,14 +51,19 @@ class exifObject
 	end sub
 	private sub class_Terminate()
 		set args = nothing
-        Set objRoot = Nothing   
+        Set objRoot = Nothing
         Set objXMLDoc = Nothing
         Set objFolder = Nothing
         Set objFSO = Nothing
 	end sub
     public sub runExiftool()
         Dim shell, command, output, exec, template
-        template = "-X -XMP:Title -XMP:Description -FileName -DateTimeOriginal" ' XML parameters
+'       template = "-X -XMP:Title -XMP:Description -FileName -DateTimeOriginal" ' XML parameters
+        if strExifOverride <> "" then
+            template = strExifOverride
+        else
+            template = "-X -ImageDataHash -imageHashType MD5 -XMP:Title -XMP:Description -FileName -DateTimeOriginal" ' XML parameters
+        end if
         Set shell = CreateObject("WScript.Shell")
         command = "cmd.exe /c exiftool.exe " & template & " """ & strFolderPath & """ > """ & strXMLPath & """"
         display "Running command: " & command
