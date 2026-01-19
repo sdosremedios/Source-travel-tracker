@@ -1,0 +1,72 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<?stylesheet type='text/xsl' href='keywords.xslt'?>
+
+<rdf:RDF xmlns:rdf='http://www.w3.org/1999/02/22-rdf-syntax-ns#'>
+    
+    <rdf:Description rdf:about='W:/travelshot/docs/images/portraits/140_5180-Topaz-2008.JPG'
+                     xmlns:et='http://ns.exiftool.org/1.0/' et:toolkit='Image::ExifTool 13.45'
+                     xmlns:File='http://ns.exiftool.org/File/1.0/'
+                     xmlns:XMP-dc='http://ns.exiftool.org/XMP/XMP-dc/1.0/'
+                     xmlns:System='http://ns.exiftool.org/File/System/1.0/'
+                     xmlns:ExifIFD='http://ns.exiftool.org/EXIF/ExifIFD/1.0/'>
+        <File:ImageDataHash>d36be7598f3955ff23ffa584acb29015</File:ImageDataHash>
+        <XMP-dc:Title>Tarahumara Woman From Creel, Chihuahua</XMP-dc:Title>
+        <XMP-dc:Description>A Tarahumara woman wears a vibrant shawl and colorful headscarf, reflecting her cultural heritage in Creel, Chihuahua.</XMP-dc:Description>
+        <XMP-dc:Subject>
+            <rdf:Bag>
+                <rdf:li>Art</rdf:li>
+                <rdf:li>Chihuahua</rdf:li>
+                <rdf:li>Creel</rdf:li>
+                <rdf:li>Culture</rdf:li>
+                <rdf:li>Customs</rdf:li>
+                <rdf:li>Joy</rdf:li>
+                <rdf:li>Mexico</rdf:li>
+                <rdf:li>Mountains</rdf:li>
+                <rdf:li>Portrait</rdf:li>
+                <rdf:li>Rural</rdf:li>
+                <rdf:li>Tarahumara</rdf:li>
+                <rdf:li>Traditions</rdf:li>
+                <rdf:li>Portrait Type</rdf:li>
+                <rdf:li>Woman</rdf:li>
+                <rdf:li>artisan</rdf:li>
+                <rdf:li>attire</rdf:li>
+                <rdf:li>beauty</rdf:li>
+                <rdf:li>candid</rdf:li>
+                <rdf:li>character</rdf:li>
+                <rdf:li>colorful</rdf:li>
+                <rdf:li>community</rdf:li>
+                <rdf:li>craft</rdf:li>
+                <rdf:li>environment</rdf:li>
+                <rdf:li>ethnicity</rdf:li>
+                <rdf:li>expression</rdf:li>
+                <rdf:li>face</rdf:li>
+                <rdf:li>folk</rdf:li>
+                <rdf:li>headscarf</rdf:li>
+                <rdf:li>heritage</rdf:li>
+                <rdf:li>history</rdf:li>
+                <rdf:li>identity</rdf:li>
+                <rdf:li>imagery</rdf:li>
+                <rdf:li>indigenous</rdf:li>
+                <rdf:li>lifestyle</rdf:li>
+                <rdf:li>living</rdf:li>
+                <rdf:li>nature</rdf:li>
+                <rdf:li>older</rdf:li>
+                <rdf:li>outdoor</rdf:li>
+                <rdf:li>people</rdf:li>
+                <rdf:li>phototag</rdf:li>
+                <rdf:li>portraiture</rdf:li>
+                <rdf:li>pride</rdf:li>
+                <rdf:li>scenery</rdf:li>
+                <rdf:li>shawl</rdf:li>
+                <rdf:li>storytelling</rdf:li>
+                <rdf:li>textile</rdf:li>
+                <rdf:li>traditional</rdf:li>
+                <rdf:li>warmth</rdf:li>
+                <rdf:li>wisdom</rdf:li>
+            </rdf:Bag>
+        </XMP-dc:Subject>
+        <System:FileName>140_5180-Topaz-2008.JPG</System:FileName>
+        <ExifIFD:DateTimeOriginal>2008:04:19 23:45:11</ExifIFD:DateTimeOriginal>
+    </rdf:Description>
+</rdf:RDF>
+
