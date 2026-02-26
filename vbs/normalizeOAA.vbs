@@ -38,7 +38,7 @@ oaa.resize()
 Class oaaLib
     Public debug
     Private objShell, inputFolder, doWatermark, rotate, QRcode
-    Private workingDrive, watermarkFile, inputImages, outputFolder, watermarkFolder
+    Private watermarkFile, inputImages, outputFolder, watermarkFolder', workingDrive
 
     ' Initialize configuration and arguments
     Private Sub Class_Initialize()
@@ -46,7 +46,7 @@ Class oaaLib
         debug = False
         rotate = ""
         QRcode = False
-        workingDrive = "D:"
+        'workingDrive = "D:"
         watermarkFile = "D:\Data\Nextcloud\Photos\OAA\OAA-watermark.png"
         inputImages = "\*.jpeg \*.jpg \*.png \*.tif"
         outputFolder = ".\web"
@@ -98,8 +98,8 @@ Class oaaLib
         Next
 
         ' Ensure working drive context and output folders exist
-        objShell.Run "cmd /c cd " & workingDrive, 0, True
-        objShell.Run "cmd /c cd " & inputFolder, 0, True
+        'objShell.Run "cmd /c cd " & workingDrive, 0, True
+        'objShell.Run "cmd /c cd " & inputFolder, 0, True
         objShell.Run "cmd /c mkdir """ & outputFolder & """", 0, True
         If doWatermark Then objShell.Run "cmd /c mkdir """ & watermarkFolder & """", 0, True
 
@@ -125,7 +125,7 @@ Class oaaLib
     Public Sub resize()
         ' Resize and convert to 800x800 transparent PNG
         display "Resizing and converting images..."
-        runCommand "magick mogrify -path """ & outputFolder & """ -resize 800x800" & rotate & " -quality 100 -format png " & inputImages
+        runCommand "magick mogrify -path """ & outputFolder & """ " & rotate & " -resize 800x800 -quality 100 -format png " & inputImages
 
         ' Set transparent canvas with top-left gravity
         display "Applying transparent 800x800 canvas..."
