@@ -1,0 +1,95 @@
+.ut-container {
+  padding: 12px 16px;
+  overflow-y: auto;
+  outline: none;
+}
+
+/* --- Month grouping ------------------------------------------------------ */
+.ut-month-block {
+  margin-bottom: 24px;
+}
+
+.ut-month-header {
+  position: sticky;
+  top: 0;
+  background: #f7f9fb;
+  padding: 6px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 1px solid #ddd;
+  z-index: 3;
+}
+
+/* --- Day grouping -------------------------------------------------------- */
+.ut-day-block {
+  margin-top: 4px;
+}
+
+.ut-day-header {
+  position: sticky;
+  top: 28px;
+  background: #f7f9fb;
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 1px solid #ddd;
+  z-index: 2;
+}
+
+/* --- Rows --------------------------------------------------------------- */
+.ut-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  align-items: center;
+  cursor: pointer;
+}
+
+.ut-row:hover {
+  background: #f5f8fc;
+}
+
+.ut-row.cursor {
+  background: #e6f1fb;
+}
+
+/* --- Icon column -------------------------------------------------------- */
+.ut-icon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+}
+
+/* --- Content ------------------------------------------------------------ */
+.ut-main {
+  flex: 1;
+}
+
+.ut-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.ut-sub {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+.ut-weekday {
+  background: #eef3f8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 11px;
+}
+
+.ut-dot {
+  opacity: 0.6;
+}

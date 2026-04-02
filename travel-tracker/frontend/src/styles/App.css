@@ -1,0 +1,46 @@
+/* Bulletproof split-pane layout */
+
+.app-shell {
+  all: initial;              /* Reset EVERYTHING inside this container */
+  font-family: system-ui;    /* Restore typography */
+  display: block;
+}
+
+.app-shell * {
+  all: unset;                /* Prevent global CSS from leaking in */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Re-enable normal HTML behavior inside the shell */
+.app-shell div,
+.app-shell button,
+.app-shell input,
+.app-shell textarea,
+.app-shell select {
+  display: block;
+  all: revert;               /* Bring back normal browser defaults */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Now apply your layout */
+.app-root {
+  display: flex !important;  /* Cannot be overridden */
+  height: 100vh;
+  overflow: hidden;
+}
+
+.app-left {
+  width: 280px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  background: #fafafa;
+  flex-shrink: 0;
+}
+
+.app-right {
+  flex: 1;
+  overflow-y: auto;
+  background: white;
+}

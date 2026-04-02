@@ -1,0 +1,35 @@
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 12px;
+  margin: 16px 0 24px 0;
+}
+
+.category-item {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+  background: #fafafa;
+}
+
+.category-item:hover {
+  background: #f3f7fb;
+}
+
+.category-item.selected {
+  background: #e6f1fb;
+  border-color: #b5d4f5;
+}
+
+.category-icon {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.category-label {
+  font-size: 13px;
+  color: #444;
+}

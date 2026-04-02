@@ -1,0 +1,57 @@
+/* Calm, typographic, minimal — matches SegmentEditorScreen.css */
+
+.tour-editor {
+  max-width: 600px;
+  padding: 24px;
+}
+
+.tour-editor h1 {
+  margin-bottom: 16px;
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.tour-editor h2 {
+  margin-top: 24px;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #444;
+}
+
+.tour-editor input,
+.tour-editor textarea {
+  width: 100%;
+  padding: 6px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  background: white;
+}
+
+.tour-editor textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.tour-editor .actions {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.te-type-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.te-type-icon {
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+.te-type-select {
+  flex: 1;
+}

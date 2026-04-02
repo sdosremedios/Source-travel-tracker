@@ -1,0 +1,36 @@
+.timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 24px;
+}
+
+.timeline-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  font-size: 14px;
+}
+
+.timeline-icon {
+  font-size: 18px;
+  width: 24px;
+  text-align: center;
+}
+
+.timeline-date {
+  width: 90px;
+  color: #666;
+  font-size: 13px;
+}
+
+.timeline-route {
+  flex: 1;
+  font-size: 14px;
+}
+
+.timeline-time {
+  color: #666;
+  font-size: 13px;
+}

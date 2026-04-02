@@ -1,0 +1,61 @@
+.se-pane {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.se-title {
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.se-label {
+  font-size: 13px;
+  opacity: 0.7;
+}
+
+.se-input,
+.se-textarea,
+.se-mode-select {
+  width: 100%;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.se-textarea {
+  height: 80px;
+  resize: vertical;
+}
+
+.se-mode-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.se-mode-icon {
+  font-size: 20px;
+  opacity: 0.8;
+}
+
+.se-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.se-btn {
+  padding: 8px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.se-btn.save {
+  background: #0078d4;
+  color: white;
+}
+
+.se-btn.cancel {
+  background: #ddd;
+}
