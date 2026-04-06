@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { saveTrip } from "../api";
+import { createTrip, updateTrip } from "../api";
 import "../styles/TripEditorScreen.css";
 
 const TRIP_TYPE_ICONS = {
@@ -27,15 +27,16 @@ export default function TripEditorScreen({ trip, onClose, onSaved }) {
   }
 
   async function handleSave() {
-    const tripData = {
-      id: trip?.id ?? null,
-      ...local
-    };
+    const data = { ...local };
 
-    const saved = await saveTrip(tripData);
+    if (trip?.id) {
+      await updateTrip(trip.id, data);
+    } else {
+      await createTrip(data);
+    }
 
-    if (onSaved) onSaved(saved.id);
-    onClose();
+    onSaved?.();
+    onClose?.();
   }
 
   return (

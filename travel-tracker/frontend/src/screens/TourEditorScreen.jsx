@@ -1,102 +1,137 @@
 import React, { useState } from "react";
-import { createTour, updateTour } from "../api/index.js";
-import TourCategorySelector from "../components/TourCategorySelector.jsx";
-import "../styles/TourEditorScreen.css"; // optional, if you have it
+import { TOUR_CATEGORIES, tourIcon } from "../models/categories";
+import "../styles/TourEditorScreen.css";
 
-export default function TourEditorScreen({ tripId, tour, onClose }) {
-  const isEditing = Boolean(tour);
+// Convert TOUR_CATEGORIES into a clean text-value picklist
+const CATEGORY_OPTIONS = Object.entries(TOUR_CATEGORIES).map(([value, label]) => ({
+  value,   // e.g. "food"
+  label    // e.g. "Food Tour"
+}));
 
-  // --- Local state ---------------------------------------------------------
-  const [local, setLocal] = useState({
-    name: tour?.name || "",
-    date: tour?.date || "",
-    time: tour?.time || "",
-    location: tour?.location || "",
-    notes: tour?.notes || "",
-    category: tour?.category || "walking" // default category
-  });
+export default function TourEditorScreen({ tripId, tour, onClose, onSaved }) {
+  // IMPORTANT: hydrate from correct field names
+  const [name, setName] = useState(tour?.name || "");
 
-  function updateField(field, value) {
-    setLocal(prev => ({ ...prev, [field]: value }));
-  }
+  // DB + backend use startDate, not date
+  const [date, setDate] = useState(tour?.startDate || "");
 
-  // --- Save handler --------------------------------------------------------
+  // DB + backend use startTime
+  const [time, setTime] = useState(tour?.startTime || "");
+
+  // End date defaults to start date if missing
+  const [endDate, setEndDate] = useState(tour?.endDate || tour?.startDate || "");
+
+  // DB + backend use endTime
+  const [endTime, setEndTime] = useState(tour?.endTime || "");
+
+  const [location, setLocation] = useState(tour?.location || "");
+
+  // Category must be TEXT — ensure string
+  const [category, setCategory] = useState(
+    tour?.category ? String(tour.category) : "general"
+  );
+
+  const [notes, setNotes] = useState(tour?.notes || "");
+
   async function handleSave() {
-    if (isEditing) {
-      await updateTour(tripId, tour.id, local);
-    } else {
-      await createTour(tripId, local);
-    }
-    onClose();
+    const payload = {
+      tripId,
+      name,
+      startDate: date,
+      startTime: time,
+      endDate,
+      endTime,
+      location,
+      category,   // now always a string
+      notes
+    };
+
+    const method = tour ? "PATCH" : "POST";
+    const url = tour ? `/api/tours/${tour.id}` : `/api/tours`;
+
+    const res = await fetch(url, {
+      method,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+
+    const saved = await res.json();
+    onSaved?.(saved.id);
   }
 
-  // --- UI ------------------------------------------------------------------
   return (
-    <div className="editor-container">
-      <h1 className="editor-title">
-        {isEditing ? "Edit Tour" : "New Tour"}
-      </h1>
+    <div className="tes-container">
+      <div className="tes-header">
+        <div className="tes-icon">{tourIcon(category)}</div>
+        <h1 className="tes-title">{tour ? "Edit Tour" : "New Tour"}</h1>
+      </div>
 
-      {/* Name --------------------------------------------------------------- */}
-      <label className="editor-label">Name</label>
-      <input
-        className="editor-input"
-        type="text"
-        value={local.name}
-        onChange={e => updateField("name", e.target.value)}
-      />
+      <div className="tes-form">
 
-      {/* Date --------------------------------------------------------------- */}
-      <label className="editor-label">Date</label>
-      <input
-        className="editor-input"
-        type="date"
-        value={local.date}
-        onChange={e => updateField("date", e.target.value)}
-      />
+        {/* Name */}
+        <label className="tes-field">
+          <span>Name</span>
+          <input value={name} onChange={e => setName(e.target.value)} />
+        </label>
 
-      {/* Time --------------------------------------------------------------- */}
-      <label className="editor-label">Time</label>
-      <input
-        className="editor-input"
-        type="time"
-        value={local.time}
-        onChange={e => updateField("time", e.target.value)}
-      />
+        {/* Start Date + Time */}
+        <div className="tes-row">
+          <label className="tes-field">
+            <span>Start Date</span>
+            <input type="date" value={date} onChange={e => setDate(e.target.value)} />
+          </label>
 
-      {/* Location ----------------------------------------------------------- */}
-      <label className="editor-label">Location</label>
-      <input
-        className="editor-input"
-        type="text"
-        value={local.location}
-        onChange={e => updateField("location", e.target.value)}
-      />
+          <label className="tes-field">
+            <span>Start Time</span>
+            <input type="time" value={time} onChange={e => setTime(e.target.value)} />
+          </label>
+        </div>
 
-      {/* Notes -------------------------------------------------------------- */}
-      <label className="editor-label">Notes</label>
-      <textarea
-        className="editor-textarea"
-        value={local.notes}
-        onChange={e => updateField("notes", e.target.value)}
-      />
+        {/* End Date + End Time */}
+        <div className="tes-row">
+          <label className="tes-field">
+            <span>End Date</span>
+            <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} />
+          </label>
 
-      {/* Category Selector -------------------------------------------------- */}
-      <h2 className="editor-section-title">Category</h2>
+          <label className="tes-field">
+            <span>End Time</span>
+            <input type="time" value={endTime} onChange={e => setEndTime(e.target.value)} />
+          </label>
+        </div>
 
-      <TourCategorySelector
-        value={local.category}
-        onChange={val => updateField("category", val)}
-      />
+        {/* Location */}
+        <label className="tes-field">
+          <span>Location</span>
+          <input value={location} onChange={e => setLocation(e.target.value)} />
+        </label>
 
-      {/* Buttons ------------------------------------------------------------ */}
-      <div className="editor-buttons">
-        <button className="editor-button save" onClick={handleSave}>
-          Save
-        </button>
-        <button className="editor-button cancel" onClick={onClose}>
-          Cancel
-        </button>
+        {/* Category */}
+        <label className="tes-field">
+          <span>Category</span>
+          <select value={category} onChange={e => setCategory(e.target.value)}>
+            {CATEGORY_OPTIONS.map(opt => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        {/* Notes */}
+        <label className="tes-field">
+          <span>Notes</span>
+          <textarea
+            rows={4}
+            value={notes}
+            onChange={e => setNotes(e.target.value)}
+          />
+        </label>
+      </div>
+
+      <div className="tes-buttons">
+        <button className="tes-btn save" onClick={handleSave}>Save</button>
+        <button className="tes-btn cancel" onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

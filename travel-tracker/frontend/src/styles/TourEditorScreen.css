@@ -1,57 +1,77 @@
-/* Calm, typographic, minimal — matches SegmentEditorScreen.css */
+/* TourEditorScreen.css */
 
-.tour-editor {
-  max-width: 600px;
+.tes-container {
   padding: 24px;
-}
-
-.tour-editor h1 {
-  margin-bottom: 16px;
-  font-size: 24px;
-  font-weight: 600;
-}
-
-.tour-editor h2 {
-  margin-top: 24px;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  color: #444;
-}
-
-.tour-editor input,
-.tour-editor textarea {
-  width: 100%;
-  padding: 6px 10px;
-  font-size: 14px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  margin-bottom: 12px;
-  background: white;
-}
-
-.tour-editor textarea {
-  min-height: 80px;
-  resize: vertical;
-}
-
-.tour-editor .actions {
-  margin-top: 24px;
   display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.tes-header {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.te-type-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.tes-icon {
+  font-size: 28px;
 }
 
-.te-type-icon {
+.tes-title {
   font-size: 20px;
-  opacity: 0.8;
+  font-weight: 600;
 }
 
-.te-type-select {
+.tes-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.tes-row {
+  display: flex;
+  gap: 16px;
+}
+
+.tes-field {
+  display: flex;
+  flex-direction: column;
   flex: 1;
+  gap: 4px;
+}
+
+.tes-field span {
+  font-size: 13px;
+  color: #555;
+}
+
+.tes-field input,
+.tes-field select,
+.tes-field textarea {
+  padding: 6px 8px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.tes-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.tes-btn {
+  padding: 8px 14px;
+  border-radius: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tes-btn.save {
+  background: #0078d4;
+  color: white;
+}
+
+.tes-btn.cancel {
+  background: #eee;
 }

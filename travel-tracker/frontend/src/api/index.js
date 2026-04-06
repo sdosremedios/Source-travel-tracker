@@ -1,95 +1,72 @@
 //
-// TRIPS
+// Trips
 //
-
 export async function loadTrips() {
-  const res = await fetch("/api/trips");
-  if (!res.ok) throw new Error("Failed to load trips");
-  return await res.json();
+  return fetch("/api/trips").then(r => r.json());
 }
 
-export async function loadTripFull(tripId) {
-  const res = await fetch(`/api/trips/${tripId}/full`);
-  if (!res.ok) throw new Error("Failed to load full trip");
-  return await res.json(); // { trip, segments, tours }
+export async function loadFullTrip(id) {
+  return fetch(`/api/trips/${id}/full`).then(r => r.json());
 }
 
-export async function saveTrip(trip) {
-  const isNew = !trip.id;
-
-  const url = isNew ? "/api/trips" : `/api/trips/${trip.id}`;
-  const method = isNew ? "POST" : "PATCH";
-
-  const res = await fetch(url, {
-    method,
+export async function createTrip(data) {
+  return fetch("/api/trips", {
+    method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(trip)
-  });
+    body: JSON.stringify(data)
+  }).then(r => r.json());
+}
 
-  if (!res.ok) throw new Error("Failed to save trip");
-  return await res.json(); // { id }
+export async function updateTrip(id, data) {
+  return fetch(`/api/trips/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  }).then(r => r.json());
 }
 
 //
-// SEGMENTS
+// Segments
 //
-
 export async function loadSegmentsForTrip(tripId) {
-  const res = await fetch(`/api/trips/${tripId}/segments`);
-  if (!res.ok) throw new Error("Failed to load segments");
-  return await res.json(); // array
+  return fetch(`/api/segments/trip/${tripId}`).then(r => r.json());
 }
 
-export async function createSegment(segment) {
-  const res = await fetch("/api/segments", {
+export async function createSegment(data) {
+  return fetch("/api/segments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(segment)
-  });
-
-  if (!res.ok) throw new Error("Failed to create segment");
-  return await res.json(); // { id }
+    body: JSON.stringify(data)
+  }).then(r => r.json());
 }
 
-export async function updateSegment(id, segment) {
-  const res = await fetch(`/api/segments/${id}`, {
+export async function updateSegment(id, data) {
+  return fetch(`/api/segments/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(segment)
-  });
-
-  if (!res.ok) throw new Error("Failed to update segment");
-  return await res.json(); // { success: true }
+    body: JSON.stringify(data)
+  }).then(r => r.json());
 }
 
 //
-// TOURS
+// Tours
 //
-
 export async function loadToursForTrip(tripId) {
-  const res = await fetch(`/api/trips/${tripId}/tours`);
-  if (!res.ok) throw new Error("Failed to load tours");
-  return await res.json(); // array
+  return fetch(`/api/tours/trip/${tripId}`).then(r => r.json());
 }
 
-export async function createTour(tour) {
-  const res = await fetch("/api/tours", {
+export async function createTour(data) {
+  return fetch("/api/tours", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(tour)
-  });
-
-  if (!res.ok) throw new Error("Failed to create tour");
-  return await res.json(); // { id }
+    body: JSON.stringify(data)
+  }).then(r => r.json());
 }
 
-export async function updateTour(id, tour) {
-  const res = await fetch(`/api/tours/${id}`, {
+export async function updateTour(id, data) {
+  return fetch(`/api/tours/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(tour)
-  });
-
-  if (!res.ok) throw new Error("Failed to update tour");
-  return await res.json(); // { success: true }
+    body: JSON.stringify(data)
+  }).then(r => r.json());
 }

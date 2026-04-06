@@ -1,137 +1,75 @@
-import React, { useState, useMemo, useRef, useEffect } from "react";
-import { hydrateSegment, hydrateTour } from "../models/hydrate";
-import { tourIcon } from "../models/categories";
-import { modeIcon } from "../utils/icons";
+// src/components/UnifiedTimeline.jsx
+import React, { useState, useEffect } from "react";
+import TimelineRow from "./TimelineRow";
 import "../styles/UnifiedTimeline.css";
 
 export default function UnifiedTimeline({
-  segments = [],
-  tours = [],
-  filterCategory = null,
-  onSelectSegment,
-  onSelectTour
+  items,
+  onSelectItem,
+  onContextMenu,
+  onInlineEdit
 }) {
-  const containerRef = useRef(null);
+  const [index, setIndex] = useState(0);
 
-  // --- Hydrate + merge + filter --------------------------------------------
-  const items = useMemo(() => {
-    const segs = segments.map(s => ({ ...hydrateSegment(s), type: "segment" }));
-    const trs = tours
-      .filter(t => !filterCategory || t.category === filterCategory)
-      .map(t => ({ ...hydrateTour(t), type: "tour" }));
-
-    return [...segs, ...trs].sort((a, b) =>
-      a.timelineSortKey.localeCompare(b.timelineSortKey)
-    );
-  }, [segments, tours, filterCategory]);
-
-  console.log("Hydrated items:", items);
-
-  // --- Keyboard navigation --------------------------------------------------
-  const [cursor, setCursor] = useState(0);
-
-  function handleKeyDown(e) {
-    if (!items.length) return;
-
-    if (e.key === "ArrowDown") {
-      setCursor(c => Math.min(c + 1, items.length - 1));
-      e.preventDefault();
-    }
-
-    if (e.key === "ArrowUp") {
-      setCursor(c => Math.max(c - 1, 0));
-      e.preventDefault();
-    }
-
-    if (e.key === "Enter") {
-      const item = items[cursor];
-      if (item.type === "segment" && onSelectSegment) onSelectSegment(item);
-      if (item.type === "tour" && onSelectTour) onSelectTour(item);
-    }
-  }
-
-  // Auto-scroll cursor into view
+  //
+  // Keyboard navigation
+  //
   useEffect(() => {
-    const el = containerRef.current?.querySelector(
-      `.ut-row[data-index="${cursor}"]`
-    );
-    if (el) el.scrollIntoView({ block: "nearest" });
-  }, [cursor]);
+    function handleKeyDown(e) {
+      if (e.key === "ArrowDown") {
+        setIndex(i => Math.min(i + 1, items.length - 1));
+      } else if (e.key === "ArrowUp") {
+        setIndex(i => Math.max(i - 1, 0));
+      } else if (e.key === "Enter") {
+        const item = items[index];
+        if (item) onSelectItem?.(item);
+      }
+    }
 
-  // --- Group by month, then by day -----------------------------------------
-  const groups = {};
-  for (const item of items) {
-    const month = item.monthLabel;
-    const day = item.date;
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [items, index, onSelectItem]);
 
-    if (!groups[month]) groups[month] = {};
-    if (!groups[month][day]) groups[month][day] = [];
-
-    groups[month][day].push(item);
-  }
+  //
+  // Render timeline with month + day grouping
+  //
+  let lastMonth = null;
+  let lastDate = null;
 
   return (
-    <div
-      className="ut-container"
-      tabIndex={0}
-      onKeyDown={handleKeyDown}
-      ref={containerRef}
-    >
-      {Object.entries(groups).map(([month, days]) => (
-        <div key={month} className="ut-month-block">
-          {/* Sticky month header */}
-          <div className="ut-month-header">{month}</div>
+    <div className="timeline-container">
+      {items.map(item => {
+        const showMonth = item.monthLabel !== lastMonth;
+        const showDate = item.date !== lastDate;
 
-          {Object.entries(days).map(([day, dayItems]) => (
-            <div key={day} className="ut-day-block">
-              {/* Sticky day header */}
-              <div className="ut-day-header">{dayItems[0].weekday}</div>
+        lastMonth = item.monthLabel;
+        lastDate = item.date;
 
-              {dayItems.map((item, index) => {
-                const flatIndex = items.indexOf(item);
-                const isCursor = flatIndex === cursor;
+        return (
+          <React.Fragment key={`${item.kind}-${item.id}`}>
+            {showMonth && (
+              <div className="timeline-month-header">
+                {item.monthLabel}
+              </div>
+            )}
 
-                return (
-                  <div
-                    key={item.timelineSortKey}
-                    data-index={flatIndex}
-                    className={`ut-row ${isCursor ? "cursor" : ""}`}
-                    onClick={() =>
-                      item.type === "segment"
-                        ? onSelectSegment?.(item)
-                        : onSelectTour?.(item)
-                    }
-                    onContextMenu={(e) => {
-                      e.preventDefault();
-                      onContextMenu?.(e.clientX, e.clientY, item);
-                    }}
-                  >
-                    <div className="ut-icon">
-                      {item.type === "segment"
-                        ? modeIcon(item.mode)
-                        : tourIcon(item.category)}
-                    </div>
+            {showDate && (
+              <div className="timeline-day-divider">
+                {item.weekday} — {item.date}
+              </div>
+            )}
 
-                    <div className="ut-main">
-                      <div className="ut-title">
-                        {item.type === "segment"
-                          ? `${item.fromLocation} → ${item.toLocation}`
-                          : item.name}
-                      </div>
-
-                      <div className="ut-sub">
-                        <span className="ut-weekday">{item.weekday}</span>
-                        <span className="ut-dot">•</span>
-                        <span>{item.time || item.departureTime}</span>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          ))}
-        </div>
-      ))}
+            <TimelineRow
+              item={item}
+              onClick={() => onSelectItem(item)}
+              onContextMenu={e => onContextMenu?.(e, item)}
+              onInlineEdit={(field, value) =>
+                onInlineEdit?.(item, field, value)
+              }
+            />
+          </React.Fragment>
+        );
+      })}
     </div>
   );
 }

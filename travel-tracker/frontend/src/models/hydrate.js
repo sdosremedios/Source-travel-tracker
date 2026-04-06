@@ -7,33 +7,71 @@ import { weekday, formatMonthYear } from "../utils/date.js";
 export function hydrateTrip(trip) {
   return {
     ...trip,
+    type: trip.type || trip.tripType || "travel",
     ...hydrateDateFields(trip),
   };
 }
+
 export function hydrateSegment(seg) {
-  const date = seg.startDate;   // ← canonical from your schema
+  const start = new Date(`${seg.startDate}T${seg.departureTime}`);
+  const end = new Date(`${seg.endDate}T${seg.arrivalTime}`);
+
+  const ms = end - start;
+  const days = Math.floor(ms / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
 
   return {
     ...seg,
-    date,                       // ← UnifiedTimeline groups by this
+    kind: "segment",
     icon: modeIcon(seg.mode),
-    weekday: weekday(date),
-    monthLabel: formatMonthYear(date),
-    timelineSortKey: `${date}T${seg.departureTime || "00:00"}`
+
+    // sorting
+    timelineSortKey: `${seg.startDate}T${seg.departureTime}`,
+
+    // grouping
+    monthLabel: start.toLocaleString("default", { month: "long" }),
+    weekday: start.toLocaleString("default", { weekday: "short" }),
+    date: seg.startDate,
+
+    // display
+    startDateLabel: seg.startDate,
+    startTimeLabel: seg.departureTime,
+    endDateLabel: seg.endDate,
+    endTimeLabel: seg.arrivalTime,
+    durationLabel: `${days}d ${hours}h`,
   };
 }
 
 export function hydrateTour(tour) {
+  const start = new Date(`${tour.startDate}T${tour.startTime}`);
+  const end = new Date(`${tour.endDate}T${tour.endTime}`);
+
   return {
     ...tour,
-    ...hydrateDateFields(tour),
+    kind: "tour",
+    icon: tourIcon(tour.category),
+
+    // sorting
+    timelineSortKey: `${tour.startDate}T${tour.startTime}`,
+
+    // grouping
+    monthLabel: start.toLocaleString("default", { month: "long" }),
+    weekday: start.toLocaleString("default", { weekday: "short" }),
+    date: tour.startDate,
+
+    // display
+    startDateLabel: tour.startDate,
+    startTimeLabel: tour.startTime,
+    endDateLabel: tour.endDate,
+    endTimeLabel: tour.endTime,
+    durationLabel: "",
   };
 }
 
 export function buildUnifiedTimeline(segments, tours) {
   const items = [
-    ...segments.map(s => ({ ...s, type: "segment" })),
-    ...tours.map(t => ({ ...t, type: "tour" }))
+    ...segments.map(hydrateSegment),
+    ...tours.map(hydrateTour),
   ];
 
   return items.sort((a, b) =>

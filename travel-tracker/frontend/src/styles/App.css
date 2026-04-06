@@ -24,23 +24,3 @@
   font-family: inherit;
 }
 
-/* Now apply your layout */
-.app-root {
-  display: flex !important;  /* Cannot be overridden */
-  height: 100vh;
-  overflow: hidden;
-}
-
-.app-left {
-  width: 280px;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  background: #fafafa;
-  flex-shrink: 0;
-}
-
-.app-right {
-  flex: 1;
-  overflow-y: auto;
-  background: white;
-}

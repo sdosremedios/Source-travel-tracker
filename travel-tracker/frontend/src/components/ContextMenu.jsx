@@ -22,9 +22,11 @@ export default function ContextMenu({
     };
   }, [onClose]);
 
+  const safe = Array.isArray(actions) ? actions : [];
+
   return (
     <div className="cmenu" style={{ top: y, left: x }}>
-      {actions.map((a, i) => (
+      {safe.map((a, i) => (
         <div
           key={i}
           className="cmenu-item"

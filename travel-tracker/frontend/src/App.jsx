@@ -78,10 +78,47 @@ export default function App() {
     setActiveScreen("tourDetail");
   }
 
-  function openContextMenu(e, actions) {
+  function openContextMenu(e, item) {
     e.preventDefault();
-    setContextMenu({ x: e.clientX, y: e.clientY, actions });
+    setContextMenu({
+      x: e.clientX,
+      y: e.clientY,
+      actions: buildActionsFor(item)
+    });
   }
+
+  function handleSelectSegment(segment) {
+    setSelectedTripId(segment.tripId);
+    setActiveItem(segment);
+    setActiveScreen("segmentDetail");
+  }
+
+  function handleSelectTour(tour) {
+    setSelectedTripId(tour.tripId);
+    setActiveItem(tour);
+    setActiveScreen("tourDetail");
+  }
+
+  function buildActionsFor(item) {
+    if (!item) return [];
+
+    if (item.type === "segment") {
+      return [
+        { label: "Edit Segment", icon: "✏️", onClick: () => openSegmentEditor(selectedTripId, item) },
+        { label: "Delete Segment", icon: "🗑️", onClick: () => console.log("delete segment", item.id) }
+      ];
+    }
+
+    if (item.type === "tour") {
+      return [
+        { label: "Edit Tour", icon: "✏️", onClick: () => openTourEditor(item) },
+        { label: "Delete Tour", icon: "🗑️", onClick: () => console.log("delete tour", item.id) }
+      ];
+    }
+
+    return [];
+  }
+
 
   function closeContextMenu() {
     setContextMenu(null);
@@ -118,11 +155,11 @@ export default function App() {
             trip={activeTrip}
             segments={segments}
             tours={tours}
-            setActiveScreen={setActiveScreen}
-            setActiveItem={setActiveItem}
             onEditTrip={openTripEditor}
-            onSelectSegment={(tripId, segment) => openSegmentDetail(tripId, segment)}
-            onSelectTour={openTourDetail}
+            onSelectSegment={handleSelectSegment}
+            onSelectTour={handleSelectTour}
+            onAddSegment={() => openSegmentEditor(selectedTripId, null)}
+            onAddTour={() => openTourEditor(null)}
             onContextMenu={openContextMenu}
             onClose={() => setActiveScreen("tripList")}
           />
@@ -151,6 +188,7 @@ export default function App() {
         {activeScreen === "tourDetail" && activeItem && (
           <TourDetailScreen
             tour={activeItem}
+            segments={segments}
             onEdit={() => openTourEditor(activeItem)}
             onClose={closeOverlay}
           />
@@ -178,7 +216,8 @@ export default function App() {
               if (newTripId) setSelectedTripId(newTripId);
               setActiveScreen("tripDetail");
             }}
-          />)}
+          />
+        )}
       </div>
 
       {/* Command Palette */}

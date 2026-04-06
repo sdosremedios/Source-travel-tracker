@@ -2,9 +2,10 @@
 // Trip icons based on trip.type
 //
 export function tripIcon(trip) {
-  if (!trip || !trip.type) return "🧳";
+  const raw = trip.type || trip.tripType || "";
+  const type = raw.trim().toLowerCase();
 
-  switch (trip.type.toLowerCase()) {
+  switch (type) {
     case "travel":
       return "✈️";
     case "work":
@@ -46,16 +47,16 @@ export function modeIcon(mode) {
 // Tour category icons
 //
 export function tourIcon(category) {
-  switch (category?.toLowerCase()) {
-    case "walking":
-      return "🚶";
-    case "museum":
-      return "🏛️";
-    case "food":
-      return "🍽️";
-    case "nature":
-      return "🌿";
-    default:
-      return "📍";
+  switch (category) {
+    case "walking": return "🚶‍♂️";
+    case "museum": return "🏛️";
+    case "food": return "🍽️";
+    case "nature": return "🌲";
+    case "boat": return "⛵";
+    case "adventure": return "🚴‍♂️";
+    case "transport": return "🚌";
+    case "photo": return "📷";
+    case "expedition": return "🧭";
+    default: return "📍";
   }
 }

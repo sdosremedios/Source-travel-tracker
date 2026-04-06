@@ -1,0 +1,61 @@
+.timeline-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+}
+
+.timeline-row:hover {
+  background: #fafafa;
+}
+
+.timeline-row-icon {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  opacity: 0.8;
+}
+
+.timeline-row-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.timeline-row-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+  text-transform: capitalize;
+}
+
+.timeline-row-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12px;
+  color: #666;
+}
+
+.timeline-row-locations,
+.timeline-row-times {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.timeline-row-duration {
+  font-size: 11px;
+  color: #999;
+}
+
+.timeline-row-meta .arrow {
+  opacity: 0.5;
+}

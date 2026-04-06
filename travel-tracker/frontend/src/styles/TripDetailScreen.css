@@ -1,55 +1,87 @@
-.td-pane {
-  padding: 20px;
+.trip-detail-screen {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  box-sizing: border-box;
 }
 
+/* Header */
 .td-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.td-title {
   font-size: 22px;
-  margin: 0;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
-.td-header-buttons {
+/* Action bar */
+.td-actions {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-bottom: 24px;
 }
 
 .td-btn {
-  padding: 6px 12px;
-  font-size: 14px;
+  padding: 8px 14px;
+  background: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 6px;
   cursor: pointer;
 }
 
-.td-btn.add {
-  background: #0078d4;
-  color: white;
+.td-btn:hover {
+  background: #e6e6e6;
 }
 
+/* Timeline container */
+.td-timeline {
+  flex: 1;
+  overflow-y: auto;
+}
+/* Trip dates block */
 .td-dates {
+  font-size: 14px;
+  font-weight: bold;
+  color: #555;
+  margin-bottom: 12px;
+  line-height: 1.4;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Optional: subtle calendar icon */
+.td-dates::before {
+  content: "📅";
   font-size: 14px;
   opacity: 0.7;
 }
 
+/* Notes block */
 .td-notes {
   font-size: 14px;
-  opacity: 0.8;
-  padding: 8px 0;
+  color: #444;
+  background: #f7f7f7;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  line-height: 1.5;
 }
 
-.td-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+/* Optional: subtle label above notes */
+.td-notes-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.td-subtitle {
-  margin-top: 20px;
-  font-size: 18px;
+.td-trip-icon {
+  margin-right: 8px;
+  font-size: 2rem;
 }

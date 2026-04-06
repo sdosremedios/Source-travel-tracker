@@ -78,4 +78,5 @@ input, textarea, button {
   flex: 1;
   overflow-y: auto;
   background: white;
+  padding: 0 10px;
 }

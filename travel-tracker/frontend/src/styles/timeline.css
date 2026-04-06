@@ -1,36 +1,72 @@
-.timeline {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 24px;
+/* Container */
+.timeline-container {
+  padding: 8px 0;
 }
 
+/* Sticky Month Header */
+.timeline-month-header {
+  position: sticky;
+  top: 0;
+  background: var(--pane-bg);
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-bottom: 1px solid var(--border);
+  z-index: 5;
+}
+
+/* Day Divider */
+.timeline-day-divider {
+  margin-top: 16px;
+  padding: 4px 12px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-left: 2px solid var(--border);
+}
+
+/* Timeline Row */
 .timeline-row {
   display: flex;
-  align-items: center;
   gap: 12px;
-  padding: 6px 0;
-  font-size: 14px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  background: var(--row-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.timeline-icon {
-  font-size: 18px;
-  width: 24px;
+.timeline-row:hover {
+  background: var(--row-hover-bg);
+}
+
+.timeline-row.active {
+  background: var(--row-active-bg);
+  outline: 1px solid var(--accent);
+}
+
+/* Icon */
+.timeline-row-icon {
+  font-size: 1.3rem;
+  width: 28px;
   text-align: center;
 }
 
-.timeline-date {
-  width: 90px;
-  color: #666;
-  font-size: 13px;
+/* Content */
+.timeline-row-title {
+  font-weight: 500;
 }
 
-.timeline-route {
-  flex: 1;
-  font-size: 14px;
+.timeline-row-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
 }
 
-.timeline-time {
-  color: #666;
-  font-size: 13px;
+/* Inline Editing */
+.timeline-edit-input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
 }
