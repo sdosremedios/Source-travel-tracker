@@ -36,40 +36,6 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
     return "";
   }
 
-  // SEGMENTS
-  segments.forEach(seg => {
-    const start = parseYMD(seg.startDate);
-    const end = parseYMD(seg.endDate || seg.startDate);
-    if (!start || !end) return;
-
-    items.push({
-      id: seg.id,
-      kind: "segment",
-      tripId: seg.tripId,
-
-      rawDate: seg.startDate,
-      date: start.toLocaleDateString(),
-      weekday: start.toLocaleString("default", { weekday: "short" }),
-      monthLabel: start.toLocaleString("default", { month: "long", year: "numeric" }),
-
-      from: seg.fromLocation,
-      to: seg.toLocation,
-      mode: seg.mode,
-      notes: seg.notes,
-
-      startDate: seg.startDate,
-      endDate: seg.endDate,
-      finishDate: end.toLocaleDateString(),
-
-      // ⭐ time mapping
-      startTime: seg.departureTime,
-      endTime: seg.arrivalTime,
-
-      durationLabel: computeDuration(start, end),
-      arrivalOffset: computeArrivalOffset(start, end)
-    });
-  });
-
   // TOURS
   tours.forEach(tour => {
     const start = parseYMD(tour.startDate);
@@ -96,6 +62,41 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
       startTime: tour.startTime,
       endTime: tour.endTime,
       finishDate: end.toLocaleDateString(),
+
+      durationLabel: computeDuration(start, end),
+      arrivalOffset: computeArrivalOffset(start, end)
+    });
+  });
+
+  // SEGMENTS
+  segments.forEach(seg => {
+    const start = parseYMD(seg.startDate);
+    const end = parseYMD(seg.endDate || seg.startDate);
+    if (!start || !end) return;
+
+    items.push({
+      id: seg.id,
+      kind: "segment",
+      tripId: seg.tripId,
+
+      rawDate: seg.startDate,
+      date: start.toLocaleDateString(),
+      weekday: start.toLocaleString("default", { weekday: "short" }),
+      monthLabel: start.toLocaleString("default", { month: "long", year: "numeric" }),
+
+      from: seg.fromLocation,
+      to: seg.toLocation,
+      mode: seg.mode,
+      notes: seg.notes,
+
+      startDate: seg.startDate,
+      endDate: seg.endDate,
+      finishDate: end.toLocaleDateString(),
+      carrier: seg.carrier,
+
+      // ⭐ time mapping
+      startTime: seg.departureTime,
+      endTime: seg.arrivalTime,
 
       durationLabel: computeDuration(start, end),
       arrivalOffset: computeArrivalOffset(start, end)

@@ -38,7 +38,7 @@ export default function TimelineRow({
               {item.from} → {item.to}
             </div>
             <div className="timeline-row-subtitle">
-              {item.mode}
+              {item.mode} - {item.carrier || "No carrier" }
             </div>
           </>
         )}
