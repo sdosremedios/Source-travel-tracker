@@ -1,10 +1,13 @@
 import React from "react";
 import { TOUR_CATEGORIES, tourIcon } from "../models/categories";
+import { formatDate, formatTime } from "../utils/dateHelpers";
 import "../styles/TourDetailScreen.css";
+
 
 export default function TourDetailScreen({ tour, onEdit, onClose }) {
   if (!tour) return null;
 
+  console.log("Rendering TourDetailScreen with tour:", tour);
   return (
     <div className="tds-container">
       <div className="tds-header">
@@ -13,8 +16,8 @@ export default function TourDetailScreen({ tour, onEdit, onClose }) {
       </div>
 
       <div className="tds-meta">
-        <div><strong>Date:</strong> {tour.date}</div>
-        <div><strong>Time:</strong> {tour.time}</div>
+        <div><strong>Date:</strong> {formatDate(tour.startDate)}</div>
+        <div><strong>Time:</strong> {formatTime(tour.startTime)}</div>
         <div><strong>Location:</strong> {tour.location}</div>
         <div>
           <strong>Category:</strong>

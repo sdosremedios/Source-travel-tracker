@@ -18,11 +18,7 @@ import {
 export default function App() {
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
-
-  // Selected trip ID (from left pane)
   const [selectedTripId, setSelectedTripId] = useState(null);
-
-  // Active item (segment or tour object)
   const [activeItem, setActiveItem] = useState(null);
 
   // Data
@@ -47,37 +43,61 @@ export default function App() {
     loadToursForTrip(selectedTripId).then(data => setTours(data || []));
   }, [selectedTripId]);
 
-  // Compute activeTrip from selectedTripId
+  // Active trip
   const activeTrip = trips.find(t => t.id === selectedTripId) || null;
 
-  // Helpers
-  function openTripEditor(id = null) {
-    setActiveItem(id ? trips.find(t => t.id === id) : null);
-    setActiveScreen("tripEditor");
+  // ------------------------------------------------------------
+  // Unified Hydration Lookup
+  // ------------------------------------------------------------
+  function hydrateItem(item) {
+    if (!item) return null;
+
+    if (item.kind === "segment") {
+      return segments.find(s => s.id === item.id) || item;
+    }
+    if (item.kind === "tour") {
+      return tours.find(t => t.id === item.id) || item;
+    }
+    return item;
   }
 
-  function openSegmentEditor(tripId, segment) {
-    setSelectedTripId(tripId);   // ← ensures tripId is always defined
-    setActiveItem(segment);
-    setActiveScreen("segmentEditor");
+  // ------------------------------------------------------------
+  // Unified Navigation: Detail
+  // ------------------------------------------------------------
+  function openItemDetail(item) {
+    const hydrated = hydrateItem(item);
+    if (!hydrated) return;
+
+    setSelectedTripId(hydrated.tripId);
+    setActiveItem(hydrated);
+
+    if (hydrated.kind === "segment") {
+      setActiveScreen("segmentDetail");
+    } else if (hydrated.kind === "tour") {
+      setActiveScreen("tourDetail");
+    }
   }
 
-  function openSegmentDetail(tripId, segment) {
-    setSelectedTripId(tripId);   // ← THIS is the missing piece
-    setActiveItem(segment);
-    setActiveScreen("segmentDetail");
+  // ------------------------------------------------------------
+  // Unified Navigation: Editor
+  // ------------------------------------------------------------
+  function openItemEditor(item) {
+    const hydrated = hydrateItem(item);
+    if (!hydrated) return;
+
+    setSelectedTripId(hydrated.tripId);
+    setActiveItem(hydrated);
+
+    if (hydrated.kind === "segment") {
+      setActiveScreen("segmentEditor");
+    } else if (hydrated.kind === "tour") {
+      setActiveScreen("tourEditor");
+    }
   }
 
-  function openTourEditor(tour) {
-    setActiveItem(tour);
-    setActiveScreen("tourEditor");
-  }
-
-  function openTourDetail(tour) {
-    setActiveItem(tour);
-    setActiveScreen("tourDetail");
-  }
-
+  // ------------------------------------------------------------
+  // Context Menu
+  // ------------------------------------------------------------
   function openContextMenu(e, item) {
     e.preventDefault();
     setContextMenu({
@@ -87,31 +107,19 @@ export default function App() {
     });
   }
 
-  function handleSelectSegment(segment) {
-    setSelectedTripId(segment.tripId);
-    setActiveItem(segment);
-    setActiveScreen("segmentDetail");
-  }
-
-  function handleSelectTour(tour) {
-    setSelectedTripId(tour.tripId);
-    setActiveItem(tour);
-    setActiveScreen("tourDetail");
-  }
-
   function buildActionsFor(item) {
     if (!item) return [];
 
-    if (item.type === "segment") {
+    if (item.kind === "segment") {
       return [
-        { label: "Edit Segment", icon: "✏️", onClick: () => openSegmentEditor(selectedTripId, item) },
+        { label: "Edit Segment", icon: "✏️", onClick: () => openItemEditor(item) },
         { label: "Delete Segment", icon: "🗑️", onClick: () => console.log("delete segment", item.id) }
       ];
     }
 
-    if (item.type === "tour") {
+    if (item.kind === "tour") {
       return [
-        { label: "Edit Tour", icon: "✏️", onClick: () => openTourEditor(item) },
+        { label: "Edit Tour", icon: "✏️", onClick: () => openItemEditor(item) },
         { label: "Delete Tour", icon: "🗑️", onClick: () => console.log("delete tour", item.id) }
       ];
     }
@@ -119,16 +127,39 @@ export default function App() {
     return [];
   }
 
-
   function closeContextMenu() {
     setContextMenu(null);
   }
 
+  // ------------------------------------------------------------
+  // Inline Edit
+  // ------------------------------------------------------------
+  async function handleInlineEdit(item, field, value) {
+    const hydrated = hydrateItem(item);
+    if (!hydrated) return;
+
+    if (hydrated.kind === "segment") {
+      const refreshed = await loadSegmentsForTrip(hydrated.tripId);
+      setSegments(refreshed);
+    }
+
+    if (hydrated.kind === "tour") {
+      const refreshed = await loadToursForTrip(hydrated.tripId);
+      setTours(refreshed);
+    }
+  }
+
+  // ------------------------------------------------------------
+  // Close overlay
+  // ------------------------------------------------------------
   function closeOverlay() {
     setActiveItem(null);
     setActiveScreen("tripDetail");
   }
 
+  // ------------------------------------------------------------
+  // Render
+  // ------------------------------------------------------------
   return (
     <div className="app-root">
       {/* Left Pane */}
@@ -140,7 +171,7 @@ export default function App() {
             setSelectedTripId(id);
             setActiveScreen("tripDetail");
           }}
-          onNewTrip={() => openTripEditor(null)}
+          onNewTrip={() => setActiveScreen("tripEditor")}
         />
       </div>
 
@@ -155,20 +186,21 @@ export default function App() {
             trip={activeTrip}
             segments={segments}
             tours={tours}
-            onEditTrip={openTripEditor}
-            onSelectSegment={handleSelectSegment}
-            onSelectTour={handleSelectTour}
-            onAddSegment={() => openSegmentEditor(selectedTripId, null)}
-            onAddTour={() => openTourEditor(null)}
+            onSelectSegment={openItemDetail}
+            onSelectTour={openItemDetail}
+            onClose={closeOverlay}
+            onEditTrip={() => setActiveScreen("tripEditor")}
+            onAddSegment={() => openItemEditor({ kind: "segment", tripId: selectedTripId })}
+            onAddTour={() => openItemEditor({ kind: "tour", tripId: selectedTripId })}
             onContextMenu={openContextMenu}
-            onClose={() => setActiveScreen("tripList")}
+            onInlineEdit={handleInlineEdit}
           />
         )}
 
         {activeScreen === "segmentDetail" && activeItem && (
           <SegmentDetailScreen
             segment={activeItem}
-            onEdit={() => openSegmentEditor(selectedTripId, activeItem)}
+            onEdit={() => openItemEditor(activeItem)}
             onClose={closeOverlay}
           />
         )}
@@ -189,7 +221,8 @@ export default function App() {
           <TourDetailScreen
             tour={activeItem}
             segments={segments}
-            onEdit={() => openTourEditor(activeItem)}
+            onEdit={() => openItemEditor(activeItem)}
+            onSelectSegment={openItemDetail}
             onClose={closeOverlay}
           />
         )}
@@ -224,7 +257,7 @@ export default function App() {
       <CommandPalette
         isOpen={isPaletteOpen}
         onClose={() => setPaletteOpen(false)}
-        onCommand={() => { }}
+        onCommand={() => {}}
         trips={trips}
         segments={segments}
         tours={tours}
@@ -238,7 +271,7 @@ export default function App() {
           x={contextMenu.x}
           y={contextMenu.y}
           actions={contextMenu.actions}
-          onAction={() => { }}
+          onAction={() => {}}
           onClose={closeContextMenu}
         />
       )}

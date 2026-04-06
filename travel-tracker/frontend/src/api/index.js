@@ -51,8 +51,14 @@ export async function updateSegment(id, data) {
 //
 // Tours
 //
+import { hydrateTour } from "../models/hydrate";
+
 export async function loadToursForTrip(tripId) {
-  return fetch(`/api/tours/trip/${tripId}`).then(r => r.json());
+  console.log("loadToursForTrip CALLED with tripId:", tripId);
+  const res = await fetch(`/api/tours/trip/${tripId}`);
+  const data = await res.json();
+  console.log("RAW tours from backend:", data);
+  return data.map(hydrateTour);
 }
 
 export async function createTour(data) {
@@ -69,4 +75,9 @@ export async function updateTour(id, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   }).then(r => r.json());
+}
+
+export async function refreshTours() {
+  const tours = await loadToursForTrip(selectedTripId);
+  setTours(tours);
 }

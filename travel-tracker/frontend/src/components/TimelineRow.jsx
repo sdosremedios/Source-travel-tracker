@@ -12,7 +12,8 @@ export default function TimelineRow({
   const isSegment = item.kind === "segment";
   const isTour = item.kind === "tour";
 
-  console.log("ROW ITEM", item);
+  //console.log("ROW ITEM", item);
+  console.log("ROW CLICK", item);
 
   return (
 
@@ -38,7 +39,7 @@ export default function TimelineRow({
               {item.from} → {item.to}
             </div>
             <div className="timeline-row-subtitle">
-              {item.mode} - {item.carrier || "No carrier" }
+              {item.mode} - {item.carrier || "No carrier"}
             </div>
           </>
         )}
@@ -51,9 +52,17 @@ export default function TimelineRow({
             <div className="timeline-row-subtitle">
               {item.category}
             </div>
+            <div className="timeline-row-location">
+              {item.location}
+            </div>
           </>
         )}
+
       </div>
+      <div className="timeline-row-note">
+        {item.notes}
+      </div>
+
     </div>
   );
 }

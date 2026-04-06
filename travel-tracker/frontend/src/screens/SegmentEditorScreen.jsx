@@ -112,28 +112,30 @@ export default function SegmentEditorScreen({
           <label>Departure Time</label>
           <input
             type="time"
+            className="se-input"
             value={local.departureTime}
             onChange={e => update("departureTime", e.target.value)}
           />
         </div>
+      </div>
 
-        <div className="se-row">
-          <div className="se-field">
-            <label>Destination</label>
-            <input
-              value={local.toLocation}
-              onChange={e => update("toLocation", e.target.value)}
-            />
-          </div>
+      <div className="se-row">
+        <div className="se-field">
+          <label>Destination</label>
+          <input
+            value={local.toLocation}
+            onChange={e => update("toLocation", e.target.value)}
+          />
+        </div>
 
-          <div className="se-field">
-            <label>Arrival Time</label>
-            <input
-              type="time"
-              value={local.arrivalTime}
-              onChange={e => update("arrivalTime", e.target.value)}
-            />
-          </div>
+        <div className="se-field">
+          <label>Arrival Time</label>
+          <input
+            type="time"
+            className="se-input"
+            value={local.arrivalTime}
+            onChange={e => update("arrivalTime", e.target.value)}
+          />
         </div>
       </div>
 

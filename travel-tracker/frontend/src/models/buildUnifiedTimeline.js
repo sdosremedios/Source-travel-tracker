@@ -16,6 +16,10 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
     return new Date(y, m - 1, d);
   }
 
+  function capitalizeEachWord(text) {
+    return text.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  }
+
   //
   // Shared duration + offset helpers
   //
@@ -55,6 +59,7 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
       name: tour.name,
       category: tour.category,
       notes: tour.notes,
+      location: tour.location,
 
       // ⬇️ add these
       startDate: tour.startDate,
@@ -74,6 +79,9 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
     const end = parseYMD(seg.endDate || seg.startDate);
     if (!start || !end) return;
 
+    const capMode = capitalizeEachWord(seg.mode);
+    const capCarrier = capitalizeEachWord(seg.carrier);
+
     items.push({
       id: seg.id,
       kind: "segment",
@@ -86,13 +94,13 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
 
       from: seg.fromLocation,
       to: seg.toLocation,
-      mode: seg.mode,
+      mode: capMode,
       notes: seg.notes,
 
       startDate: seg.startDate,
       endDate: seg.endDate,
       finishDate: end.toLocaleDateString(),
-      carrier: seg.carrier,
+      carrier: capCarrier,
 
       // ⭐ time mapping
       startTime: seg.departureTime,

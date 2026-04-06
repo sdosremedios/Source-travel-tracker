@@ -1,25 +1,27 @@
 import React from "react";
 import { modeIcon } from "../utils/icons";
+import { formatDateTime } from "../utils/dateHelpers";
+
 import "../styles/SegmentDetailScreen.css";
 
 export default function SegmentDetailScreen({ segment, onEdit, onClose }) {
   if (!segment) return null;
-
+console.log("SegmentDetailScreen received segment:", segment);
   return (
     <div className="sd-pane">
       {/* Header -------------------------------------------------------------- */}
       <div className="sd-header">
         <div className="sd-icon">{modeIcon(segment.mode)}</div>
         <h1 className="sd-title">
-          {segment.fromLocation} → {segment.toLocation}
+          {segment.from} → {segment.to}
         </h1>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}
       <div className="sd-meta">
         <div><strong>Date:</strong> {segment.date}</div>
-        <div><strong>Departure:</strong> {segment.departureTime}</div>
-        <div><strong>Arrival:</strong> {segment.arrivalTime}</div>
+        <div><strong>{segment.from}</strong> {segment.date} {segment.startTime}</div>
+        <div><strong>{segment.to}</strong> {segment.finishDate} {segment.endTime}</div>
         <div><strong>Mode:</strong> {segment.mode}</div>
         {segment.carrierId && (
           <div><strong>Carrier ID:</strong> {segment.carrierId}</div>

@@ -50,6 +50,7 @@ export function hydrateTour(tour) {
     ...tour,
     kind: "tour",
     icon: tourIcon(tour.category),
+    location: tour.location,
 
     // sorting
     timelineSortKey: `${tour.startDate}T${tour.startTime}`,

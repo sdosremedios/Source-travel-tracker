@@ -13,20 +13,22 @@
 }
 
 .timeline-row-icon {
-  width: 28px;
+  width: 32px;
   height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
   opacity: 0.8;
+  flex-shrink:  0;
 }
 
 .timeline-row-content {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
+  gap: 2px;
+  flex: 0 0 auto;   /* ⭐ DO NOT GROW */
+  width: 25%;
 }
 
 .timeline-row-title {
@@ -60,8 +62,17 @@
   opacity: 0.5;
 }
 .timeline-row-subtitle {
-  text-transform: capitalize;
   font-size: 16px;
   font-weight: bold;
   color: #555;
+  word-wrap: normal;
+}
+
+.timeline-row-note {
+  flex: 1;                /* ⭐ THIS COLUMN EXPANDS */
+  text-align: left;      /* left-align the note */
+  font-size: 16px;
+  color: #777;
+  font-style: italic;
+  margin-top: 2px;        /* align visually with date */
 }

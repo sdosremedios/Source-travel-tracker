@@ -21,13 +21,13 @@ export default function TripDetailScreen({
 
   const timelineItems = buildUnifiedTimeline(segments, tours);
 
-  function handleSelectItem(item) {
-    if (item.type === "segment") {
-      onSelectSegment(item);
-    } else if (item.type === "tour") {
-      onSelectTour(item);
-    }
+function handleSelectItem(item) {
+  if (item.kind === "segment") {
+    onSelectSegment(item);
+  } else if (item.kind === "tour") {
+    onSelectTour(item);
   }
+}
 
   return (
     <div className="trip-detail-screen">
