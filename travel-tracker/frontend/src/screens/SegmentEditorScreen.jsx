@@ -68,35 +68,39 @@ export default function SegmentEditorScreen({
     <div className="se-pane">
       <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
 
-      <div className="se-field">
-        <label>Start Date</label>
-        <input
-          type="date"
-          value={local.startDate}
-          onChange={e => update("startDate", e.target.value)}
-        />
+      <div className="se-row">
+        <div className="se-field">
+          <label>Mode</label>
+          <select
+            value={local.mode}
+            onChange={e => update("mode", e.target.value)}
+          >
+            <option value="plane">Plane</option>
+            <option value="train">Train</option>
+            <option value="car">Car</option>
+            <option value="bus">Bus</option>
+          </select>
+        </div>
       </div>
 
-      <div className="se-field">
-        <label>End Date</label>
-        <input
-          type="date"
-          value={local.endDate}
-          onChange={e => update("endDate", e.target.value)}
-        />
-      </div>
+      <div className="se-row">
+        <div className="se-field">
+          <label>Start Date</label>
+          <input
+            type="date"
+            value={local.startDate}
+            onChange={e => update("startDate", e.target.value)}
+          />
+        </div>
 
-      <div className="se-field">
-        <label>Mode</label>
-        <select
-          value={local.mode}
-          onChange={e => update("mode", e.target.value)}
-        >
-          <option value="plane">Plane</option>
-          <option value="train">Train</option>
-          <option value="car">Car</option>
-          <option value="bus">Bus</option>
-        </select>
+        <div className="se-field">
+          <label>End Date</label>
+          <input
+            type="date"
+            value={local.endDate}
+            onChange={e => update("endDate", e.target.value)}
+          />
+        </div>
       </div>
 
       <div className="se-row">

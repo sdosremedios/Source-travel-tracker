@@ -39,8 +39,15 @@ export default function App() {
   useEffect(() => {
     if (!selectedTripId) return;
 
-    loadSegmentsForTrip(selectedTripId).then(data => setSegments(data || []));
-    loadToursForTrip(selectedTripId).then(data => setTours(data || []));
+    loadSegmentsForTrip(selectedTripId).then(data => {
+      const hydrated = data.map(seg => hydrateItem(seg));
+      setSegments(hydrated);
+    });
+
+    loadToursForTrip(selectedTripId).then(data => {
+      const hydrated = data.map(t => hydrateItem(t));
+      setTours(hydrated);
+    });
   }, [selectedTripId]);
 
   // Active trip
@@ -52,21 +59,30 @@ export default function App() {
   function hydrateItem(item) {
     if (!item) return null;
 
-    if (item.kind === "segment") {
-      return segments.find(s => s.id === item.id) || item;
+    const id = Number(item.id);  // normalize
+    const kind = item.kind || item.type;
+
+    if (kind === "segment") {
+      const hydrated = segments.find(s => Number(s.id) === id);
+      return hydrated ? { ...hydrated, kind: "segment" } : { ...item, kind: "segment" };
     }
-    if (item.kind === "tour") {
-      return tours.find(t => t.id === item.id) || item;
+
+    if (kind === "tour") {
+      const hydrated = tours.find(t => Number(t.id) === id);
+      return hydrated ? { ...hydrated, kind: "tour" } : { ...item, kind: "tour" };
     }
-    return item;
+
+    return { ...item, kind };
   }
 
   // ------------------------------------------------------------
   // Unified Navigation: Detail
   // ------------------------------------------------------------
   function openItemDetail(item) {
+    console.log("Hydrating item:", item);
     const hydrated = hydrateItem(item);
     if (!hydrated) return;
+    console.log("Opening hydrated detail for item:", hydrated);
 
     setSelectedTripId(hydrated.tripId);
     setActiveItem(hydrated);
@@ -257,7 +273,7 @@ export default function App() {
       <CommandPalette
         isOpen={isPaletteOpen}
         onClose={() => setPaletteOpen(false)}
-        onCommand={() => {}}
+        onCommand={() => { }}
         trips={trips}
         segments={segments}
         tours={tours}
@@ -271,7 +287,7 @@ export default function App() {
           x={contextMenu.x}
           y={contextMenu.y}
           actions={contextMenu.actions}
-          onAction={() => {}}
+          onAction={() => { }}
           onClose={closeContextMenu}
         />
       )}

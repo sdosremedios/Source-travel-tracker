@@ -43,6 +43,11 @@
   flex: 1;
 }
 
+.se-field textarea {
+  height: 180px;
+  min-height: 180px;
+  resize: vertical;
+}
 .se-label {
   font-size: 12px;
   font-weight: 500;
@@ -62,7 +67,8 @@
 }
 
 .se-textarea {
-  min-height: 80px;
+  height: 180px;
+  min-height: 180px;
   resize: vertical;
 }
 
