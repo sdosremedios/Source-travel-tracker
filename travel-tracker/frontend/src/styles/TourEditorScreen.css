@@ -1,77 +1,125 @@
-/* TourEditorScreen.css */
+/* ---------------------------------------------
+   TOUR EDITOR — CALM, DESKTOP‑NATIVE LAYOUT
+   --------------------------------------------- */
 
-.tes-container {
-  padding: 24px;
+.editor {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 20px;
+  padding: 24px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fafafa;
+  font-family: system-ui, sans-serif;
 }
 
-.tes-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.tes-icon {
-  font-size: 28px;
-}
-
-.tes-title {
+.editor-title {
   font-size: 20px;
   font-weight: 600;
+  margin-bottom: 4px;
+  color: #222;
 }
 
-.tes-form {
+/* ---------------------------------------------
+   ROWS & LABELS
+   --------------------------------------------- */
+
+.editor-row {
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 6px;
 }
 
-.tes-row {
-  display: flex;
-  gap: 16px;
-}
-
-.tes-field {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  gap: 4px;
-}
-
-.tes-field span {
+.editor-label {
   font-size: 13px;
-  color: #555;
+  font-weight: 500;
+  color: #444;
 }
 
-.tes-field input,
-.tes-field select,
-.tes-field textarea {
-  padding: 6px 8px;
+/* ---------------------------------------------
+   INPUTS
+   --------------------------------------------- */
+
+.editor-input {
+  padding: 8px 10px;
   font-size: 14px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
+  background: white;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-.tes-buttons {
+.editor-input:focus {
+  outline: none;
+  border-color: #0078d4;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+.editor-textarea {
+  padding: 10px;
+  font-size: 14px;
+  min-height: 120px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  background: white;
+}
+
+.editor-textarea:focus {
+  outline: none;
+  border-color: #0078d4;
+  box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.2);
+}
+
+/* ---------------------------------------------
+   INLINE DATE/TIME ROWS
+   --------------------------------------------- */
+
+.editor-inline {
+  display: flex;
+  gap: 10px;
+}
+
+.editor-inline .editor-input {
+  flex: 1;
+}
+
+
+/* ---------------------------------------------
+   BUTTON BAR
+   --------------------------------------------- */
+
+.editor-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 12px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.tes-btn {
-  padding: 8px 14px;
-  border-radius: 4px;
+.editor-save,
+.editor-cancel {
+  padding: 8px 16px;
   font-size: 14px;
+  border-radius: 6px;
   cursor: pointer;
+  border: none;
 }
 
-.tes-btn.save {
+.editor-save {
   background: #0078d4;
   color: white;
 }
 
-.tes-btn.cancel {
-  background: #eee;
+.editor-save:hover {
+  background: #006cbe;
+}
+
+.editor-cancel {
+  background: #e0e0e0;
+  color: #333;
+}
+
+.editor-cancel:hover {
+  background: #d5d5d5;
 }

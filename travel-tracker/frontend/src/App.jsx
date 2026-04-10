@@ -9,13 +9,22 @@ import TourEditorScreen from "./screens/TourEditorScreen";
 import CommandPalette from "./components/CommandPalette";
 import ContextMenu from "./components/ContextMenu";
 
+import { formatDate, formatTime } from "./utils/dateHelpers";
+
+
 import {
   loadTrips,
   loadSegmentsForTrip,
-  loadToursForTrip
-} from "./api";
+  loadToursForTrip,
+  updateTrip,
+  createTrip,
+  createTour,
+  updateTour,
+  updateSegment
+} from "./api/index";
 
 export default function App() {
+  const appVersion = "0.1.0";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -35,18 +44,114 @@ export default function App() {
     loadTrips().then(setTrips);
   }, []);
 
+
+  async function refreshTours() {
+    const tours = await loadToursForTrip(selectedTripId);
+    setTours(tours);
+  }
+
+  async function handleSaveTrip(trip) {
+    console.log("handleSaveTrip CALLED with trip:", trip);
+    let saved;
+
+    console.log("Updating existing trip with:", trip.tripId, trip);
+    saved = await updateTrip(trip.tripId, trip);
+
+    const updatedTrips = await loadTrips();
+    setTrips(updatedTrips);
+
+    setSelectedTripId(saved.id);
+    setActiveScreen("tripDetail");
+  }
+
+  async function handleSaveTour(updated) {
+    console.log("handleSaveTour START");
+
+    try {
+      if (updated.id) {
+        console.log("Calling updateTour");
+        await updateTour(updated.id, updated);
+      } else {
+        console.log("Calling createTour");
+        await createTour(updated);
+      }
+
+      console.log("Calling refreshTours");
+      await refreshTours();
+
+      console.log("Setting screen to tripDetail");
+      setActiveScreen("tripDetail");
+    } catch (err) {
+      console.error("handleSaveTour ERROR:", err);
+    }
+  }
+
+  async function reloadTours() {
+    const data = await fetchTours();
+    console.log("Tours after reload:", data);
+    setTours(data);
+  }
+
+  function hydrateItem(item) {
+    if (!item) return null;
+    console.log("HydrateItem receives item:", item);
+
+    const id = Number(item.id);
+    const kind = item.kind || item.type;
+
+    const addFormattedFields = (obj) => {
+      const startDate = obj.startDate;
+      const endDate = obj.endDate || obj.startDate;
+      const startTime = obj.startTime || obj.departureTime;
+      const endTime = obj.endTime || obj.arrivalTime;
+
+      return {
+        ...obj,
+        startDateLabel: formatDate(startDate),
+        endDateLabel: formatDate(endDate),
+        startTimeLabel: formatTime(startTime),
+        endTimeLabel: formatTime(endTime),
+        startDateTimeLabel: `${formatDate(startDate)} ${formatTime(startTime)}`,
+        endDateTimeLabel: `${formatDate(endDate)} ${formatTime(endTime)}`
+      };
+    };
+
+    // SEGMENT
+    if (kind === "segment") {
+      const hydrated = segments.find(s => Number(s.id) === id);
+      const base = hydrated
+        ? { ...hydrated, kind: "segment" }   // ⭐ force kind
+        : { ...item, kind: "segment" };
+
+      return addFormattedFields(base);
+    }
+
+    // TOUR
+    if (kind === "tour") {
+      const hydrated = tours.find(t => Number(t.id) === id);
+      const base = hydrated
+        ? { ...hydrated, kind: "tour" }      // ⭐ force kind
+        : { ...item, kind: "tour" };
+
+      return addFormattedFields({
+        ...base,
+        company: base.company ?? ""
+      });
+    }
+
+    return { ...item, kind };
+  }
+
   // Load segments + tours when selectedTripId changes
   useEffect(() => {
     if (!selectedTripId) return;
 
     loadSegmentsForTrip(selectedTripId).then(data => {
-      const hydrated = data.map(seg => hydrateItem(seg));
-      setSegments(hydrated);
+      setSegments(data.map(hydrateItem));
     });
 
     loadToursForTrip(selectedTripId).then(data => {
-      const hydrated = data.map(t => hydrateItem(t));
-      setTours(hydrated);
+      setTours(data.map(hydrateItem));
     });
   }, [selectedTripId]);
 
@@ -54,35 +159,14 @@ export default function App() {
   const activeTrip = trips.find(t => t.id === selectedTripId) || null;
 
   // ------------------------------------------------------------
-  // Unified Hydration Lookup
-  // ------------------------------------------------------------
-  function hydrateItem(item) {
-    if (!item) return null;
-
-    const id = Number(item.id);  // normalize
-    const kind = item.kind || item.type;
-
-    if (kind === "segment") {
-      const hydrated = segments.find(s => Number(s.id) === id);
-      return hydrated ? { ...hydrated, kind: "segment" } : { ...item, kind: "segment" };
-    }
-
-    if (kind === "tour") {
-      const hydrated = tours.find(t => Number(t.id) === id);
-      return hydrated ? { ...hydrated, kind: "tour" } : { ...item, kind: "tour" };
-    }
-
-    return { ...item, kind };
-  }
-
-  // ------------------------------------------------------------
   // Unified Navigation: Detail
   // ------------------------------------------------------------
   function openItemDetail(item) {
-    console.log("Hydrating item:", item);
+    console.log("App openItemDetail item:", item);
     const hydrated = hydrateItem(item);
+    console.log("App hydrated item:", hydrated);
     if (!hydrated) return;
-    console.log("Opening hydrated detail for item:", hydrated);
+    console.log("Opening hydrated detail for hydrated:", hydrated);
 
     setSelectedTripId(hydrated.tripId);
     setActiveItem(hydrated);
@@ -92,12 +176,35 @@ export default function App() {
     } else if (hydrated.kind === "tour") {
       setActiveScreen("tourDetail");
     }
+    console.log("Detail screen should be open now with activeItem:", hydrated);
   }
 
   // ------------------------------------------------------------
   // Unified Navigation: Editor
   // ------------------------------------------------------------
+  useEffect(() => {
+    console.log("activeScreen:", activeScreen);
+  }, [activeScreen]);
+
   function openItemEditor(item) {
+    // NEW ITEM → DO NOT HYDRATE
+    console.log("openItemEditor receives item:", item);
+    if (!item.id) {
+      setSelectedTripId(item.tripId);
+      setActiveItem({
+        name: "(untitled)",   // ⭐ required because DB requires NOT NULL
+        ...item
+      });
+
+      if (item.kind === "segment") {
+        setActiveScreen("segmentEditor");
+      } else if (item.kind === "tour") {
+        setActiveScreen("tourEditor");
+      }
+      return;
+    }
+
+    // EXISTING ITEM → HYDRATE
     const hydrated = hydrateItem(item);
     if (!hydrated) return;
 
@@ -169,8 +276,15 @@ export default function App() {
   // Close overlay
   // ------------------------------------------------------------
   function closeOverlay() {
-    setActiveItem(null);
+    setActiveItem("null");
     setActiveScreen("tripDetail");
+  }
+  // ------------------------------------------------------------
+  // Close overlay
+  // ------------------------------------------------------------
+  function closeTripDetail() {
+    setActiveItem("null");
+    setActiveScreen("empty");
   }
 
   // ------------------------------------------------------------
@@ -180,6 +294,10 @@ export default function App() {
     <div className="app-root">
       {/* Left Pane */}
       <div className="app-left">
+        <div className="app-header">
+          <h1>Travel Tracker</h1>
+          <p>Version {appVersion}</p>
+        </div>
         <TripListScreen
           trips={trips}
           selectedTripId={selectedTripId}
@@ -188,13 +306,20 @@ export default function App() {
             setActiveScreen("tripDetail");
           }}
           onNewTrip={() => setActiveScreen("tripEditor")}
+          appVersion={appVersion}
         />
       </div>
 
       {/* Right Pane */}
       <div className="app-right">
+        {/* ⭐ This is the empty-state text */}
+        {activeScreen === "empty" && (
+          <div className="empty-state">
+            <p>Select a trip from the list or create a new one.</p>
+          </div>
+        )}
         {activeScreen === "tripList" && (
-          <div style={{ padding: 24 }}>Select a trip from the left.</div>
+          <div style={{ padding: 24 }}>Add or select a trip.</div>
         )}
 
         {activeScreen === "tripDetail" && activeTrip && (
@@ -202,14 +327,29 @@ export default function App() {
             trip={activeTrip}
             segments={segments}
             tours={tours}
-            onSelectSegment={openItemDetail}
-            onSelectTour={openItemDetail}
-            onClose={closeOverlay}
-            onEditTrip={() => setActiveScreen("tripEditor")}
+            onClose={closeTripDetail}
+            onEditTrip={(id) => {
+              console.log("Edit trip with id:", id);
+
+              const trip = trips.find(t => t.id === id);   // ⭐ hydrate here
+
+              setSelectedTripId(id);
+              setActiveItem(trip);                         // ⭐ pass full object
+              setActiveScreen("tripEditor");
+            }}
+            onSelectItem={openItemDetail}
             onAddSegment={() => openItemEditor({ kind: "segment", tripId: selectedTripId })}
             onAddTour={() => openItemEditor({ kind: "tour", tripId: selectedTripId })}
             onContextMenu={openContextMenu}
             onInlineEdit={handleInlineEdit}
+          />
+        )}
+
+        {activeScreen === "tripEditor" && (
+          <TripEditorScreen
+            trip={activeItem}
+            onClose={closeOverlay}
+            onSave={handleSaveTrip}
           />
         )}
 
@@ -225,7 +365,7 @@ export default function App() {
           <SegmentEditorScreen
             tripId={selectedTripId}
             segment={activeItem}
-            onClose={closeOverlay}
+            onCancel={closeOverlay}
             onSaved={async () => {
               await loadSegmentsForTrip(selectedTripId).then(setSegments);
               setActiveScreen("tripDetail");
@@ -247,24 +387,8 @@ export default function App() {
           <TourEditorScreen
             tripId={selectedTripId}
             tour={activeItem}
-            onClose={closeOverlay}
-            onSaved={async () => {
-              await loadToursForTrip(selectedTripId).then(setTours);
-              setActiveScreen("tripDetail");
-            }}
-          />
-        )}
-
-        {activeScreen === "tripEditor" && (
-          <TripEditorScreen
-            trip={activeItem}
-            onClose={closeOverlay}
-            onSaved={async (newTripId) => {
-              const updated = await loadTrips();
-              setTrips(updated);
-              if (newTripId) setSelectedTripId(newTripId);
-              setActiveScreen("tripDetail");
-            }}
+            onCancel={closeOverlay}
+            onSave={handleSaveTour}
           />
         )}
       </div>
@@ -287,7 +411,10 @@ export default function App() {
           x={contextMenu.x}
           y={contextMenu.y}
           actions={contextMenu.actions}
-          onAction={() => { }}
+          onAction={(action) => {
+            action.onClick();
+            closeContextMenu();
+          }}
           onClose={closeContextMenu}
         />
       )}

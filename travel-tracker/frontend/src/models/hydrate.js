@@ -21,7 +21,7 @@ export function hydrateSegment(seg) {
   const hours = Math.floor((ms / (1000 * 60 * 60)) % 24);
 
   console.log("Hydrating segment:", seg);
-  
+
   return {
     ...seg,
     kind: "segment",
@@ -48,6 +48,7 @@ export function hydrateTour(tour) {
   const start = new Date(`${tour.startDate}T${tour.startTime}`);
   const end = new Date(`${tour.endDate}T${tour.endTime}`);
 
+  console.log("Hydrating tour:", tour);
   return {
     ...tour,
     kind: "tour",

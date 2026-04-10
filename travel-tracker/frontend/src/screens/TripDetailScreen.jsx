@@ -11,8 +11,7 @@ export default function TripDetailScreen({
   tours,
   onClose,
   onEditTrip,
-  onSelectSegment,
-  onSelectTour,
+  onSelectItem,
   onAddSegment,
   onAddTour,
   onContextMenu,
@@ -21,14 +20,16 @@ export default function TripDetailScreen({
 
   const timelineItems = buildUnifiedTimeline(segments, tours);
 
-function handleSelectItem(item) {
-  console.log("Selected timeline item:", item);
-  if (item.kind === "segment") {
-    onSelectSegment(item);
-  } else if (item.kind === "tour") {
-    onSelectTour(item);
+  console.log("TripDetailScreen timelineItems:", timelineItems);
+
+  function handleSelectItem(item) {
+    console.log("Selected timeline item:", item);
+    if (item.kind === "segment") {
+      onSelectSegment(item);
+    } else if (item.kind === "tour") {
+      onSelectTour(item);
+    }
   }
-}
 
   return (
     <div className="trip-detail-screen">
@@ -56,7 +57,7 @@ function handleSelectItem(item) {
 
       <UnifiedTimeline
         items={timelineItems}
-        onSelectItem={handleSelectItem}
+        onSelectItem={onSelectItem}
         onContextMenu={onContextMenu}
       />
     </div>

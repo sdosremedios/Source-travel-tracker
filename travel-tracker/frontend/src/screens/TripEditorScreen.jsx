@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createTrip, updateTrip } from "../api";
+import { normalizeDate, isValidDateString, isChronological } from "../utils/dateHelpers";
 import "../styles/TripEditorScreen.css";
 
 const TRIP_TYPE_ICONS = {
@@ -11,10 +12,15 @@ const TRIP_TYPE_ICONS = {
   other: "🌀"
 };
 
-export default function TripEditorScreen({ trip, onClose, onSaved }) {
+export default function TripEditorScreen({
+  trip,
+  onClose,
+  onSave
+}) {
   const isEditing = Boolean(trip);
 
   const [local, setLocal] = useState({
+    tripId: trip?.id || null,
     name: trip?.name || "",
     startDate: trip?.startDate || "",
     endDate: trip?.endDate || "",
@@ -26,19 +32,41 @@ export default function TripEditorScreen({ trip, onClose, onSaved }) {
     setLocal(prev => ({ ...prev, [field]: value }));
   }
 
-  async function handleSave() {
-    const data = { ...local };
+function handleSave() {
+  let { startDate, endDate } = local;
 
-    if (trip?.id) {
-      await updateTrip(trip.id, data);
-    } else {
-      await createTrip(data);
-    }
+  // Normalize first
+  startDate = normalizeDate(startDate);
+  endDate = normalizeDate(endDate);
 
-    onSaved?.();
-    onClose?.();
+  // Validate
+  const hasStart = !!startDate;
+  const hasEnd = !!endDate;
+
+  if (hasStart && !isValidDateString(startDate)) {
+    alert("Start date is invalid");
+    return;
   }
 
+  if (hasEnd && !isValidDateString(endDate)) {
+    alert("End date is invalid");
+    return;
+  }
+
+  if (hasStart && hasEnd && !isChronological(startDate, "00:00", endDate, "00:00")) {
+    alert("End date must be on or after start date");
+    return;
+  }
+
+  // Save normalized values
+  onSave({
+    ...local,
+    startDate,
+    endDate
+  });
+}
+
+  console.log("Rendering TripEditorScreen with local state:", local);
   return (
     <div className="te-pane">
       <h1 className="te-title">

@@ -26,12 +26,13 @@
   margin-bottom: 20px;
 }
 
-.tds-category-badge {
+.tds-category-badge, span.sd-meta-badge {
   background: #eef3f8;
   padding: 2px 8px;
   border-radius: 6px;
   margin-left: 6px;
   font-size: 12px;
+  text-transform: capitalize;
 }
 
 .tds-notes h3 {

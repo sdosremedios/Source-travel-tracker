@@ -4,7 +4,7 @@ import "../styles/SegmentEditorScreen.css";
 export default function SegmentEditorScreen({
   tripId,
   segment,
-  onClose,
+  onCancel,
   onSaved
 }) {
   const isEditing = Boolean(segment);
@@ -18,7 +18,8 @@ export default function SegmentEditorScreen({
     toLocation: segment?.toLocation ?? "",
     departureTime: segment?.departureTime ?? "",   // ← FIX
     arrivalTime: segment?.arrivalTime ?? "",       // ← FIX
-    notes: segment?.notes ?? ""
+    notes: segment?.notes ?? "",
+    carrier: segment?.carrier ?? ""
   });
 
   function update(field, value) {
@@ -80,6 +81,13 @@ export default function SegmentEditorScreen({
             <option value="car">Car</option>
             <option value="bus">Bus</option>
           </select>
+        </div>
+        <div className="se-field">
+          <label>Carrier</label>
+          <input
+            value={local.carrier || ""}
+            onChange={e => update("carrier", e.target.value)}
+          />
         </div>
       </div>
 
@@ -155,7 +163,7 @@ export default function SegmentEditorScreen({
         <button className="se-btn save" onClick={handleSave}>
           Save
         </button>
-        <button className="se-btn cancel" onClick={onClose}>
+        <button className="se-btn cancel" onClick={onCancel}>
           Cancel
         </button>
       </div>

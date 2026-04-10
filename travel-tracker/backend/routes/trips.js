@@ -40,7 +40,7 @@ router.post("/", (req, res) => {
 
 // PATCH update trip
 router.patch("/:id", (req, res) => {
-  console.log("Updating trip", req.params.id, req.body);
+  console.log("Patching trip", req.params.id, req.body);
   const { name, startDate, endDate, notes, type } = req.body;
 
   const stmt = db.prepare(`
@@ -49,7 +49,7 @@ router.patch("/:id", (req, res) => {
     WHERE id = ?
   `);
 
-  stmt.run(name, startDate, endDate, notes, type, company, req.params.id);
+  stmt.run(name, startDate, endDate, notes, type, req.params.id);
   res.json({ success: true });
 });
 

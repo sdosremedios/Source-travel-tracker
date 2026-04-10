@@ -59,7 +59,7 @@
 }
 
 /* Notes block */
-.td-notes {
+.td-notes, .sd-notes p, .tds-notes p {
   font-size: 14px;
   color: #444;
   background: #f7f7f7;

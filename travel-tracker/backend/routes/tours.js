@@ -23,16 +23,19 @@ router.post("/", (req, res) => {
     endTime,
     location,
     category,
-    notes
+    notes,
+    company
+
   } = req.body;
+  console.log("POST /tours CALLED with body:", req.body);
 
   const stmt = db.prepare(`
     INSERT INTO tours (
-      tripId, name, startDate, startTime, endDate, endTime, location, category, notes
+      tripId, name, startDate, startTime, endDate, endTime, location, category, notes, company
     )
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-
+try {
   const result = stmt.run(
     tripId,
     name,
@@ -42,44 +45,57 @@ router.post("/", (req, res) => {
     endTime,
     location,
     category,
-    notes
+    notes,
+    company
   );
-
-  res.json({ id: result.lastInsertRowid });
+  res.json({ id: result.lastInsertRowid }); } catch (err) {
+    console.error("POST /tours ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 // PATCH update tour
 router.patch("/:id", (req, res) => {
-  const {
-    name,
-    startDate,
-    startTime,
-    endDate,
-    endTime,
-    location,
-    category,
-    notes
-  } = req.body;
+  try {
+    const {
+      tripId,
+      name,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      location,
+      category,
+      notes,
+      company
+    } = req.body;
 
-  const stmt = db.prepare(`
-    UPDATE tours
-    SET name = ?, startDate = ?, startTime = ?, endDate = ?, endTime = ?, location = ?, category = ?, notes = ?
-    WHERE id = ?
-  `);
+    const stmt = db.prepare(`
+      UPDATE tours
+      SET tripId = ?, name = ?, startDate = ?, startTime = ?, endDate = ?, endTime = ?,
+          location = ?, category = ?, notes = ?, company = ?
+      WHERE id = ?
+    `);
 
-  stmt.run(
-    name,
-    startDate,
-    startTime,
-    endDate,
-    endTime,
-    location,
-    category,
-    notes,
-    req.params.id
-  );
+    const result = stmt.run(
+      tripId,
+      name,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      location,
+      category,
+      notes,
+      company,
+      req.params.id
+    );
 
-  res.json({ success: true });
+    res.json({ success: true });
+  } catch (err) {
+    console.error("PATCH /tours/:id ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

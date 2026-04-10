@@ -6,26 +6,22 @@ import "../styles/SegmentDetailScreen.css";
 
 export default function SegmentDetailScreen({ segment, onEdit, onClose }) {
   if (!segment) return null;
-console.log("SegmentDetailScreen received segment:", segment);
+  console.log("SegmentDetailScreen received segment:", segment);
   return (
     <div className="sd-pane">
       {/* Header -------------------------------------------------------------- */}
       <div className="sd-header">
         <div className="sd-icon">{modeIcon(segment.mode)}</div>
         <h1 className="sd-title">
-          {segment.from} → {segment.to}
+          {segment.fromLocation} → {segment.toLocation}
         </h1>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}
       <div className="sd-meta">
-        <div><strong>Date:</strong> {segment.date}</div>
-        <div><strong>{segment.from}</strong> {segment.date} {segment.startTime}</div>
-        <div><strong>{segment.to}</strong> {segment.finishDate} {segment.endTime}</div>
-        <div><strong>Mode:</strong> {segment.mode}</div>
-        {segment.carrierId && (
-          <div><strong>Carrier ID:</strong> {segment.carrierId}</div>
-        )}
+        <div><strong>Date:</strong> {segment.startDateTimeLabel} {segment.endDateTimeLabel ? "- " + segment.endDateTimeLabel : ""}</div>
+        <div><strong>Mode:</strong> <span className="sd-meta-badge">{segment.mode}</span></div>
+        <div><strong>Carrier:</strong> {segment.carrier}</div>
       </div>
 
       {/* Notes --------------------------------------------------------------- */}

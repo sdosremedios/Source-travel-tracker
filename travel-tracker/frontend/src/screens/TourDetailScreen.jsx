@@ -16,8 +16,8 @@ export default function TourDetailScreen({ tour, onEdit, onClose }) {
       </div>
 
       <div className="tds-meta">
-        <div><strong>Date:</strong> {formatDate(tour.startDate)}</div>
-        <div><strong>Time:</strong> {formatTime(tour.startTime)}</div>
+        <div><strong>Company:</strong> {tour.company}</div>
+        <div><strong>Date:</strong> {formatDate(tour.startDate) + (tour.startTime ? " " + formatTime(tour.startTime) : "")}</div>
         <div><strong>Location:</strong> {tour.location}</div>
         <div>
           <strong>Category:</strong>

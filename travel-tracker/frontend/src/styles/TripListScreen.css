@@ -1,3 +1,10 @@
+div.app-header {
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+
+
 .tls-root {
   display: flex;
   flex-direction: column;

@@ -41,6 +41,7 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
   }
 
   // TOURS
+  console.log("Building timeline with tours:", tours);
   tours.forEach(tour => {
     const start = parseYMD(tour.startDate);
     const end = parseYMD(tour.endDate || tour.startDate);
@@ -74,6 +75,7 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
   });
 
   // SEGMENTS
+  console.log("Building timeline with segments:", segments);
   segments.forEach(seg => {
     const start = parseYMD(seg.startDate);
     const end = parseYMD(seg.endDate || seg.startDate);

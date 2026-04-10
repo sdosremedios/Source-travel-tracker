@@ -11,6 +11,7 @@ export default function UnifiedTimeline({
 }) {
   const [index, setIndex] = useState(0);
 
+  console.log("UnifiedTimeline props:", { onSelectItem });
   //
   // Keyboard navigation
   //
@@ -61,7 +62,7 @@ export default function UnifiedTimeline({
 
             <TimelineRow
               item={item}
-              onClick={() => onSelectItem(item)}
+              onClick={onSelectItem}
               onContextMenu={e => onContextMenu?.(e, item)}
               onInlineEdit={(field, value) =>
                 onInlineEdit?.(item, field, value)

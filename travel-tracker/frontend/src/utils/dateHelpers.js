@@ -1,8 +1,57 @@
-export function formatDateRange(startDate, startTime, endDate, endTime) {
+/*
+Common import for date-related functions. 
 
-    return `${formatDateTime(startDate, startTime)} → ${formatDateTime(endDate, endTime)}`;
+This file is imported by both TripDetailScreen and TourForm, 
+so it should not import from those files to avoid circular dependencies.
+If we need shared date utilities, they should go here. For example:   
+
+import { isValidDateTime, isChronological } from "../utils/dateHelpers"; 
+
+*/
+
+export function normalizeDate(input) {
+  if (!input) return "";
+
+  // Already normalized
+  if (/^\d{4}-\d{2}-\d{2}$/.test(input)) return input;
+
+  // Convert MM/DD/YYYY → YYYY-MM-DD
+  const match = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(input);
+  if (match) {
+    const [, mm, dd, yyyy] = match;
+    return `${yyyy}-${mm.padStart(2, "0")}-${dd.padStart(2, "0")}`;
+  }
+
+  return input; // fallback (will fail validation)
 }
 
+export function isValidDateString(str) {
+  return /^\d{4}-\d{2}-\d{2}$/.test(str);
+}
+
+export function isValidTimeString(str) {
+  return /^\d{2}:\d{2}$/.test(str);
+}
+
+export function isValidDateTime(date, time) {
+  if (!isValidDateString(date) || !isValidTimeString(time)) return false;
+  const dt = new Date(`${date}T${time}`);
+  return !isNaN(dt.getTime());
+}
+
+export function isChronological(startDate, startTime, endDate, endTime) {
+  const start = isValidDateTime(startDate, startTime);
+  const end = isValidDateTime(endDate, endTime);
+  console.log("isChronological CALLED with:", { startDate, startTime, endDate, endTime, start, end });
+  return start && end && start <= end;
+}
+/*
+export function isChronological(startDate, startTime, endDate, endTime) {
+  const start = new Date(`${startDate}T${startTime}`);
+  const end = new Date(`${endDate}T${endTime}`);
+  return start <= end;
+}
+*/
 export function formatDateTime(startDate, startTime) {
     const datePart = formatDate(startDate, false);
     const timePart = formatTime(startTime);
@@ -43,3 +92,8 @@ export function formatTime(timeStr) {
 
   return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
 }
+
+export function formatDateRange(startDate, startTime, endDate, endTime) {
+    return `${formatDateTime(startDate, startTime)} → ${formatDateTime(endDate, endTime)}`;
+}
+

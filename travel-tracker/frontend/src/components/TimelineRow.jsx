@@ -13,13 +13,13 @@ export default function TimelineRow({
   const isTour = item.kind === "tour";
 
   //console.log("ROW ITEM", item);
-  console.log("ROW CLICK", item);
+  //console.log("ROW CLICK", item);
 
   return (
 
     <div
       className="timeline-row"
-      onClick={onClick}
+      onClick={() => onClick(item)}
       onContextMenu={(e) => onContextMenu?.(e, item)}
     >
       {/* Icon */}

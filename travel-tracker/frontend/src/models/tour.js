@@ -8,5 +8,6 @@ export const TourModel = {
   time: String,        // HH:MM
   location: String,
   notes: String,
-  category: String     // see categories.js
+  category: String,     // see categories.js
+  company: String     // new field for tour company
 };
