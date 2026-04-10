@@ -80,3 +80,9 @@ input, textarea, button {
   background: white;
   padding: 0 10px;
 }
+
+.empty-state {
+  text-align: center;
+  color: #4d4d4d;
+  margin-top: 50px;
+}

@@ -8,9 +8,7 @@ import TourDetailScreen from "./screens/TourDetailScreen";
 import TourEditorScreen from "./screens/TourEditorScreen";
 import CommandPalette from "./components/CommandPalette";
 import ContextMenu from "./components/ContextMenu";
-
 import { formatDate, formatTime } from "./utils/dateHelpers";
-
 
 import {
   loadTrips,
@@ -24,7 +22,7 @@ import {
 } from "./api/index";
 
 export default function App() {
-  const appVersion = "0.1.0";
+  const appVersion = "0.1.1";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
