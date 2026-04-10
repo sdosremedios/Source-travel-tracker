@@ -83,6 +83,7 @@ export default function TripListScreen({
   }
 
   async function handleImportCsv(e) {
+    const now = new Date();
     const file = e.target.files[0];
     if (!file) return;
 
@@ -162,14 +163,13 @@ export default function TripListScreen({
               className={
                 "tls-item" +
                 (isSelected ? " selected" : "") +
-                (isCursor ? " cursor" : "")
-              }
+                (isCursor ? " cursor" : "") +
+                (new Date(t.startDate) <= new Date() ? " past" : " upcoming")  }
               onClick={() => onSelectTrip(t.id)}
             >
               <div className="tls-icon">{tripIcon(t)}</div>
               <div className="tls-name">{t.name}</div>
-              <div className="tls-dates">
-                {formatDate(t.startDate,false)}
+              <div className="tls-dates">{formatDate(t.startDate)}
               </div>
             </div>
           );

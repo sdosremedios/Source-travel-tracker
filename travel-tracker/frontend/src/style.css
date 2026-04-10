@@ -86,3 +86,9 @@ input, textarea, button {
   color: #4d4d4d;
   margin-top: 50px;
 }
+.strong {
+  font-weight: bold;
+}
+.emphasis {
+  font-style: italic;
+}

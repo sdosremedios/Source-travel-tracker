@@ -97,3 +97,17 @@ export function formatDateRange(startDate, startTime, endDate, endTime) {
     return `${formatDateTime(startDate, startTime)} → ${formatDateTime(endDate, endTime)}`;
 }
 
+export function computeOffsetDays(startDate, startTime, endDate, endTime) {
+  if (!startTime || !endTime) return "";
+
+  const start = new Date(`${startDate}T${startTime}`);
+  const end = new Date(`${endDate}T${endTime}`);
+  const dayOffset = Math.floor((end - start) / (1000 * 60 * 60 * 24));
+
+  if (dayOffset === 0) return "";
+  if (dayOffset === 1) return "+1 day";
+  if (dayOffset > 1) return `+${dayOffset} days`;
+  if (dayOffset === -1) return "−1 day";
+  return `−${Math.abs(dayOffset)} days`;
+}
+

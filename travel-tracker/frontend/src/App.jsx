@@ -23,7 +23,7 @@ import {
 import { tripIcon } from "./utils/icons";
 
 export default function App() {
-  const appVersion = "0.1.1";
+  const appVersion = "0.1.2";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);

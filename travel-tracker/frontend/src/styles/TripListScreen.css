@@ -128,3 +128,9 @@ div.app-header {
 .file-input-hidden {
   display: none;
 }
+.past {
+  font-weight: bold;
+}
+.upcoming .tls-name, .upcoming .tls-dates {
+  font-weight: normal;
+}
