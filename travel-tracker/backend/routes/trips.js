@@ -6,7 +6,7 @@ const router = express.Router();
 
 // GET all trips
 router.get("/", (req, res) => {
-  const stmt = db.prepare("SELECT * FROM trips ORDER BY startDate");
+  const stmt = db.prepare("SELECT * FROM trips ORDER BY startDate desc");
   res.json(stmt.all());
 });
 
@@ -51,6 +51,43 @@ router.patch("/:id", (req, res) => {
 
   stmt.run(name, startDate, endDate, notes, type, req.params.id);
   res.json({ success: true });
+});
+
+router.post("/import", (req, res) => {
+  const { trips } = req.body;
+
+  if (!Array.isArray(trips)) {
+    return res.status(400).json({ error: "Invalid payload" });
+  }
+
+  const stmt = db.prepare(`
+    INSERT INTO trips (name, startDate, endDate, notes, type)
+    VALUES (?, ?, ?, ?, ?)
+  `);
+
+  const insertedIds = [];
+
+  try {
+    const insertMany = db.transaction((items) => {
+      for (const t of items) {
+        const result = stmt.run(
+          t.name,
+          t.startDate,
+          t.endDate,
+          t.notes,
+          t.type
+        );
+        insertedIds.push(result.lastInsertRowid);
+      }
+    });
+
+    insertMany(trips);
+
+    res.json({ inserted: insertedIds });
+  } catch (err) {
+    console.error("IMPORT ERROR:", err);
+    res.status(500).json({ error: err.message });
+  }
 });
 
 export default router;

@@ -1,7 +1,7 @@
 import React from "react";
 import UnifiedTimeline from "../components/UnifiedTimeline";
 import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
-import { tripIcon } from "../utils/icons";
+import { tripIcon, actionIcon } from "../utils/icons";
 
 import "../styles/TripDetailScreen.css";
 
@@ -20,7 +20,7 @@ export default function TripDetailScreen({
 
   const timelineItems = buildUnifiedTimeline(segments, tours);
 
-  console.log("TripDetailScreen timelineItems:", timelineItems);
+  //console.log("TripDetailScreen timelineItems:", timelineItems);
 
   function handleSelectItem(item) {
     console.log("Selected timeline item:", item);
@@ -40,10 +40,10 @@ export default function TripDetailScreen({
         </h1>
 
         <div className="td-actions">
-          <button className="td-btn" onClick={() => onEditTrip(trip.id)}>Edit Trip</button>
-          <button className="td-btn" onClick={() => onAddSegment(trip.id)}>Add Segment</button>
-          <button className="td-btn" onClick={() => onAddTour(trip.id)}>Add Tour</button>
-          <button className="td-btn" onClick={onClose}>Close</button>
+          <button className="td-btn" onClick={() => onEditTrip(trip.id)}>{actionIcon('edit')} Edit Trip</button>
+          <button className="td-btn" onClick={() => onAddSegment(trip.id)}>{actionIcon('add')} Add Segment</button>
+          <button className="td-btn" onClick={() => onAddTour(trip.id)}>{actionIcon('add')} Add Tour</button>
+          <button className="td-btn" onClick={onClose}>{actionIcon('close')}Close</button>
         </div>
       </div>
 

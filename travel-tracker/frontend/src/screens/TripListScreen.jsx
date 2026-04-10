@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../styles/TripListScreen.css";
 import { tripIcon } from "../utils/icons";
+import { formatDate, normalizeDate } from "../utils/dateHelpers";
 
 export default function TripListScreen({
   trips,
   selectedTripId,
   onSelectTrip,
-  onNewTrip
+  onNewTrip,
+  onRefresh
 }) {
+  const fileInputRef = useRef(null);
   const [query, setQuery] = useState("");
   const [cursor, setCursor] = useState(0);
   const listRef = useRef(null);
@@ -53,8 +56,62 @@ export default function TripListScreen({
     }
   }
 
+  function normalizeTrip(t) {
+    return {
+      name: t.name,
+      startDate: normalizeDate(t.startDate),
+      endDate: normalizeDate(t.endDate),
+      notes: t.notes || "",
+      type: t.type || "travel"
+    };
+  }
+
+  async function uploadTrips(trips) {
+    console.log("Uploading trips:", trips);
+    const res = await fetch("/api/trips/import", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ trips })
+    });
+
+    if (!res.ok) {
+      alert("Import failed");
+      return;
+    } else {
+      alert("Import successful");
+    }
+  }
+
+  async function handleImportCsv(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const text = await file.text();
+    const rows = text.split("\n").map(r => r.trim()).filter(Boolean);
+
+    const [headerLine, ...dataLines] = rows;
+    const headers = headerLine.split(",");
+
+    const trips = dataLines.map(line => {
+      const cols = line.split(",");
+      const obj = {};
+
+      headers.forEach((h, i) => {
+        obj[h.trim()] = cols[i]?.trim() || "";
+      });
+
+      return normalizeTrip(obj);
+    });
+
+    console.log("Parsed trips:", trips);
+
+    await uploadTrips(trips);
+    onRefresh(); // reset import state if coming from import  
+  }
+
   return (
     <div className="tls-root" onKeyDown={handleKey} tabIndex={0}>
+
       {/* Search */}
       <div className="tls-search">
         <input
@@ -67,6 +124,19 @@ export default function TripListScreen({
         />
       </div>
 
+      <button
+        className="import-button"
+        onClick={() => fileInputRef.current.click()}>
+        Import Trips (.csv)
+      </button>
+
+      <input
+        type="file"
+        accept=".csv"
+        ref={fileInputRef}
+        style={{ display: "none" }}
+        onChange={handleImportCsv}
+      />
       {/* Trip List */}
       <div className="tls-list" ref={listRef}>
         {/* New Trip row */}
@@ -99,7 +169,7 @@ export default function TripListScreen({
               <div className="tls-icon">{tripIcon(t)}</div>
               <div className="tls-name">{t.name}</div>
               <div className="tls-dates">
-                {t.startDate} → {t.endDate}
+                {formatDate(t.startDate,false)}
               </div>
             </div>
           );

@@ -10,7 +10,7 @@
 
 /* Header */
 .td-header {
-  font-size: 22px;
+  font-size: 16px;
   font-weight: 600;
   margin-bottom: 16px;
 }
@@ -19,7 +19,7 @@
 .td-actions {
   display: flex;
   gap: 12px;
-  margin-bottom: 24px;
+  margin: 24px 0;
 }
 
 .td-btn {

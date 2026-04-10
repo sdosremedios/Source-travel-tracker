@@ -11,7 +11,7 @@ export default function UnifiedTimeline({
 }) {
   const [index, setIndex] = useState(0);
 
-  console.log("UnifiedTimeline props:", { onSelectItem });
+  // console.log("UnifiedTimeline props:", { onSelectItem });
   //
   // Keyboard navigation
   //

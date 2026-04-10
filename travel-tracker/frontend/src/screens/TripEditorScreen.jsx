@@ -66,7 +66,7 @@ function handleSave() {
   });
 }
 
-  console.log("Rendering TripEditorScreen with local state:", local);
+  //console.log("Rendering TripEditorScreen with local state:", local);
   return (
     <div className="te-pane">
       <h1 className="te-title">

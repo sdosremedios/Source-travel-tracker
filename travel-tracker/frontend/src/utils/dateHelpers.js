@@ -42,7 +42,7 @@ export function isValidDateTime(date, time) {
 export function isChronological(startDate, startTime, endDate, endTime) {
   const start = isValidDateTime(startDate, startTime);
   const end = isValidDateTime(endDate, endTime);
-  console.log("isChronological CALLED with:", { startDate, startTime, endDate, endTime, start, end });
+//console.log("isChronological CALLED with:", { startDate, startTime, endDate, endTime, start, end });
   return start && end && start <= end;
 }
 /*

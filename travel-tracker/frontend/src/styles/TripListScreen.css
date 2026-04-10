@@ -59,6 +59,7 @@ div.app-header {
 .tls-name {
   flex: 1;
   font-size: 14px;
+  font-weight: bold;
 }
 
 .tls-dates {
@@ -97,4 +98,33 @@ div.app-header {
 
 .tls-empty-state button:hover {
   background: #f0f0f0;
+}
+
+/* Import Button */
+.import-button {
+  margin: 12px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #f7f7f7;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.import-button:hover {
+  background: #ececec;
+  border-color: #c0c0c0;
+}
+
+.import-button:active {
+  background: #e2e2e2;
+  border-color: #b0b0b0;
+}
+
+/* Hidden file input */
+.file-input-hidden {
+  display: none;
 }

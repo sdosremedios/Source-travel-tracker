@@ -20,6 +20,7 @@ import {
   updateTour,
   updateSegment
 } from "./api/index";
+import { tripIcon } from "./utils/icons";
 
 export default function App() {
   const appVersion = "0.1.1";
@@ -58,7 +59,10 @@ export default function App() {
     const updatedTrips = await loadTrips();
     setTrips(updatedTrips);
 
-    setSelectedTripId(saved.id);
+    const updatedTrip = updatedTrips.find(t => t.id === trip.tripId);
+    setSelectedTripId(trip.tripId);
+    console.log("Updated trip found:", trip.tripId, updatedTrip);
+    setActiveItem(updatedTrip);
     setActiveScreen("tripDetail");
   }
 
@@ -152,9 +156,6 @@ export default function App() {
       setTours(data.map(hydrateItem));
     });
   }, [selectedTripId]);
-
-  // Active trip
-  const activeTrip = trips.find(t => t.id === selectedTripId) || null;
 
   // ------------------------------------------------------------
   // Unified Navigation: Detail
@@ -285,6 +286,14 @@ export default function App() {
     setActiveScreen("empty");
   }
 
+  async function refreshTrips() {
+    const updated = await loadTrips();
+    setTrips(updated);
+  }
+
+  // Active trip
+  const activeTrip = trips.find(t => t.id === selectedTripId) || null;
+
   // ------------------------------------------------------------
   // Render
   // ------------------------------------------------------------
@@ -303,6 +312,7 @@ export default function App() {
             setSelectedTripId(id);
             setActiveScreen("tripDetail");
           }}
+          onRefresh={refreshTrips}
           onNewTrip={() => setActiveScreen("tripEditor")}
           appVersion={appVersion}
         />
@@ -327,7 +337,7 @@ export default function App() {
             tours={tours}
             onClose={closeTripDetail}
             onEditTrip={(id) => {
-              console.log("Edit trip with id:", id);
+              //console.log("Edit trip with id:", id);
 
               const trip = trips.find(t => t.id === id);   // ⭐ hydrate here
 
