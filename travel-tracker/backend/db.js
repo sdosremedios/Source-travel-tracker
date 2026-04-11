@@ -1,13 +1,20 @@
 // db.js
 import Database from "better-sqlite3";
 
-const db = new Database("travel.db");
+import path from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const dbFilename = path.join(__dirname, "travel.db");
+
+const db = new Database(dbFilename);
 
 // Initialize tables
-console.log("db.js executed — ensuring tables exist");
+console.log("db.js executed — ensuring tables exist in", dbFilename);
 
 db.exec(`
-CREATE TABLE trips (
+CREATE TABLE IF NOT EXISTS trips (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     name      TEXT    NOT NULL
                       DEFAULT ('(undefined)'),
@@ -17,7 +24,7 @@ CREATE TABLE trips (
     type      TEXT
 );
 
-CREATE TABLE segments (
+CREATE TABLE IF NOT EXISTS  segments (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     tripId        INTEGER NOT NULL
                           REFERENCES trips (id) ON DELETE CASCADE,
@@ -32,7 +39,7 @@ CREATE TABLE segments (
     carrier       TEXT
 );
 
-CREATE TABLE tours (
+CREATE TABLE IF NOT EXISTS tours (
     id        INTEGER PRIMARY KEY AUTOINCREMENT,
     tripId    INTEGER NOT NULL
                       REFERENCES trips (id) ON DELETE CASCADE,
@@ -47,7 +54,7 @@ CREATE TABLE tours (
     company   TEXT
 );
 
-CREATE TABLE notes (
+CREATE TABLE IF NOT EXISTS notes (
     id       INTEGER  PRIMARY KEY AUTOINCREMENT,
     tripId   INTEGER  REFERENCES trips (id) ON DELETE CASCADE
                       NOT NULL,
