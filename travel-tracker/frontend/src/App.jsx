@@ -24,7 +24,7 @@ import favicon from "./assets/favicon.png";
 
 
 export default function App() {
-  const appVersion = "0.2.1";
+  const appVersion = "0.2.2";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -255,6 +255,7 @@ export default function App() {
   }
 
   // ------------------------------------------------------------
+  // ------------------------------------------------------------
   // Inline Edit
   // ------------------------------------------------------------
   async function handleInlineEdit(item, field, value) {
@@ -287,11 +288,6 @@ export default function App() {
     setActiveScreen("empty");
   }
 
-  async function refreshTrips() {
-    const updated = await loadTrips();
-    setTrips(updated);
-  }
-
   // Active trip
   const activeTrip = trips.find(t => t.id === selectedTripId) || null;
 
@@ -303,11 +299,12 @@ export default function App() {
       {/* Left Pane */}
       <div className="app-left">
         <div className="app-header">
-          <h1>          <img
-            src={favicon}
-            alt=""
-            className="tls-app-icon"
-          />
+          <h1>
+            <img
+              src={favicon}
+              alt=""
+              className="tls-app-icon"
+            />
             Travel Tracker
           </h1>
           <p>Version {appVersion}</p>
@@ -319,7 +316,7 @@ export default function App() {
             setSelectedTripId(id);
             setActiveScreen("tripDetail");
           }}
-          onRefresh={refreshTrips}
+          onRefresh={loadTrips}
           onNewTrip={() => setActiveScreen("tripEditor")}
           appVersion={appVersion}
         />
@@ -343,6 +340,12 @@ export default function App() {
             segments={segments}
             tours={tours}
             onClose={closeTripDetail}
+
+            onRefresh={async () => {
+              setTrips(await loadTrips());
+              setSelectedTripId(null);
+              setActiveScreen("tripList");
+            }}
             onEditTrip={(id) => {
               //console.log("Edit trip with id:", id);
 
@@ -352,6 +355,7 @@ export default function App() {
               setActiveItem(trip);                         // ⭐ pass full object
               setActiveScreen("tripEditor");
             }}
+
             onSelectItem={openItemDetail}
             onAddSegment={() => openItemEditor({ kind: "segment", tripId: selectedTripId })}
             onAddTour={() => openItemEditor({ kind: "tour", tripId: selectedTripId })}
@@ -364,7 +368,13 @@ export default function App() {
           <TripEditorScreen
             trip={activeItem}
             onClose={closeOverlay}
-            onSave={handleSaveTrip}
+            onSave={async (trip) => {
+              console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", trip);
+              const updatedTrips = await loadTrips();
+              setTrips(updatedTrips);
+              setActiveItem(trip);
+              setActiveScreen("tripDetail");
+            }}
           />
         )}
 

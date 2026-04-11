@@ -27,6 +27,7 @@ router.get("/:id/full", (req, res) => {
 
 // POST new trip
 router.post("/", (req, res) => {
+  console.log("Creating new trip with data:", req.body);
   const { name, startDate, endDate, notes, type } = req.body;
 
   const stmt = db.prepare(`
@@ -87,6 +88,25 @@ router.post("/import", (req, res) => {
   } catch (err) {
     console.error("IMPORT ERROR:", err);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/trips/:id
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const stmt = db.prepare("DELETE FROM trips WHERE id = ?");
+    const result = stmt.run(id);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+    console.log(`Deleted trip with id ${id}`);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting trip:", err);
+    res.status(500).json({ error: "Failed to delete trip" });
   }
 });
 

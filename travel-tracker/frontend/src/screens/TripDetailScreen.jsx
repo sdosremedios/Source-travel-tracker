@@ -2,6 +2,7 @@ import React from "react";
 import UnifiedTimeline from "../components/UnifiedTimeline";
 import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
 import { tripIcon, actionIcon } from "../utils/icons";
+import { loadTrips, deleteTrip } from "../api";
 
 import "../styles/TripDetailScreen.css";
 
@@ -15,6 +16,7 @@ export default function TripDetailScreen({
   onAddSegment,
   onAddTour,
   onContextMenu,
+  onRefresh,
   onInlineEdit
 }) {
 
@@ -30,6 +32,14 @@ export default function TripDetailScreen({
       onSelectTour(item);
     }
   }
+  async function handleDeleteTrip(id) {
+    if (!confirm("Delete this trip?")) return;
+
+    await deleteTrip(id);
+    await onRefresh(); // however you reload your list
+    onClose();
+  }
+
 
   return (
     <div className="trip-detail-screen">
@@ -43,6 +53,7 @@ export default function TripDetailScreen({
           <button className="td-btn" onClick={() => onEditTrip(trip.id)}>{actionIcon('edit')} Edit Trip</button>
           <button className="td-btn" onClick={() => onAddSegment(trip.id)}>{actionIcon('add')} Add Segment</button>
           <button className="td-btn" onClick={() => onAddTour(trip.id)}>{actionIcon('add')} Add Tour</button>
+          <button className="td-btn" onClick={() => handleDeleteTrip(trip.id)}>{actionIcon('delete')} Delete Trip</button>
           <button className="td-btn" onClick={onClose}>{actionIcon('close')}Close</button>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { createTrip, updateTrip } from "../api";
+import { loadTrips, createTrip, updateTrip } from "../api";
 import { normalizeDate, isValidDateString, isChronological } from "../utils/dateHelpers";
 import "../styles/TripEditorScreen.css";
 
@@ -32,39 +32,45 @@ export default function TripEditorScreen({
     setLocal(prev => ({ ...prev, [field]: value }));
   }
 
-function handleSave() {
-  let { startDate, endDate } = local;
+  async function handleSave() {
+    let { startDate, endDate } = local;
 
-  // Normalize first
-  startDate = normalizeDate(startDate);
-  endDate = normalizeDate(endDate);
+    // Normalize first
+    startDate = normalizeDate(startDate);
+    endDate = normalizeDate(endDate);
 
-  // Validate
-  const hasStart = !!startDate;
-  const hasEnd = !!endDate;
+    // Validate
+    const hasStart = !!startDate;
+    const hasEnd = !!endDate;
 
-  if (hasStart && !isValidDateString(startDate)) {
-    alert("Start date is invalid");
-    return;
+    if (hasStart && !isValidDateString(startDate)) {
+      alert("Start date is invalid");
+      return;
+    }
+
+    if (hasEnd && !isValidDateString(endDate)) {
+      alert("End date is invalid");
+      return;
+    }
+
+    if (hasStart && hasEnd && !isChronological(startDate, "00:00", endDate, "00:00")) {
+      alert("End date must be on or after start date");
+      return;
+    }
+
+    const id = local?.tripId ?? null;
+    let tripObj = null;
+
+    if (id === null) {
+      // CREATE
+      tripObj = await createTrip(local);
+    } else {
+      // UPDATE
+      tripObj = await updateTrip(id, local);
+    }
+    // Save normalized values
+    onSave(local);
   }
-
-  if (hasEnd && !isValidDateString(endDate)) {
-    alert("End date is invalid");
-    return;
-  }
-
-  if (hasStart && hasEnd && !isChronological(startDate, "00:00", endDate, "00:00")) {
-    alert("End date must be on or after start date");
-    return;
-  }
-
-  // Save normalized values
-  onSave({
-    ...local,
-    startDate,
-    endDate
-  });
-}
 
   //console.log("Rendering TripEditorScreen with local state:", local);
   return (

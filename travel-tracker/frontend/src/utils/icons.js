@@ -53,7 +53,7 @@ export function tourIcon(category) {
     case "food": return "🍽️";
     case "nature": return "🌲";
     case "boat": return "⛵";
-    case "adventure": return "🚴‍♂️";
+    case "adventure": return "🗺️";
     case "transport": return "🚌";
     case "photo": return "📷";
     case "expedition": return "🧭";

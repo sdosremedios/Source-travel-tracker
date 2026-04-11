@@ -27,6 +27,18 @@ export async function updateTrip(id, data) {
   }).then(r => r.json());
 }
 
+export async function deleteTrip(id) {
+  const res = await fetch(`/api/trips/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to delete trip");
+  }
+
+  return res.json();
+}
+
 //
 // Segments
 //
