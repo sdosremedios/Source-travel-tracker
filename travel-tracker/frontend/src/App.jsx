@@ -20,10 +20,11 @@ import {
   updateTour,
   updateSegment
 } from "./api/index";
-import { tripIcon } from "./utils/icons";
+import favicon from "./assets/favicon.png";
+
 
 export default function App() {
-  const appVersion = "0.2.0";
+  const appVersion = "0.2.1";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -302,7 +303,13 @@ export default function App() {
       {/* Left Pane */}
       <div className="app-left">
         <div className="app-header">
-          <h1>Travel Tracker</h1>
+          <h1>          <img
+            src={favicon}
+            alt=""
+            className="tls-app-icon"
+          />
+            Travel Tracker
+          </h1>
           <p>Version {appVersion}</p>
         </div>
         <TripListScreen

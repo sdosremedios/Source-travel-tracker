@@ -164,7 +164,7 @@ export default function TripListScreen({
                 "tls-item" +
                 (isSelected ? " selected" : "") +
                 (isCursor ? " cursor" : "") +
-                (new Date(t.startDate) <= new Date() ? " past" : " upcoming")  }
+                (new Date(t.startDate) <= new Date() ? " past" : " upcoming")}
               onClick={() => onSelectTrip(t.id)}
             >
               <div className="tls-icon">{tripIcon(t)}</div>

@@ -3,7 +3,12 @@ div.app-header {
   background-color: #f0f0f0;
   border-bottom: 1px solid #ccc;
 }
-
+.tls-app-icon {
+  width: 42px;
+  height: 42px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
 .tls-root {
   display: flex;
   flex-direction: column;
