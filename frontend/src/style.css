@@ -1,0 +1,159 @@
+/* --- Reset -------------------------------------------------------------- */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* --- Typography --------------------------------------------------------- */
+body {
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+  font-size: 14px;
+  color: #222;
+  background: #f7f9fb;
+  line-height: 1.45;
+}
+
+/* --- Inputs ------------------------------------------------------------- */
+input,
+textarea,
+button {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+/* --- Scrollbars --------------------------------------------------------- */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #bbb;
+}
+
+/* Bulletproof split-pane layout */
+
+.app-shell {
+  all: initial;
+  /* Reset EVERYTHING inside this container */
+  font-family: system-ui;
+  /* Restore typography */
+  display: block;
+}
+
+.app-shell * {
+  all: unset;
+  /* Prevent global CSS from leaking in */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Re-enable normal HTML behavior inside the shell */
+.app-shell div,
+.app-shell button,
+.app-shell input,
+.app-shell textarea,
+.app-shell select {
+  display: block;
+  all: revert;
+  /* Bring back normal browser defaults */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Now apply your layout */
+.app-root {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+.app-left {
+  width: 280px;
+  flex-shrink: 0;
+}
+
+.app-root.editing .app-left {
+  display: none;
+}
+
+.app-left {
+  /*  width: 280px; */
+  flex-shrink: 1;
+  min-width: 240px;
+  border-right: 1px solid #ddd;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.app-right {
+  flex: 1;
+  min-width: 600px;
+  /* ⭐ prevents collapsing */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  background: white;
+  padding: 0 10px;
+}
+
+@media (max-width: 600px) {
+  .app.left {
+    display: none;
+  }
+
+  .app-right {
+    min-width: 100%;
+    width: 100%;
+  }
+}
+
+@media (min-width: 900px) {
+  .app-root {
+    min-width: 720px;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  color: #4d4d4d;
+  margin-top: 50px;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.emphasis {
+  font-style: italic;
+}
+
+@media (max-width: 800px) {
+
+  /* Hide left pane for all detail/editor screens */
+  .app-root.tripDetail .app-left,
+  .app-root.tripEditor .app-left,
+  .app-root.segmentDetail .app-left,
+  .app-root.segmentEditor .app-left,
+  .app-root.tourDetail .app-left,
+  .app-root.tourEditor .app-left {
+    display: none;
+  }
+
+  /* Expand right pane when left is hidden */
+  .app-root.tripDetail .app-right,
+  .app-root.tripEditor .app-right,
+  .app-root.segmentDetail .app-right,
+  .app-root.segmentEditor .app-right,
+  .app-root.tourDetail .app-right,
+  .app-root.tourEditor .app-right {
+    width: 100%;
+    min-width: 100%;
+  }
+}

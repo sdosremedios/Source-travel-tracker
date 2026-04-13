@@ -1,0 +1,17 @@
+.inline-field {
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.inline-field:hover {
+  background: #f3f7fb;
+}
+
+.inline-field-input {
+  padding: 2px 4px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 100%;
+}

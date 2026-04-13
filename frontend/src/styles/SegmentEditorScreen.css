@@ -1,0 +1,98 @@
+/* Root container */
+.se-pane {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+/* Header */
+.se-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.se-title {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Form layout */
+.se-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* Row of fields */
+.se-row {
+  display: flex;
+  flex-direction: row;
+  gap: 16px;
+}
+
+/* Individual field */
+.se-field {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.se-field textarea {
+  height: 180px;
+  min-height: 180px;
+  resize: vertical;
+}
+.se-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+/* Inputs */
+.se-input,
+.se-select,
+.se-textarea {
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+  background: white;
+}
+
+.se-textarea {
+  height: 180px;
+  min-height: 180px;
+  resize: vertical;
+}
+
+/* Footer buttons */
+.se-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 12px;
+}
+
+.se-btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.se-btn.save {
+  background: #0078d4;
+  color: white;
+}
+
+.se-btn.cancel {
+  background: #ddd;
+}

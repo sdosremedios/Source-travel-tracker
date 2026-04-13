@@ -1,0 +1,63 @@
+.sd-pane {
+  padding: 20px 24px;
+  overflow-y: auto;
+}
+
+.sd-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.sd-icon {
+  font-size: 28px;
+}
+
+.sd-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+}
+
+.sd-meta {
+  font-size: 14px;
+  color: #333;
+  line-height: 1.6;
+  margin-bottom: 20px;
+}
+
+.sd-notes h3 {
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.sd-notes p {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.5;
+}
+
+.sd-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.sd-btn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #f7f9fb;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.sd-btn.edit {
+  background: #e6f1fb;
+  border-color: #b5d4f5;
+}
+
+.sd-btn.close:hover {
+  background: #f0f0f0;
+}

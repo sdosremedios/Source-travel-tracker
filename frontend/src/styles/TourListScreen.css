@@ -1,0 +1,46 @@
+.tls-container {
+  padding: 16px;
+}
+
+.tls-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.tls-row {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  align-items: center;
+  transition: background 0.12s ease;
+}
+
+.tls-row:hover {
+  background: #f5f8fc;
+}
+
+.tls-icon {
+  font-size: 20px;
+  width: 28px;
+  text-align: center;
+}
+
+.tls-main {
+  flex: 1;
+}
+
+.tls-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #222;
+}
+
+.tls-sub {
+  font-size: 12px;
+  color: #666;
+  margin-top: 2px;
+}

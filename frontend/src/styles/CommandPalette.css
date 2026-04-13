@@ -1,0 +1,88 @@
+/* Overlay */
+.cp-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 120px;
+  z-index: 999;
+}
+
+/* Palette container */
+.cp-box {
+  width: 480px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+/* Input */
+.cp-input {
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  border: none;
+  border-bottom: 1px solid #eee;
+  outline: none;
+}
+
+/* List container */
+.cp-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+/* Group header */
+.cp-group {
+  padding: 8px 16px 4px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #666;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background: #fafafa;
+  border-bottom: 1px solid #eee;
+}
+
+/* Command item */
+.cp-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 14px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.cp-item:hover {
+  background: #f5f8fc;
+}
+
+.cp-item.cursor {
+  background: #e6f1fb;
+}
+
+/* Icon */
+.cp-icon {
+  width: 22px;
+  text-align: center;
+  font-size: 16px;
+}
+
+/* Label */
+.cp-label {
+  flex: 1;
+}
+
+/* Empty state */
+.cp-empty {
+  padding: 16px;
+  font-size: 14px;
+  color: #666;
+  text-align: center;
+}

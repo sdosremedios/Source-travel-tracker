@@ -1,0 +1,141 @@
+div.app-header {
+  padding: 1rem;
+  background-color: #f0f0f0;
+  border-bottom: 1px solid #ccc;
+}
+.tls-app-icon {
+  width: 42px;
+  height: 42px;
+  margin-right: 12px;
+  vertical-align: middle;
+}
+.tls-root {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  outline: none;
+}
+
+.tls-search {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+}
+
+.tls-search input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.tls-list {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.tls-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+}
+
+.tls-item:hover {
+  background: #f5f8fc;
+}
+
+.tls-item.selected {
+  background: #e6f1fb;
+  font-weight: 600;
+}
+
+.tls-item.cursor {
+  background: #dcecff;
+}
+
+.tls-icon {
+  width: 22px;
+  text-align: center;
+}
+
+.tls-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tls-dates {
+  font-size: 12px;
+  color: #666;
+}
+
+.tls-empty {
+  padding: 16px;
+  text-align: center;
+  color: #666;
+}
+
+/* New Trip row */
+.tls-new {
+  font-weight: 600;
+  background: #f8fbff;
+}
+
+/* Empty state */
+.tls-empty-state {
+  padding: 24px;
+  text-align: center;
+  color: #666;
+}
+
+.tls-empty-state button {
+  margin-top: 12px;
+  padding: 8px 14px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+}
+
+.tls-empty-state button:hover {
+  background: #f0f0f0;
+}
+
+/* Import Button */
+.import-button {
+  margin: 12px;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  background: #f7f7f7;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.import-button:hover {
+  background: #ececec;
+  border-color: #c0c0c0;
+}
+
+.import-button:active {
+  background: #e2e2e2;
+  border-color: #b0b0b0;
+}
+
+/* Hidden file input */
+.file-input-hidden {
+  display: none;
+}
+.past {
+  font-weight: bold;
+}
+.upcoming .tls-name, .upcoming .tls-dates {
+  font-weight: normal;
+}

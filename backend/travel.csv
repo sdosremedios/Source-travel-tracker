@@ -1,0 +1,4 @@
+id,name,startDate,endDate,notes,type
+1,Test Trip,2026-04-01,2026-04-30,"Notes for this trip html not possible.
+But newlines seem to work fine
+additional text",travel

@@ -1,0 +1,25 @@
+/* Bulletproof split-pane layout */
+
+.app-shell {
+  all: initial;              /* Reset EVERYTHING inside this container */
+  font-family: system-ui;    /* Restore typography */
+  display: block;
+}
+
+.app-shell * {
+  all: unset;                /* Prevent global CSS from leaking in */
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+/* Re-enable normal HTML behavior inside the shell */
+.app-shell div,
+.app-shell button,
+.app-shell input,
+.app-shell textarea,
+.app-shell select {
+  display: block;
+  all: revert;               /* Bring back normal browser defaults */
+  box-sizing: border-box;
+  font-family: inherit;
+}
