@@ -134,7 +134,20 @@ button {
   font-style: italic;
 }
 
-@media (max-width: 800px) {
+@media (max-width: 720px) {
+
+  /* TripListScreen visible → left pane full width, right pane hidden */
+  .app-root.tripList .app-left,
+  .app-root.empty .app-left {
+    width: 100%;
+    min-width: 100%;
+    display: block;
+  }
+
+  .app-root.tripList .app-right,
+  .app-root.empty .app-right {
+    display: none;
+  }
 
   /* Hide left pane for all detail/editor screens */
   .app-root.tripDetail .app-left,
@@ -153,7 +166,6 @@ button {
   .app-root.segmentEditor .app-right,
   .app-root.tourDetail .app-right,
   .app-root.tourEditor .app-right {
-    width: 100%;
-    min-width: 100%;
+    display: block;
   }
 }

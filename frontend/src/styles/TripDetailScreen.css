@@ -18,12 +18,12 @@
 /* Action bar */
 .td-actions {
   display: flex;
-  gap: 12px;
-  margin: 24px 0;
+  gap: 8px;
+  margin: 24px 8px 24px 0;
 }
 
 .td-btn {
-  padding: 8px 14px;
+  padding: 8px;
   background: #f0f0f0;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -39,6 +39,7 @@
   flex: 1;
   overflow-y: auto;
 }
+
 /* Trip dates block */
 .td-dates {
   font-size: 14px;
@@ -59,7 +60,9 @@
 }
 
 /* Notes block */
-.td-notes, .sd-notes p, .tds-notes p {
+.td-notes,
+.sd-notes p,
+.tds-notes p {
   font-size: 14px;
   color: #444;
   background: #f7f7f7;
