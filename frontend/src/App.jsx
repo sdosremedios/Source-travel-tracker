@@ -24,7 +24,7 @@ import favicon from "./assets/favicon.png";
 
 
 export default function App() {
-  const appVersion = "0.2.5";
+  const appVersion = "0.2.4";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
