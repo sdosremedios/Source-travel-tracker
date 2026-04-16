@@ -1,6 +1,8 @@
 // src/models/buildUnifiedTimeline.js
 
-export function buildUnifiedTimeline(segments = [], tours = []) {
+import { formatMonth, formatWeekday, formatDateTime } from "../utils/dateHelpers";
+
+export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
   const items = [];
 
   //
@@ -112,11 +114,24 @@ export function buildUnifiedTimeline(segments = [], tours = []) {
       arrivalOffset: computeArrivalOffset(start, end)
     });
   });
-
+  // NOTES ------------------------------------------------------------------
+  console.log("Building timeline with notes:", notes);
+  notes.forEach(n => {
+    items.push({
+      kind: "note",
+      id: n.id,
+      rawDate: n.dateTime,
+      monthLabel: formatMonth(n.dateTime),
+      date: formatDateTime(n.dateTime),
+      weekday: formatWeekday(n.dateTime),
+      note: n.note,
+      ...n
+    });
+  });
   //
   // SORT chronologically by start date
   //
-  items.sort((a, b) => new Date(a.rawDate) - new Date(b.rawDate));
+  items.sort((b, a) => new Date(a.rawDate) - new Date(b.rawDate));
 
   return items;
 }

@@ -39,6 +39,7 @@ export async function deleteTrip(id) {
   return res.json();
 }
 
+
 //
 // Segments
 //
@@ -64,6 +65,12 @@ export async function updateSegment(id, data) {
   }).then(r => r.json());
 }
 
+export async function deleteSegment(id) {
+  const res = await fetch(`/api/segments/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
 //
 // Tours
 //
@@ -101,4 +108,50 @@ export async function updateTour(id, data) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   }).then(r => r.json());
+}
+
+export async function deleteTour(id) {
+  console.log("deleteTour CALLED with id:", id);
+  const res = await fetch(`/api/tours/${id}`, {
+    method: "DELETE",
+  });
+  return res.json();
+}
+
+export async function loadNotesForTrip(tripId) {
+  console.log("loadNotesForTrip CALLED with tripId:", tripId);
+  const res = await fetch(`/api/trips/${tripId}/notes`);
+  return res.json();
+}
+
+export async function createNote(data) {
+  const res = await fetch(`/api/notes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+export async function updateNote(id, data) {
+  const res = await fetch(`/api/notes/${id}`, {
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  return res.json();
+}
+
+export async function deleteNote(id) {
+  const res = await fetch(`/api/notes/${id}`, {
+    method: "DELETE"
+  });
+
+  if (res.status === 204) return { success: true };
+
+  try {
+    return await res.json();
+  } catch {
+    return { success: res.ok };
+  }
 }

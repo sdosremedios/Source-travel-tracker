@@ -120,3 +120,15 @@ export function formatMonthYear(isoDate) {
 
   return `${month}/${year}`;
 }
+// --- Format month: "April" or "Apr" ---
+export function formatMonth(dateStr, { short = false } = {}) {
+  if (!dateStr) return "";
+
+  const d = new Date(dateStr);
+  return d.toLocaleString("en-US", {
+    month: short ? "short" : "long"
+  });
+}
+export function formatWeekday(date, { short = false } = {}) {
+  return new Date(date).toLocaleString("en-US", {weekday: short ? "short" : "long" });
+}

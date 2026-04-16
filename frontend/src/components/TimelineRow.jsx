@@ -1,6 +1,7 @@
 // src/components/TimelineRow.jsx
 import React from "react";
 import { modeIcon, tourIcon } from "../utils/icons";
+import { formatTime } from "../utils/dateHelpers";
 import "../styles/TimelineRow.css";
 
 export default function TimelineRow({
@@ -11,6 +12,7 @@ export default function TimelineRow({
 }) {
   const isSegment = item.kind === "segment";
   const isTour = item.kind === "tour";
+  const isNote = item.kind === "note";
 
   //console.log("ROW ITEM", item);
   //console.log("ROW CLICK", item);
@@ -23,15 +25,20 @@ export default function TimelineRow({
       onContextMenu={(e) => onContextMenu?.(e, item)}
     >
       {/* Icon */}
-      <div className="timeline-row-icon">
-        {isSegment ? modeIcon(item.mode) : tourIcon(item.category)}
-      </div>
+      {!isNote && (
+        <div className="timeline-row-icon">
+          {isSegment ? modeIcon(item.mode) : tourIcon(item.category)}
+        </div>
+      )}
 
       {/* Content */}
       <div className="timeline-row-content">
-        <div className="timeline-row-date">
-          {item.weekday} — {item.date} → {item.finishDate || item.startDate}
-        </div>
+        {!isNote && (
+          <>
+            <div className="timeline-row-date">
+              {item.weekday} — {item.date} → {item.finishDate || item.startDate}
+            </div>
+          </>)}
 
         {isSegment && (
           <>
@@ -41,28 +48,45 @@ export default function TimelineRow({
             <div className="timeline-row-subtitle">
               {item.mode} - {item.carrier || "No carrier"}
             </div>
+
+            {item.notes && (
+              <div className="td-notes">
+                {item.notes ?? "No notes"}
+              </div>
+            )}
           </>
         )}
 
         {isTour && (
           <>
             <div className="timeline-row-title">
-              {item.name} Tour
+              {item.name}
             </div>
             <div className="timeline-row-subtitle">
-              {item.category}
+              {item.category} Tour
             </div>
             <div className="timeline-row-location">
               {item.location}
             </div>
+            {item.notes && (
+              <div className="td-notes">
+                {item.notes ?? "No notes"}
+              </div>
+            )}
           </>
+        )}
+        {isNote && (
+          <>
+            <div className="timeline-row note">
+              <div className="tr-icon">📝</div>
+              <div className="tr-main">
+                <div className="tr-sub">{formatTime(item.dateTime)}</div>
+                <div className="tr-note">{item.note}</div>
+              </div>
+            </div>          </>
         )}
 
       </div>
-      <div className="timeline-row-note">
-        {item.notes}
-      </div>
-
     </div>
   );
 }

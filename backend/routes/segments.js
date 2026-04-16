@@ -82,6 +82,25 @@ router.patch("/:id", (req, res) => {
     req.params.id
   );
 
+  // DELETE /api/segments/:id
+  router.delete("/segments/:id", (req, res) => {
+    const { id } = req.params;
+
+    try {
+      const stmt = db.prepare("DELETE FROM segments WHERE id = ?");
+      const result = stmt.run(id);
+
+      if (result.changes === 0) {
+        return res.status(404).json({ error: "Segment not found" });
+      }
+
+      res.json({ success: true });
+    } catch (err) {
+      console.error("Error deleting segment:", err);
+      res.status(500).json({ error: "Failed to delete segment" });
+    }
+  });
+
   res.json({ success: true });
 });
 

@@ -35,20 +35,21 @@ router.post("/", (req, res) => {
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
-try {
-  const result = stmt.run(
-    tripId,
-    name,
-    startDate,
-    startTime,
-    endDate,
-    endTime,
-    location,
-    category,
-    notes,
-    company
-  );
-  res.json({ id: result.lastInsertRowid }); } catch (err) {
+  try {
+    const result = stmt.run(
+      tripId,
+      name,
+      startDate,
+      startTime,
+      endDate,
+      endTime,
+      location,
+      category,
+      notes,
+      company
+    );
+    res.json({ id: result.lastInsertRowid });
+  } catch (err) {
     console.error("POST /tours ERROR:", err);
     res.status(500).json({ error: err.message });
   }
@@ -95,6 +96,26 @@ router.patch("/:id", (req, res) => {
   } catch (err) {
     console.error("PATCH /tours/:id ERROR:", err);
     res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /api/tours/:id
+router.delete("/:id", (req, res) => {
+  console.log("DELETE /tours/:id CALLED with id:", req.params);
+  const { id } = req.params;
+
+  try {
+    const stmt = db.prepare("DELETE FROM tours WHERE id = ?");
+    const result = stmt.run(id);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Tour not found" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting tour:", err);
+    res.status(500).json({ error: "Failed to delete tour" });
   }
 });
 

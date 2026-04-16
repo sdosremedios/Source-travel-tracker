@@ -1,11 +1,26 @@
 import React from "react";
 import { modeIcon } from "../utils/icons";
 import { formatDateTime } from "../utils/dateHelpers";
+import { deleteSegment } from "../api/index";
 
 import "../styles/SegmentDetailScreen.css";
 
-export default function SegmentDetailScreen({ segment, onEdit, onClose }) {
+export default function SegmentDetailScreen({ 
+  segment, 
+  onEdit, 
+  onClose, 
+  onRefresh 
+}) {
   if (!segment) return null;
+
+  async function handleDelete() {
+    if (!confirm("Delete this segment?")) return;
+    await deleteSegment(segment.id);
+
+    onClose();
+    onRefresh(segment.tripId);
+  }
+
   console.log("SegmentDetailScreen received segment:", segment);
   return (
     <div className="sd-pane">
@@ -36,6 +51,9 @@ export default function SegmentDetailScreen({ segment, onEdit, onClose }) {
       <div className="sd-buttons">
         <button className="sd-btn edit" onClick={() => onEdit(segment)}>
           Edit
+        </button>
+        <button className="danger" onClick={handleDelete}>
+          Delete
         </button>
         <button className="sd-btn close" onClick={onClose}>
           Close

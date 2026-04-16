@@ -1,46 +1,47 @@
 import { useState, useEffect } from "react";
 import "../styles/TourEditorScreen.css";          // ⭐ your CSS restored
 import TourCategorySelector from "../components/TourCategorySelector";
-import { isValidDateTime, isChronological } from "../utils/dateHelpers"; 
+import { isValidDateTime, isChronological } from "../utils/dateHelpers";
+import { updateTour, createTour } from "../api/index";
 
-export default function TourEditorScreen({ tour, tripId, onSave, onCancel }) {
+export default function TourEditorScreen({ tour, tripId, onSave, onCancel, onClose }) {
   // ---------------------------------------
   // 1. INITIALIZE LOCAL STATE (ONCE)
   // ---------------------------------------
-const [local, setLocal] = useState(() => ({
-  id: tour?.id,                     // ⭐ REQUIRED
-  tripId: tour?.tripId ?? tripId,
-  name: tour?.name ?? "(untitled)",
-  company: tour?.company ?? "",
-  category: tour?.category ?? "",
-  location: tour?.location ?? "",
-  startDate: tour?.startDate ?? "",
-  startTime: tour?.startTime ?? "",
-  endDate: tour?.endDate ?? "",
-  endTime: tour?.endTime ?? "",
-  notes: tour?.notes ?? ""
-}));
+  const [local, setLocal] = useState(() => ({
+    id: tour?.id,                     // ⭐ REQUIRED
+    tripId: tour?.tripId ?? tripId,
+    name: tour?.name ?? "(untitled)",
+    company: tour?.company ?? "",
+    category: tour?.category ?? "",
+    location: tour?.location ?? "",
+    startDate: tour?.startDate ?? "",
+    startTime: tour?.startTime ?? "",
+    endDate: tour?.endDate ?? "",
+    endTime: tour?.endTime ?? "",
+    notes: tour?.notes ?? ""
+  }));
 
   // ---------------------------------------
   // 2. RESET WHEN SWITCHING TO A NEW TOUR
   // ---------------------------------------
-useEffect(() => {
-  if (tour) {
-    setLocal({
-      id: tour.id,                 // ⭐ REQUIRED
-      tripId: tour.tripId,
-      name: tour.name ?? "(untitled)",
-      company: tour.company ?? "",
-      category: tour.category ?? "",
-      location: tour.location ?? "",
-      startDate: tour.startDate ?? "",
-      startTime: tour.startTime ?? "",
-      endDate: tour.endDate ?? "",
-      endTime: tour.endTime ?? "",
-      notes: tour.notes ?? ""
-    });
-  }
-}, [tour?.id]);
+  useEffect(() => {
+    if (tour) {
+      setLocal({
+        id: tour.id,                 // ⭐ REQUIRED
+        tripId: tour.tripId,
+        name: tour.name ?? "(untitled)",
+        company: tour.company ?? "",
+        category: tour.category ?? "",
+        location: tour.location ?? "",
+        startDate: tour.startDate ?? "",
+        startTime: tour.startTime ?? "",
+        endDate: tour.endDate ?? "",
+        endTime: tour.endTime ?? "",
+        notes: tour.notes ?? ""
+      });
+    }
+  }, [tour?.id]);
 
   // ---------------------------------------
   // 3. UPDATE HELPER
@@ -52,30 +53,32 @@ useEffect(() => {
   // ---------------------------------------
   // 4. SAVE HANDLER (RESTORED)
   // ---------------------------------------
-function handleSave() {
-  const { startDate, startTime, endDate, endTime } = local;
+  function handleSave() {
+    const { startDate, startTime, endDate, endTime } = local;
 
-  // Optional: allow empty dates (unscheduled tours)
-  const hasStart = startDate && startTime;
-  const hasEnd = endDate && endTime;
+    // Optional: allow empty dates (unscheduled tours)
+    const hasStart = startDate && startTime;
+    const hasEnd = endDate && endTime;
 
-  if (hasStart && !isValidDateTime(startDate, startTime)) {
-    alert("Start date/time is invalid");
-    return;
+    if (hasStart && !isValidDateTime(startDate, startTime)) {
+      alert("Start date/time is invalid");
+      return;
+    }
+
+    if (hasEnd && !isValidDateTime(endDate, endTime)) {
+      alert("End date/time is invalid");
+      return;
+    }
+
+    if (hasStart && hasEnd && !isChronological(startDate, startTime, endDate, endTime)) {
+      alert("End must be after start");
+      return;
+    }
+    console.log("Saving tour with data:", local);
+    local.id ? updateTour(local.id, local) : createTour(local);
+    onSave(local.id,local);
+    onClose();
   }
-
-  if (hasEnd && !isValidDateTime(endDate, endTime)) {
-    alert("End date/time is invalid");
-    return;
-  }
-
-  if (hasStart && hasEnd && !isChronological(startDate, startTime, endDate, endTime)) {
-    alert("End must be after start");
-    return;
-  }
-
-  onSave(local);
-}
 
   // ---------------------------------------
   // 5. RENDER

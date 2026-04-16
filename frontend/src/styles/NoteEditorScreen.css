@@ -1,0 +1,72 @@
+/* ============================
+   Note Editor Screen
+   ============================ */
+
+.ne-pane {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+  overflow-y: auto;
+  background: #fafafa;
+}
+
+.ne-pane h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+.ne-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ne-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #444;
+}
+
+.ne-field input[type="datetime-local"],
+.ne-field textarea {
+  padding: 10px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  color: #222;
+  font-family: inherit;
+}
+
+.ne-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.ne-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ne-btn {
+  padding: 10px 16px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.ne-btn.save {
+  background: #0078d4;
+  color: white;
+}
+
+.ne-btn.cancel {
+  background: #e0e0e0;
+  color: #333;
+}
