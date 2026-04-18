@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import TripListScreen from "./screens/TripListScreen";
 import TripDetailScreen from "./screens/TripDetailScreen";
 import TripEditorScreen from "./screens/TripEditorScreen";
@@ -43,6 +43,8 @@ export default function App() {
   // Command palette + context menu
   const [isPaletteOpen, setPaletteOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
+  const rightPaneRef = useRef(null);
+
 
   // Load trips on startup
   useEffect(() => {
@@ -53,14 +55,17 @@ export default function App() {
   async function refreshSegments() {
     const segments = await loadSegmentsForTrip(selectedTripId);
     setSegments(segments);
+    return segments;
   }
   async function refreshTours() {
     const tours = await loadToursForTrip(selectedTripId);
     setTours(tours);
+    return tours;
   }
   async function refreshNotes() {
     const notes = await loadNotesForTrip(selectedTripId);
     setNotes(notes);
+    return notes;
   }
 
   async function handleSaveTrip(trip) {
@@ -174,6 +179,14 @@ export default function App() {
       setNotes(data);
     });
   }, [selectedTripId]);
+
+useEffect(() => {
+  requestAnimationFrame(() => {
+    if (rightPaneRef.current) {
+      rightPaneRef.current.scrollTop = 0;
+    }
+  });
+}, [activeScreen, activeItem?.id]);
 
   // ------------------------------------------------------------
   // Unified Navigation: Detail
@@ -347,7 +360,7 @@ export default function App() {
       </div>
 
       {/* Right Pane */}
-      <div className="app-right">
+      <div className="app-right" ref={rightPaneRef}>
         {/* ⭐ This is the empty-state text */}
         {activeScreen === "empty" && (
           <div className="empty-state">
@@ -365,20 +378,26 @@ export default function App() {
             tours={tours}
             notes={notes}
             onClose={closeTripDetail}
+            rightPaneRef={rightPaneRef}
 
             onRefresh={async (id) => {
+              // Reload everything for this trip
+              const trip = await loadTrip(id);
               const segments = await loadSegmentsForTrip(id);
-              setSegments(segments);
               const tours = await loadToursForTrip(id);
-              setTours(tours);
               const notes = await loadNotesForTrip(id);
+
+              // Update state
+              setActiveTrip(trip);
+              setSegments(segments);
+              setTours(tours);
               setNotes(notes);
 
-              const timeline = buildUnifiedTimeline(segments, tours);
+              // Rebuild timeline naturally inside TripDetailScreen
+              // (no need to compute it here)
 
-              setTrips(await loadTrips());
-              setSelectedTripId(null);
-              setActiveScreen("tripList");
+              // Stay on TripDetailScreen
+              setActiveScreen("tripDetail");
             }}
             openTripEditor={(id) => {
               //console.log("Edit trip with id:", id);
@@ -390,12 +409,12 @@ export default function App() {
               setActiveScreen("tripEditor");
             }}
 
-            onSelectItem={(item) => openItemDetail( item )}
+            onSelectItem={(item) => openItemDetail(item)}
 
-            openItemEditor={() => openItemEditor({ kind: "note", tripId: selectedTripId })}
-            openSegmentEditor={() => openItemEditor({ kind: "segment", tripId: selectedTripId })}
-            openTourEditor={() => openItemEditor({ kind: "tour", tripId: selectedTripId })}
-            openNoteEditor={() => openItemEditor({ kind: "note", tripId: selectedTripId })}
+            openItemEditor={openItemEditor}
+            openSegmentEditor={openItemEditor}
+            openTourEditor={openItemEditor}
+            openNoteEditor={openItemEditor}
             onContextMenu={openContextMenu}
             onInlineEdit={handleInlineEdit}
           />
@@ -431,9 +450,10 @@ export default function App() {
             tripId={selectedTripId}
             segment={activeItem}
             onCancel={closeOverlay}
-            onSaved={async () => {
-              await loadSegmentsForTrip(selectedTripId).then(setSegments);
-              setActiveScreen("tripDetail");
+            onRefresh={async (updatedSegment) => {
+              await refreshSegments();
+              setActiveItem(updatedSegment);
+              setActiveScreen("segmentDetail");
             }}
             onClose={refreshSegments}
           />
@@ -460,9 +480,11 @@ export default function App() {
             onEdit={() => openItemEditor(activeItem)}
             onSelectSegment={openItemDetail}
             onClose={closeOverlay}
-            onRefresh={async () => {
-              console.log("Refreshing tours after delete...");
-              setTrips(await loadToursForTrip(selectedTripId));
+            onRefresh={async (updatedTour) => {
+              console.log("Refreshing tours after delete or edit");
+              await refreshTours();
+              setActiveItem(updatedTour);
+              setActiveScreen("tourDetail");
             }}
           />
         )}
@@ -472,10 +494,7 @@ export default function App() {
             onEdit={() => openItemEditor(activeItem)}
             onSelectSegment={openItemDetail}
             onClose={closeOverlay}
-            onRefresh={async () => {
-              console.log("Refreshing notes after delete...");
-              setTrips(await loadNotesForTrip(selectedTripId));
-            }}
+            onRefresh={refreshNotes}
           />
         )}
         {activeScreen === "noteEditor" && (
@@ -483,7 +502,12 @@ export default function App() {
             tripId={activeTrip.id}
             note={activeItem}
             onCancel={closeOverlay}
-            onSave={refreshTours}
+            onRefresh={async (updatedNote) => {
+              console.log("NoteEditorScreen refreshNotes", updatedNote);
+              await refreshNotes();     // updates notes array
+              setActiveItem(updatedNote); // ⭐ always correct
+              setActiveScreen("noteDetail");
+            }}
             onClose={closeOverlay}
           />
         )}

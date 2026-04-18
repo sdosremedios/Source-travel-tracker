@@ -1,0 +1,69 @@
+:root {
+    /* Brand colors */
+    --color-primary: #0078d4;
+    --color-primary-hover: #bbb;
+    --color-primary-active: #799eda;
+    --color-primary-text: #eee;
+    --color-primary-border: #ccc;
+
+    --color-primary-light: #ddd;
+    --color-primary-light-hover: #eee;
+    --color-primary-light-active: #eee;
+    --color-primary-light-text: #222;
+    --color-primary-light-border: #444;
+
+    --color-dark-text: #222;
+    --color-light-text: #eee;
+    --color-danger: #ff5050;
+
+    /* Buttons */
+    --color-btn-bg: #ddd;
+    --color-btn-border: #666;
+    --color-btn-text: var(--color-dark-text);
+
+    --color-btn-hover-bg: #bbb;
+    --color-btn-hover-text: var(--color-dark-text);
+
+    --color-btn-active-bg: var(--color-primary-hover);
+    --color-btn-active-text: var(--color-primary-hover);
+
+    --color-btn-edit-bg: var(--color-primary);
+    --color-btn-edit-text: var(--color-light-text);
+    --color-btn-edit-hover-bg: var(--color-primary-hover);
+    --color-btn-edit-hover-text: var(--color-dark-text);
+
+    --color-btn-danger-bg: var(--color-danger);
+    --color-btn-danger-text: var(--color-light-text);
+    --color-btn-danger-hover-bg: var(--color-danger);
+    --color-btn-danger-hover-text: var(--color-light-text);
+
+    --color-btn-cancel-bg: #ccc;
+    --color-btn-cancel-text: var(--color-primary-text);
+    --color-btn-cancel-hover-bg: #799eda;
+    --color-btn-cancel-hover-text: var(--color-dark-text);
+
+    --color-btn-close-bg: var(--color-btn-bg);
+    --color-btn-close-text: var(--color-primary-text);
+    --color-btn-close-hover-bg: #799eda;
+    --color-btn-close-hover-text: var(--color-primary-text);
+
+    --color-btn-save-bg: #0078d4;
+    --color-btn-save-text: white;
+    --color-btn-save-hover-bg: #006cbe;
+    --color-btn-save-hover-text: var(--color-primary-text);
+
+    /* Markdown */
+    --color-markdown-bg: #ffffee;
+    --color-markdown-text: #222;
+
+    /* Neutral palette */
+    --color-bg: #f7f9fc;
+    --color-panel: #ffffff;
+    --color-border: #dce1e8;
+    --color-text: #222;
+    --color-text-muted: #666;
+
+    /* Calm accents */
+    --color-accent: #e8f0ff;
+    --color-accent-border: #c7d8ff;
+}

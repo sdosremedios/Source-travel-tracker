@@ -18,6 +18,10 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     return new Date(y, m - 1, d);
   }
 
+  function normalizeDate(d) {
+    return new Date(d); // JS auto-converts UTC → local
+  }
+
   function capitalizeEachWord(text) {
     return text.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
   }
@@ -115,15 +119,20 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     });
   });
   // NOTES ------------------------------------------------------------------
-  console.log("Building timeline with notes:", notes);
+  /*
+      monthLabel: formatMonth(normalizeDate(n.dateTime)),
+      date: formatDateTime(n.dateTime),
+      weekday: formatWeekday(n.dateTime),
+ */
+  console.log("buildUnifiedTimeline with notes:", notes);
   notes.forEach(n => {
     items.push({
       kind: "note",
       id: n.id,
       rawDate: n.dateTime,
-      monthLabel: formatMonth(n.dateTime),
-      date: formatDateTime(n.dateTime),
-      weekday: formatWeekday(n.dateTime),
+      monthLabel: formatMonth(new Date(n.dateTime)), // convert to local dateTime
+      date: formatDateTime(new Date(n.dateTime)),
+      weekday: formatWeekday(new Date(n.dateTime)),
       note: n.note,
       ...n
     });

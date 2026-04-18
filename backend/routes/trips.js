@@ -15,11 +15,17 @@ router.get("/:id/full", (req, res) => {
   const id = req.params.id;
 
   const trip = db.prepare("SELECT * FROM trips WHERE id = ?").get(id);
-  const segments = db.prepare(
+
+  const rows = db.prepare(
     "SELECT * FROM segments WHERE tripId = ? ORDER BY startDate, departureTime"
   ).all(id);
+  const segments = rows.map(s => ({ ...s, kind: "segment" }));
+
   const tours = db.prepare(
     "SELECT * FROM tours WHERE tripId = ? ORDER BY startDate, startTime"
+  ).all(id);
+  const notes = db.prepare(
+    "SELECT * FROM notes WHERE tripId = ? ORDER BY dateTime"
   ).all(id);
 
   res.json({ trip, segments, tours });

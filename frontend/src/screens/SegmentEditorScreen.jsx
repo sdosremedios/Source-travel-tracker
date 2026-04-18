@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import "../styles/SegmentEditorScreen.css";
+import { updateSegment, createSegment } from "../api";
 
 export default function SegmentEditorScreen({
   tripId,
   segment,
   onCancel,
-  onSaved
+  onRefresh
 }) {
   const isEditing = Boolean(segment);
 
@@ -38,24 +39,11 @@ export default function SegmentEditorScreen({
       ? `/api/segments/${segment.id}`
       : `/api/segments`;
 
-    const method = isEditing ? "PATCH" : "POST";
+    isEditing ? await updateSegment(segment.id, segment) : await createSegment(segment);
 
-    console.log("FETCH METHOD ACTUALLY USED:", method);
-    console.log("FETCH URL:", url);
-
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-
-    if (!res.ok) {
-      console.error("Failed to save segment");
-      return;
-    }
 
     // Notify parent to refresh timeline
-    onSaved();
+    onRefresh();
 
     // Desktop workflow: keep editor open
     // Mobile workflow: parent decides whether to close

@@ -80,6 +80,8 @@ export const exportIcon = "📤";
 export const searchIcon = "🔍";
 export const filterIcon = "🔎";
 export const calendarIcon = "📅";
+export const showIcon = "▶";
+export const hideIcon = "▼";
 
 // Optional helper for consistency
 export function actionIcon(name) {
@@ -99,7 +101,9 @@ export function actionIcon(name) {
     export: exportIcon,
     search: searchIcon,
     filter: filterIcon,
-    calendar: calendarIcon
+    calendar: calendarIcon,
+    show: showIcon,
+    hide: hideIcon
   };
   return map[name] || "❓";
 }

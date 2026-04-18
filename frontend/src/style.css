@@ -1,3 +1,4 @@
+@import "styles/variables.css";
 /* --- Reset -------------------------------------------------------------- */
 * {
   margin: 0;
@@ -102,6 +103,71 @@ button {
   flex-direction: column;
   background: white;
   padding: 0 10px;
+}
+
+button {
+  background-color: var(--color-button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+button:hover {
+  background-color: var(--color-btn-hover-bg);
+  color:var(--color-btn-hover-text)
+}
+button.icon {
+  background-color: var(--color-primary-light);
+  color: var(--color-dark-text);
+}
+button.icon:hover {
+  background-color: var(--color-primary-hover);
+  color: var(--color-light-text);
+}
+
+button:active {
+  background: var(--color-btn-active-bg);
+  color: var(--color-btn-active-text);
+}
+button:active:hover {
+  background-color: var(--color-primary-hover);
+  color: var(--color-light-text);
+}
+button.edit {
+  background-color: var(--color-btn-edit-bg);
+  color: var(--color-btn-edit-text);
+}
+button.edit:hover {
+  background-color: var(--color-btn-hover-bg);
+  color:var(--color-btn-hover-text)
+}
+button.danger {
+  background-color: var(--color-btn-danger-bg);
+  color: var(--color-btn-danger-text);
+}
+button.danger:hover {
+  background-color: var(--color-btn-hover-bg);
+  color:var(--color-btn-hover-text)
+}
+button.cancel {
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+}
+button.cancel:hover {
+  background-color: var(--color-btn-hover-bg);
+  color:var(--color-btn-hover-text)
+}
+button.close {
+  background-color: var(--color-btn-bg);
+  color: var(--color-btn-text);
+}
+button.close:hover {
+  background-color: var(--color-btn-hover-bg);
+  color:var(--color-btn-hover-text)
 }
 
 @media (max-width: 720px) {

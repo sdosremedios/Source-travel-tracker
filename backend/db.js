@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS trips (
                       DEFAULT ('(undefined)'),
     startDate TEXT,
     endDate   TEXT,
-    notes     TEXT,
+    tripNotes TEXT,
     type      TEXT
 );
 

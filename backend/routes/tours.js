@@ -6,10 +6,13 @@ const router = express.Router();
 
 // GET tours for a trip
 router.get("/trip/:tripId", (req, res) => {
-  const stmt = db.prepare(
+  const rows = db.prepare(
     "SELECT * FROM tours WHERE tripId = ? ORDER BY startDate, startTime"
-  );
-  res.json(stmt.all(req.params.tripId));
+  ).all(req.params.tripId);
+
+  const tours = rows.map(t => ({ ...t, kind: "tour" }));
+
+  res.json(tours);
 });
 
 // POST create tour
@@ -25,18 +28,19 @@ router.post("/", (req, res) => {
     category,
     notes,
     company
-
   } = req.body;
+
   console.log("POST /tours CALLED with body:", req.body);
 
-  const stmt = db.prepare(`
+  const insertStmt = db.prepare(`
     INSERT INTO tours (
       tripId, name, startDate, startTime, endDate, endTime, location, category, notes, company
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
+
   try {
-    const result = stmt.run(
+    const result = insertStmt.run(
       tripId,
       name,
       startDate,
@@ -48,7 +52,15 @@ router.post("/", (req, res) => {
       notes,
       company
     );
-    res.json({ id: result.lastInsertRowid });
+
+    // ⭐ Fetch the newly created tour
+    const selectStmt = db.prepare(`
+      SELECT * FROM tours WHERE id = ?
+    `);
+
+    const newTour = selectStmt.get(result.lastInsertRowid);
+
+    res.json({ ...newTour, kind: "tour" }); // ⭐ Return full tour object
   } catch (err) {
     console.error("POST /tours ERROR:", err);
     res.status(500).json({ error: err.message });
@@ -71,14 +83,14 @@ router.patch("/:id", (req, res) => {
       company
     } = req.body;
 
-    const stmt = db.prepare(`
+    const updateStmt = db.prepare(`
       UPDATE tours
       SET tripId = ?, name = ?, startDate = ?, startTime = ?, endDate = ?, endTime = ?,
           location = ?, category = ?, notes = ?, company = ?
       WHERE id = ?
     `);
 
-    const result = stmt.run(
+    updateStmt.run(
       tripId,
       name,
       startDate,
@@ -92,7 +104,14 @@ router.patch("/:id", (req, res) => {
       req.params.id
     );
 
-    res.json({ success: true });
+    // ⭐ Fetch the updated tour
+    const selectStmt = db.prepare(`
+      SELECT * FROM tours WHERE id = ?
+    `);
+
+    const updatedTour = selectStmt.get(req.params.id);
+
+    res.json({ ...updatedTour, kind: "tour" }); // ⭐ Return the full updated tour
   } catch (err) {
     console.error("PATCH /tours/:id ERROR:", err);
     res.status(500).json({ error: err.message });

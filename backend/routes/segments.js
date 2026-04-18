@@ -6,10 +6,13 @@ const router = express.Router();
 
 // GET segments for a trip
 router.get("/trip/:tripId", (req, res) => {
-  const stmt = db.prepare(
+  const rows = db.prepare(
     "SELECT * FROM segments WHERE tripId = ? ORDER BY startDate, departureTime"
-  );
-  res.json(stmt.all(req.params.tripId));
+  ).all(req.params.tripId);
+
+  const segments = rows.map(s => ({ ...s, kind: "segment" }));
+
+  res.json(segments);
 });
 
 // POST new segment
@@ -27,13 +30,13 @@ router.post("/", (req, res) => {
     carrier
   } = req.body;
 
-  const stmt = db.prepare(`
+  const insertStmt = db.prepare(`
     INSERT INTO segments
     (tripId, startDate, endDate, mode, fromLocation, toLocation, departureTime, arrivalTime, notes, carrier)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `);
 
-  const result = stmt.run(
+  const result = insertStmt.run(
     tripId,
     startDate,
     endDate,
@@ -46,7 +49,14 @@ router.post("/", (req, res) => {
     carrier
   );
 
-  res.json({ id: result.lastInsertRowid });
+  // ⭐ Fetch the newly created segment
+  const selectStmt = db.prepare(`
+    SELECT * FROM segments WHERE id = ?
+  `);
+
+  const newSegment = selectStmt.get(result.lastInsertRowid);
+
+  res.json({ ...newSegment, kind: "segment" }); // ⭐ Return full segment object plus kind
 });
 
 // PATCH update segment
@@ -63,13 +73,13 @@ router.patch("/:id", (req, res) => {
     carrier
   } = req.body;
 
-  const stmt = db.prepare(`
+  const updateStmt = db.prepare(`
     UPDATE segments
     SET startDate = ?, endDate = ?, mode = ?, fromLocation = ?, toLocation = ?, departureTime = ?, arrivalTime = ?, notes = ?, carrier = ?
     WHERE id = ?
   `);
 
-  stmt.run(
+  updateStmt.run(
     startDate,
     endDate,
     mode,
@@ -82,26 +92,14 @@ router.patch("/:id", (req, res) => {
     req.params.id
   );
 
-  // DELETE /api/segments/:id
-  router.delete("/segments/:id", (req, res) => {
-    const { id } = req.params;
+  // ⭐ Fetch the updated segment
+  const selectStmt = db.prepare(`
+    SELECT * FROM segments WHERE id = ?
+  `);
 
-    try {
-      const stmt = db.prepare("DELETE FROM segments WHERE id = ?");
-      const result = stmt.run(id);
+  const updatedSegment = selectStmt.get(req.params.id);
 
-      if (result.changes === 0) {
-        return res.status(404).json({ error: "Segment not found" });
-      }
-
-      res.json({ success: true });
-    } catch (err) {
-      console.error("Error deleting segment:", err);
-      res.status(500).json({ error: "Failed to delete segment" });
-    }
-  });
-
-  res.json({ success: true });
+  res.json({ ...updatedSegment, kind: "segment" }); // ⭐ Return the full updated segment plus kind
 });
 
 export default router;

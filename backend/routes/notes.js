@@ -6,27 +6,45 @@ const router = express.Router();
 router.post("/notes", (req, res) => {
   const { tripId, dateTime, note } = req.body;
 
-  const stmt = db.prepare(`
+  const insertStmt = db.prepare(`
     INSERT INTO notes (tripId, dateTime, note)
     VALUES (?, ?, ?)
   `);
 
-  const result = stmt.run(tripId, dateTime, note);
-  res.json({ id: result.lastInsertRowid });
+  const result = insertStmt.run(tripId, dateTime, note);
+
+  // ⭐ Fetch the newly created note
+  const selectStmt = db.prepare(`
+    SELECT * FROM notes WHERE id = ?
+  `);
+
+  const newNote = selectStmt.get(result.lastInsertRowid);
+
+  res.json({...newNote, kind:"note"}); // ⭐ Return full note object plus kind
 });
+
 router.patch("/notes/:id", (req, res) => {
   const { id } = req.params;
   const { dateTime, note } = req.body;
 
-  const stmt = db.prepare(`
+  const updateStmt = db.prepare(`
     UPDATE notes
     SET dateTime = ?, note = ?
     WHERE id = ?
   `);
 
-  stmt.run(dateTime, note, id);
-  res.json({ success: true });
+  updateStmt.run(dateTime, note, id);
+
+  // ⭐ Fetch the updated note
+  const selectStmt = db.prepare(`
+    SELECT * FROM notes WHERE id = ?
+  `);
+
+  const updatedNote = selectStmt.get(id);
+
+  res.json({...updatedNote, kind:"note"}); // ⭐ Return the full updated note
 });
+
 router.delete("/notes/:id", (req, res) => {
   const { id } = req.params;
 
@@ -39,16 +57,17 @@ router.delete("/notes/:id", (req, res) => {
 
   res.status(204).end();
 });
+
 router.get("/trips/:tripId/notes", (req, res) => {
-  const { tripId } = req.params;
+  const rows = db.prepare(
+    "SELECT * FROM notes WHERE tripId = ? ORDER BY dateTime"
+  ).all(req.params.tripId);
 
-  const stmt = db.prepare(`
-    SELECT * FROM notes
-    WHERE tripId = ?
-    ORDER BY dateTime ASC
-  `);
+  const notes = rows.map(n => ({
+    ...n,
+    kind: "note"
+  }));
 
-  const notes = stmt.all(tripId);
   res.json(notes);
 });
 

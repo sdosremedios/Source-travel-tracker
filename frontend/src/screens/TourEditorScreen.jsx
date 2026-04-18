@@ -4,7 +4,7 @@ import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 import { updateTour, createTour } from "../api/index";
 
-export default function TourEditorScreen({ tour, tripId, onSave, onCancel, onClose }) {
+export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) {
   // ---------------------------------------
   // 1. INITIALIZE LOCAL STATE (ONCE)
   // ---------------------------------------
@@ -76,8 +76,8 @@ export default function TourEditorScreen({ tour, tripId, onSave, onCancel, onClo
     }
     console.log("Saving tour with data:", local);
     local.id ? updateTour(local.id, local) : createTour(local);
-    onSave(local.id,local);
-    onClose();
+
+    onRefresh(local.tripId);
   }
 
   // ---------------------------------------
@@ -180,7 +180,7 @@ export default function TourEditorScreen({ tour, tripId, onSave, onCancel, onClo
       {/* SAVE / CANCEL */}
       <div className="editor-buttons">
         <button className="editor-save" onClick={handleSave}>Save</button>
-        <button className="editor-cancel" onClick={onCancel}>Cancel</button>
+        <button className="editor-cancel" onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

@@ -4,7 +4,7 @@
   height: 100%;
   width: 100%;
   overflow-y: auto;
-  padding: 24px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
@@ -22,16 +22,26 @@
   margin: 24px 8px 24px 0;
 }
 
+.td-upper-section {
+  background: #e8f2ff;
+  padding: 14px;
+}
+
+.td-lower-section {
+  background: #f8f8f8;
+  padding: 14px;
+}
+
 .td-btn {
   padding: 8px;
-  background: #f0f0f0;
-  border: 1px solid #ccc;
+  background: var(--color-btn-bg);
+  border: 1px solid var(--color-btn-bg-border);
   border-radius: 6px;
   cursor: pointer;
 }
 
 .td-btn:hover {
-  background: #e6e6e6;
+  background: var(--color-btn-bg-hover);
 }
 
 /* Timeline container */
@@ -87,4 +97,52 @@
 .td-trip-icon {
   margin-right: 8px;
   font-size: 2rem;
+}
+
+.sd-notes p,
+.tds-notes p,
+.td-markdown,
+.td-notes
+ {
+  flex: none;
+  /* ⭐ THIS COLUMN EXPANDS */
+  text-align: left;
+  /* left-align the note */
+  font-size: 16px;
+  color: var(--color-markdown-text);
+  font-style: normal;
+  margin-top: 10px;
+  background: var(--color-markdown-bg);
+  padding: 10px;
+  /* align visually with date */
+}
+
+.td-markdown ol,
+.td-markdown ul {
+  padding-left: 24px;
+}
+
+.td-markdown pre {
+  background-color: var(--color-markdown-bg);
+  padding: 10px;
+}
+
+.note-header {
+  cursor: pointer;
+  user-select: none;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #334;
+}
+
+.note-header:hover {
+  color: #446;
+}
+
+.td-markdown {
+  flex: auto;
+  padding: 0 10px 10px 10px;
+  margin: 0 10px 10px 0;
 }

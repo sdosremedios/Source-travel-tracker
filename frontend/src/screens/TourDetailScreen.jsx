@@ -1,6 +1,7 @@
 import React from "react";
 import { TOUR_CATEGORIES, tourIcon } from "../models/categories";
 import { formatDate, formatTime } from "../utils/dateHelpers";
+import Markdown from "../components/Markdown";
 import { deleteTour } from "../api/index";
 
 import "../styles/TourDetailScreen.css";
@@ -45,7 +46,7 @@ export default function TourDetailScreen({
       {tour.notes && (
         <div className="tds-notes">
           <h3>Notes</h3>
-          <p>{tour.notes}</p>
+          <Markdown>{tour.notes}</Markdown>
         </div>
       )}
 

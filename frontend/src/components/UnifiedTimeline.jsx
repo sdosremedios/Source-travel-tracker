@@ -37,6 +37,7 @@ export default function UnifiedTimeline({
   let lastMonth = null;
   let lastDate = null;
 
+  console.log("TimelineRow data: ", items);
   return (
     <div className="timeline-container">
       {items.map(item => {

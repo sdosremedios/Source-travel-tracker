@@ -1,6 +1,6 @@
 import React from "react";
+import Markdown from "../components/Markdown";
 import { modeIcon } from "../utils/icons";
-import { formatDateTime } from "../utils/dateHelpers";
 import { deleteSegment } from "../api/index";
 
 import "../styles/SegmentDetailScreen.css";
@@ -43,7 +43,7 @@ export default function SegmentDetailScreen({
       {segment.notes && (
         <div className="sd-notes">
           <h3>Notes</h3>
-          <p>{segment.notes}</p>
+          <Markdown>{segment.notes}</Markdown>
         </div>
       )}
 
@@ -52,7 +52,7 @@ export default function SegmentDetailScreen({
         <button className="sd-btn edit" onClick={() => onEdit(segment)}>
           Edit
         </button>
-        <button className="danger" onClick={handleDelete}>
+        <button className="sd-btn danger" onClick={handleDelete}>
           Delete
         </button>
         <button className="sd-btn close" onClick={onClose}>

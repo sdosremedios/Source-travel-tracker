@@ -1,4 +1,5 @@
 /* Bulletproof split-pane layout */
+@import "./styles/variables.css";
 
 .app-shell {
   all: initial;              /* Reset EVERYTHING inside this container */

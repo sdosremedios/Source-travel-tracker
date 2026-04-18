@@ -1,4 +1,5 @@
 import React from "react";
+import Markdown from "../components/Markdown";
 import { deleteNote } from "../api/index";
 
 import "../styles/NoteDetailScreen.css";
@@ -32,9 +33,7 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
       </div>
 
       {/* Note text ----------------------------------------------------------- */}
-      <div className="nd-body">
-        <p>{note.note}</p>
-      </div>
+      <Markdown>{note.note}</Markdown>
 
       {/* Buttons ------------------------------------------------------------- */}
       <div className="nd-buttons">
@@ -42,7 +41,7 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
           Edit
         </button>
 
-        <button className="danger" onClick={handleDelete}>
+        <button className="nd-btn danger" onClick={handleDelete}>
           Delete
         </button>
 

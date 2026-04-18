@@ -44,20 +44,26 @@
   gap: 12px;
 }
 
+/*
 .sd-btn {
   padding: 8px 14px;
   border-radius: 6px;
   border: 1px solid #ccc;
-  background: #f7f9fb;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
   font-size: 14px;
 }
 
 .sd-btn.edit {
-  background: #e6f1fb;
-  border-color: #b5d4f5;
+  background: #0078d4;
+}
+.sd-btn.danger {
+  color: white;
+  background: #ff5050;
 }
 
 .sd-btn.close:hover {
   background: #f0f0f0;
 }
+*/

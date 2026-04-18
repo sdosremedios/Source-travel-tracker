@@ -46,7 +46,7 @@
 .nd-buttons {
   display: flex;
   gap: 12px;
-  margin-top: auto;
+  margin-top: 24px;
 }
 
 .nd-btn {
@@ -55,6 +55,8 @@
   border-radius: 6px;
   border: none;
   cursor: pointer;
+  background: var(--color-btn-bg);
+  color: var(--color-btn-text);
 }
 
 .nd-btn.edit {
@@ -63,11 +65,10 @@
 }
 
 .nd-btn.close {
-  background: #e0e0e0;
   color: #333;
 }
 
-.nd-buttons .danger {
+.nd-btn.danger {
   background: #d9534f;
   color: white;
 }
