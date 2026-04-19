@@ -1,4 +1,5 @@
 @import "styles/variables.css";
+
 /* --- Reset -------------------------------------------------------------- */
 * {
   margin: 0;
@@ -114,16 +115,19 @@ button {
   font-size: 14px;
   cursor: pointer;
   transition: background 0.15s ease;
+  margin: 0 5px;
 }
 
 button:hover {
   background-color: var(--color-btn-hover-bg);
-  color:var(--color-btn-hover-text)
+  color: var(--color-btn-hover-text)
 }
+
 button.icon {
   background-color: var(--color-primary-light);
   color: var(--color-dark-text);
 }
+
 button.icon:hover {
   background-color: var(--color-primary-hover);
   color: var(--color-light-text);
@@ -133,6 +137,7 @@ button:active {
   background: var(--color-btn-active-bg);
   color: var(--color-btn-active-text);
 }
+
 button:active:hover {
   background-color: var(--color-primary-hover);
   color: var(--color-light-text);
@@ -141,33 +146,75 @@ button.edit {
   background-color: var(--color-btn-edit-bg);
   color: var(--color-btn-edit-text);
 }
+
 button.edit:hover {
   background-color: var(--color-btn-hover-bg);
-  color:var(--color-btn-hover-text)
+  color: var(--color-btn-hover-text)
 }
+
+button.save {
+  background-color: var(--color-btn-edit-bg);
+  color: var(--color-btn-edit-text);
+}
+
+button.save:hover {
+  background-color: var(--color-btn-hover-bg);
+  color: var(--color-btn-hover-text)
+}
+
 button.danger {
   background-color: var(--color-btn-danger-bg);
   color: var(--color-btn-danger-text);
 }
+
 button.danger:hover {
   background-color: var(--color-btn-hover-bg);
-  color:var(--color-btn-hover-text)
+  color: var(--color-btn-hover-text)
 }
+
 button.cancel {
   background-color: var(--color-btn-bg);
   color: var(--color-btn-text);
 }
+
 button.cancel:hover {
   background-color: var(--color-btn-hover-bg);
-  color:var(--color-btn-hover-text)
+  color: var(--color-btn-hover-text)
 }
+
 button.close {
   background-color: var(--color-btn-bg);
   color: var(--color-btn-text);
 }
+
 button.close:hover {
   background-color: var(--color-btn-hover-bg);
-  color:var(--color-btn-hover-text)
+  color: var(--color-btn-hover-text)
+}
+
+/* Markdown block */
+.markdown-text {
+  flex:auto;
+  font-size: 14px;
+  color: #444;
+  background: var(--color-markdown-bg);
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 12px 14px;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
+  line-height: 0.8;
+}
+
+.markdown-text ol,
+.markdown-text ul {
+  padding-left: 24px;
+  line-height: 12px;
+}
+
+.markdown-text pre {
+  background-color: var(--color-markdown-bg);
+  padding: 10px;
 }
 
 @media (max-width: 720px) {

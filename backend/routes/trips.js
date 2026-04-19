@@ -34,29 +34,29 @@ router.get("/:id/full", (req, res) => {
 // POST new trip
 router.post("/", (req, res) => {
   console.log("Creating new trip with data:", req.body);
-  const { name, startDate, endDate, notes, type } = req.body;
+  const { name, startDate, endDate, tripNotes, type } = req.body;
 
   const stmt = db.prepare(`
-    INSERT INTO trips (name, startDate, endDate, notes, type)
+    INSERT INTO trips (name, startDate, endDate, tripNotes, type)
     VALUES (?, ?, ?, ?, ?)
   `);
 
-  const result = stmt.run(name, startDate, endDate, notes, type);
+  const result = stmt.run(name, startDate, endDate, tripNotes, type);
   res.json({ id: result.lastInsertRowid });
 });
 
 // PATCH update trip
 router.patch("/:id", (req, res) => {
   console.log("Patching trip", req.params.id, req.body);
-  const { name, startDate, endDate, notes, type } = req.body;
+  const { name, startDate, endDate, tripNotes, type } = req.body;
 
   const stmt = db.prepare(`
     UPDATE trips
-    SET name = ?, startDate = ?, endDate = ?, notes = ?, type = ?
+    SET name = ?, startDate = ?, endDate = ?, tripNotes = ?, type = ?
     WHERE id = ?
   `);
 
-  stmt.run(name, startDate, endDate, notes, type, req.params.id);
+  stmt.run(name, startDate, endDate, tripNotes, type, req.params.id);
   res.json({ success: true });
 });
 
@@ -68,7 +68,7 @@ router.post("/import", (req, res) => {
   }
 
   const stmt = db.prepare(`
-    INSERT INTO trips (name, startDate, endDate, notes, type)
+    INSERT INTO trips (name, startDate, endDate, tripNotes, type)
     VALUES (?, ?, ?, ?, ?)
   `);
 
@@ -81,7 +81,7 @@ router.post("/import", (req, res) => {
           t.name,
           t.startDate,
           t.endDate,
-          t.notes,
+          t.tripNotes,
           t.type
         );
         insertedIds.push(result.lastInsertRowid);

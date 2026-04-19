@@ -5,11 +5,11 @@ import { deleteSegment } from "../api/index";
 
 import "../styles/SegmentDetailScreen.css";
 
-export default function SegmentDetailScreen({ 
-  segment, 
-  onEdit, 
-  onClose, 
-  onRefresh 
+export default function SegmentDetailScreen({
+  segment,
+  onEdit,
+  onClose,
+  onRefresh
 }) {
   if (!segment) return null;
 
@@ -43,7 +43,9 @@ export default function SegmentDetailScreen({
       {segment.notes && (
         <div className="sd-notes">
           <h3>Notes</h3>
-          <Markdown>{segment.notes}</Markdown>
+          <div className="markdown-text">
+            <Markdown>{segment.notes}</Markdown>
+          </div>
         </div>
       )}
 

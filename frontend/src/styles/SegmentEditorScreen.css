@@ -40,7 +40,6 @@
 .se-field {
   display: flex;
   flex-direction: column;
-  flex: 1;
 }
 
 .se-field textarea {
@@ -74,12 +73,12 @@
 
 /* Footer buttons */
 .se-actions {
-  display: flex;
-  justify-content: flex-end;
+/*  display: flex;
+  justify-content: flex-start; */
   gap: 12px;
   margin-top: 12px;
 }
-
+/*
 .se-btn {
   padding: 8px 16px;
   border-radius: 6px;
@@ -96,3 +95,4 @@
 .se-btn.cancel {
   background: #ddd;
 }
+*/

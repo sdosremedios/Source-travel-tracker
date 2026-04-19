@@ -24,7 +24,7 @@ export default function TripEditorScreen({
     name: trip?.name || "",
     startDate: trip?.startDate || "",
     endDate: trip?.endDate || "",
-    notes: trip?.notes || "",
+    tripNotes: trip?.tripNotes || "",
     type: trip?.type || "travel"
   });
 
@@ -131,8 +131,8 @@ export default function TripEditorScreen({
       <label className="te-label">Notes</label>
       <textarea
         className="te-textarea"
-        value={local.notes}
-        onChange={e => updateField("notes", e.target.value)}
+        value={local.tripNotes}
+        onChange={e => updateField("tripNotes", e.target.value)}
       />
 
       {/* Buttons */}

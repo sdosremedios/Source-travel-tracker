@@ -102,4 +102,22 @@ router.patch("/:id", (req, res) => {
   res.json({ ...updatedSegment, kind: "segment" }); // ⭐ Return the full updated segment plus kind
 });
 
+router.delete("/:id", (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const stmt = db.prepare("DELETE FROM segments WHERE id = ?");
+    const result = stmt.run(id);
+
+    if (result.changes === 0) {
+      return res.status(404).json({ error: "Segment not found" });
+    }
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Delete error:", err);
+    res.status(500).json({ error: "Failed to delete segment" });
+  }
+});
+
 export default router;

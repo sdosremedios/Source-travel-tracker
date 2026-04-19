@@ -36,13 +36,13 @@ export default function TripDetailScreen({
   function handleSelectItem(item) {
     console.log("Selected timeline item:", item);
 
-    if (item.kind === "segment") {
-      onSelectItem(item);
-    } else if (item.kind === "tour") {
-      onSelectItem(item);
-    } else if (item.kind === "note") {
-      onSelectItem(item);
-    }
+    onSelectItem(item);
+
+    requestAnimationFrame(() => {
+      if (rightPaneRef.current) {
+        rightPaneRef.current.scrollTop = 0;
+      }
+    });
   }
 
   async function handleDeleteTrip(id) {
@@ -59,7 +59,7 @@ export default function TripDetailScreen({
 
   console.log("TripDetailScreen with: ", trip)
   return (
-    <div className="trip-detail-screen">
+    <div className="trip-detail-screen ref={rightPaneRef}">
       <div className="td-upper-section">
         <div className="td-header">
           <h1 className="td-title">
@@ -97,13 +97,17 @@ export default function TripDetailScreen({
         <div className="td-dates">
           {formatDate(trip.startDate)} → {formatDate(trip.endDate)}
         </div>
-        <h3
-          className="note-header"
-          onClick={() => setTripNotes(v => !v)}
-        >
-          {showNotes ? actionIcon("hide") : actionIcon("show")} Trip Notes
-        </h3>
-        {showNotes && (
+        {trip.tripNotes.trim() && (
+          <>
+            <h3
+              className="note-header"
+              onClick={() => setTripNotes(v => !v)}
+            >
+              {showNotes ? actionIcon("hide") : actionIcon("show")} Trip Notes
+            </h3>
+          </>
+        )}
+        {showNotes && trip.tripNotes.trim() && (
           <>
             <div className="td-markdown">
               <Markdown>{trip.tripNotes.trim()}</Markdown>

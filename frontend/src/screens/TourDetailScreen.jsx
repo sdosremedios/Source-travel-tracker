@@ -46,7 +46,9 @@ export default function TourDetailScreen({
       {tour.notes && (
         <div className="tds-notes">
           <h3>Notes</h3>
-          <Markdown>{tour.notes}</Markdown>
+          <div className="markdown-text">
+            <Markdown>{tour.notes}</Markdown>
+          </div>
         </div>
       )}
 

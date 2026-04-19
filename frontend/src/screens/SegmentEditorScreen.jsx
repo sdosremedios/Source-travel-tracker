@@ -39,11 +39,11 @@ export default function SegmentEditorScreen({
       ? `/api/segments/${segment.id}`
       : `/api/segments`;
 
-    isEditing ? await updateSegment(segment.id, segment) : await createSegment(segment);
+    isEditing ? await updateSegment(segment.id, local) : await createSegment(local);
 
 
     // Notify parent to refresh timeline
-    onRefresh();
+    onRefresh(local);
 
     // Desktop workflow: keep editor open
     // Mobile workflow: parent decides whether to close

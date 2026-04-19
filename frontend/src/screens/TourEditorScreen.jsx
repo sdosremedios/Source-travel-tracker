@@ -77,7 +77,7 @@ export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) 
     console.log("Saving tour with data:", local);
     local.id ? updateTour(local.id, local) : createTour(local);
 
-    onRefresh(local.tripId);
+    onRefresh(local);
   }
 
   // ---------------------------------------

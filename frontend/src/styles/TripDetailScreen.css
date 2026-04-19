@@ -69,21 +69,6 @@
   opacity: 0.7;
 }
 
-/* Notes block */
-.td-notes,
-.sd-notes p,
-.tds-notes p {
-  font-size: 14px;
-  color: #444;
-  background: #f7f7f7;
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  white-space: pre-wrap;
-  line-height: 1.5;
-}
-
 /* Optional: subtle label above notes */
 .td-notes-label {
   font-size: 12px;
@@ -97,34 +82,6 @@
 .td-trip-icon {
   margin-right: 8px;
   font-size: 2rem;
-}
-
-.sd-notes p,
-.tds-notes p,
-.td-markdown,
-.td-notes
- {
-  flex: none;
-  /* ⭐ THIS COLUMN EXPANDS */
-  text-align: left;
-  /* left-align the note */
-  font-size: 16px;
-  color: var(--color-markdown-text);
-  font-style: normal;
-  margin-top: 10px;
-  background: var(--color-markdown-bg);
-  padding: 10px;
-  /* align visually with date */
-}
-
-.td-markdown ol,
-.td-markdown ul {
-  padding-left: 24px;
-}
-
-.td-markdown pre {
-  background-color: var(--color-markdown-bg);
-  padding: 10px;
 }
 
 .note-header {

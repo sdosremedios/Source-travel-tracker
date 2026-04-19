@@ -19,7 +19,7 @@ export default function TripListScreen({
 
     if (query.trim()) {
       const q = query.toLowerCase();
-      result = result.filter(t => t.name.toLowerCase().includes(q));
+      result = result.filter(t => (t.name || "").toLowerCase().includes(q));
     }
 
     if (filterCategory) {
@@ -87,9 +87,8 @@ export default function TripListScreen({
               return (
                 <div
                   key={trip.id}
-                  className={`tls-row ${
-                    isSelected ? "selected" : ""
-                  } ${isCursor ? "cursor" : ""}`}
+                  className={`tls-row ${isSelected ? "selected" : ""
+                    } ${isCursor ? "cursor" : ""}`}
                   onClick={() => onSelectTrip(trip.id)}
                 >
                   <div className="tls-icon">{tripIcon(trip)}</div>
