@@ -179,8 +179,8 @@ export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) 
 
       {/* SAVE / CANCEL */}
       <div className="editor-buttons">
-        <button className="editor-save" onClick={handleSave}>Save</button>
-        <button className="editor-cancel" onClick={onClose}>Cancel</button>
+        <button className="save" onClick={handleSave}>Save</button>
+        <button className="cancel" onClick={onClose}>Cancel</button>
       </div>
     </div>
   );

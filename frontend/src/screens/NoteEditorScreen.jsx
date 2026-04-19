@@ -69,15 +69,18 @@ export default function NoteEditorScreen({
       />
 
       <label>Note</label>
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-      />
+      <div
+      >
+        <textarea
+          className="markdown-text"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+        />
+      </div>
 
       <div className="editor-actions">
         <button onClick={handleSave}>Save</button>
         <button onClick={onCancel}>Cancel</button>
-        <button onClick={onClose}>Close</button>
       </div>
     </div>
   );

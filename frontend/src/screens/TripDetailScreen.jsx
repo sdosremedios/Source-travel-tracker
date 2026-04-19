@@ -5,9 +5,10 @@ import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
 import { tripIcon, actionIcon } from "../utils/icons";
 import { deleteTrip } from "../api";
 import { formatDate } from "../utils/dateHelpers";
+import { createItem } from "../api/createItem";
 
 import "../styles/TripDetailScreen.css";
-import "../styles/timeline.css";
+import "../styles/TimelineRow.css";
 
 export default function TripDetailScreen({
   trip,
@@ -68,19 +69,35 @@ export default function TripDetailScreen({
           </h1>
 
           <div className="td-actions">
+
             <button className="td-btn icon" onClick={() => openTripEditor(trip.id)}>
               {actionIcon("edit")} Edit
             </button>
 
-            <button className="td-btn icon" onClick={() => openSegmentEditor(trip.id)}>
+            <button className="td-btn icon"
+              onClick={() => {
+                const newSeg = createItem("segment", trip.id);
+                openItemEditor(newSeg);
+              }}
+            >
               {actionIcon("add")} Segment
             </button>
 
-            <button className="td-btn icon" onClick={() => openTourEditor(trip.id)}>
+            <button className="td-btn icon"
+              onClick={() => {
+                const newTour = createItem("tour", trip.id);
+                openItemEditor(newTour);
+              }}
+            >
               {actionIcon("add")} Tour
             </button>
 
-            <button className="td-btn icon" onClick={() => handleAddNote(trip.id)}>
+            <button className="td-btn icon"
+              onClick={() => {
+                const newNote = createItem("note", trip.id);
+                openItemEditor(newNote);
+              }}
+            >
               {actionIcon("add")} Note
             </button>
 
@@ -109,7 +126,7 @@ export default function TripDetailScreen({
         )}
         {showNotes && trip.tripNotes.trim() && (
           <>
-            <div className="td-markdown">
+            <div className="markdown-text">
               <Markdown>{trip.tripNotes.trim()}</Markdown>
             </div>
           </>

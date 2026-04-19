@@ -141,11 +141,14 @@ export default function SegmentEditorScreen({
 
       <div className="se-field">
         <label>Notes</label>
-        <textarea
-          value={local.notes}
-          onChange={e => update("notes", e.target.value)}
-        />
+        <div className="markdown-text">
+          <textarea
+            value={local.notes}
+            onChange={e => update("notes", e.target.value)}
+          />
+        </div>
       </div>
+
 
       <div className="se-actions">
         <button className="se-btn save" onClick={handleSave}>

@@ -62,6 +62,12 @@ CREATE TABLE IF NOT EXISTS notes (
     note     TEXT
 );
 
+CREATE TABLE IF NOT EXISTS templates (
+    id       INTEGER  PRIMARY KEY AUTOINCREMENT,
+    name     TEXT,
+    template TEXT
+);
+
 `);
 
 export default db;

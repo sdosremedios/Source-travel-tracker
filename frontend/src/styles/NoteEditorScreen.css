@@ -9,7 +9,7 @@
   padding: 16px 20px;
   background: #ffffff;
   border-radius: 6px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
   /*max-width: 520px;*/
   width: 100%;
   box-sizing: border-box;
@@ -35,8 +35,7 @@
   margin-bottom: 4px;
 }
 
-.note-editor-screen input[type="datetime-local"],
-.note-editor-screen textarea {
+.note-editor-screen input[type="datetime-local"] {
   width: 100%;
   box-sizing: border-box;
   border: 1px solid #d0d0d0;
@@ -47,22 +46,22 @@
   background: #fafafa;
 }
 
-.note-editor-screen input[type="datetime-local"]:focus,
-.note-editor-screen textarea:focus {
+.note-editor-screen input[type="datetime-local"]:focus {
   outline: none;
   border-color: #4a90e2;
   background: #ffffff;
 }
 
+/*
 .note-editor-screen textarea {
   min-height: 140px;
   resize: vertical;
   line-height: 1.4;
 }
-
+*/
 .note-editor-screen .editor-actions {
   display: flex;
-/*  justify-content: flex-end; */
+  /*  justify-content: flex-end; */
   gap: 8px;
   margin-top: 8px;
 }

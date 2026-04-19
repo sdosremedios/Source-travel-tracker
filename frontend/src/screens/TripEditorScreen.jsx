@@ -129,11 +129,13 @@ export default function TripEditorScreen({
 
       {/* Notes */}
       <label className="te-label">Notes</label>
-      <textarea
-        className="te-textarea"
-        value={local.tripNotes}
-        onChange={e => updateField("tripNotes", e.target.value)}
-      />
+      <div>
+        <textarea
+          className="markdown-text"
+          value={local.tripNotes}
+          onChange={e => updateField("tripNotes", e.target.value)}
+        />
+      </div>
 
       {/* Buttons */}
       <div className="te-buttons">

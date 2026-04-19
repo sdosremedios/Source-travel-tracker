@@ -1,3 +1,94 @@
+/* Container */
+.timeline-container {
+  padding: 8px 0;
+  background-color: var(--color-timeline-bg);
+  color: var(--color-timeline-text);
+  
+}
+
+/* Sticky Month Header */
+.timeline-month-header {
+  position: sticky;
+  top: 0;
+  background: var(--pane-bg);
+  background: var(--color-row-head);
+  padding: 6px 12px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 1px solid var(--border);
+  z-index: 5;
+}
+
+/* Day Divider */
+.timeline-day-divider {
+  background-color: #eee;
+  background: var(--color-row-subhead);
+  margin-top: 8px;
+  padding: 4px 12px;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  border-left: 2px solid var(--border);
+  font-weight: bold;
+}
+
+/* Timeline Row */
+.timeline-row {
+  display: flex;
+  gap: 12px;
+  padding: 8px 12px;
+  margin: 4px 0;
+  background: var(--row-bg);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.timeline-row:hover {
+  background: var(--row-hover-bg);
+}
+
+.timeline-row.active {
+  background: var(--row-active-bg);
+  outline: 1px solid var(--accent);
+}
+
+/* Icon */
+.timeline-row-icon {
+  font-size: 32px;
+  /*
+  width: 28px;
+  text-align: left;
+  width: 32px;
+  height: 28px;
+  */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.8;
+  flex-shrink:  0;
+}
+
+/* Content */
+.timeline-row-title {
+  font-weight: 500;
+}
+
+.timeline-row-meta {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+/* Inline Editing */
+.timeline-edit-input {
+  width: 100%;
+  font-size: 1rem;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
 .timeline-row {
   display: flex;
   flex-direction: row;
@@ -12,32 +103,24 @@
   background: #fafafa;
 }
 
-.timeline-row-icon {
-  width: 32px;
-  height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  opacity: 0.8;
-  flex-shrink:  0;
-}
-
+/*
 .timeline-row-content {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  flex: 1 1 auto;   /* ⭐ DO NOT GROW */
+  flex: 1 1 auto;   
   width: 25%;
 }
-
+*/
 .timeline-row-title {
   font-size: 14px;
   font-weight: 600;
   color: #222;
   text-transform: capitalize;
 }
-
+.tr-sub{
+  min-width: 64px;
+}
 .timeline-row-meta {
   display: flex;
   flex-direction: column;
@@ -67,6 +150,7 @@
   color: #555;
   word-wrap: normal;
   text-transform: capitalize;
+  margin-bottom: 10px;
 }
 
 .timeline-row-note {

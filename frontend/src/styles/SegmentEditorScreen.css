@@ -1,7 +1,5 @@
 /* Root container */
 .se-pane {
-  display: flex;
-  flex-direction: column;
   padding: 24px;
   gap: 20px;
   height: 100%;
@@ -39,14 +37,17 @@
 /* Individual field */
 .se-field {
   display: flex;
+  flex: 1;
   flex-direction: column;
 }
 
+/*
 .se-field textarea {
   height: 180px;
   min-height: 180px;
   resize: vertical;
 }
+*/
 .se-label {
   font-size: 12px;
   font-weight: 500;
@@ -56,8 +57,7 @@
 
 /* Inputs */
 .se-input,
-.se-select,
-.se-textarea {
+.se-select {
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -65,19 +65,22 @@
   background: white;
 }
 
+/*
 .se-textarea {
   height: 180px;
   min-height: 180px;
   resize: vertical;
 }
-
+*/
 /* Footer buttons */
 .se-actions {
-/*  display: flex;
-  justify-content: flex-start; */
-  gap: 12px;
-  margin-top: 12px;
+  display: flex;
+  justify-content: left;
+  gap: 8px;
+  padding: 10px;
 }
+
+*/
 /*
 .se-btn {
   padding: 8px 16px;

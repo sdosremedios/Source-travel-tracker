@@ -28,7 +28,7 @@
 }
 
 .td-lower-section {
-  background: #f8f8f8;
+  background-color: var(--color-row-bg);
   padding: 14px;
 }
 
@@ -97,9 +97,10 @@
 .note-header:hover {
   color: #446;
 }
-
+/*
 .td-markdown {
   flex: auto;
   padding: 0 10px 10px 10px;
   margin: 0 10px 10px 0;
 }
+  */

@@ -33,7 +33,9 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
       </div>
 
       {/* Note text ----------------------------------------------------------- */}
-      <Markdown>{note.note}</Markdown>
+      <div className="markdown-text">
+        <Markdown>{note.note}</Markdown>
+      </div>
 
       {/* Buttons ------------------------------------------------------------- */}
       <div className="nd-buttons">

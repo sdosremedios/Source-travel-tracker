@@ -1,6 +1,15 @@
 :root {
+    /* Color Palette */
+    --color-blue:#0078d4;
+    --color-lt-blue: rgb(220, 235, 255);
+    --color-pale-blue: rgb(230, 240, 255);
+    --color-dark-gray:#555;
+    --color-gray:#888;
+    --color-light-gray:#dadada;
+    --color-pale-gray:#eaeaea;
+
     /* Brand colors */
-    --color-primary: #0078d4;
+    --color-primary: var(--color-blue);
     --color-primary-hover: #bbb;
     --color-primary-active: #799eda;
     --color-primary-text: #eee;
@@ -15,6 +24,10 @@
     --color-dark-text: #222;
     --color-light-text: #eee;
     --color-danger: #ff5050;
+
+    --color-row-head: var(--color-light-gray);
+    --color-row-subhead: var(--color-pale-gray);
+    --color-row-bg: #f9f9f9;
 
     /* Buttons */
     --color-btn-bg: #ddd;
@@ -47,14 +60,22 @@
     --color-btn-close-hover-bg: #799eda;
     --color-btn-close-hover-text: var(--color-primary-text);
 
-    --color-btn-save-bg: #0078d4;
+    --color-btn-save-bg: var(--color-primary);
     --color-btn-save-text: white;
     --color-btn-save-hover-bg: #006cbe;
     --color-btn-save-hover-text: var(--color-primary-text);
 
     /* Markdown */
     --color-markdown-bg: #ffffee;
-    --color-markdown-text: #222;
+    --color-markdown-text: var(--color-dark-text);
+
+    /* Triplist */
+    --color-triplist-accent: var(--color-lt-blue);
+    --color-triplist-highlight: var(--color-pale-blue);
+
+    /* Timeline */
+    --color-timeline-bg: transparent;
+    --color-timeline-text: var(--color-dark-text);
 
     /* Neutral palette */
     --color-bg: #f7f9fc;

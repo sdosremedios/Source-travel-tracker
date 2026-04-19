@@ -23,8 +23,8 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="tr-icon">📝</div>
-        <div className="tr-main">
+        <div className="timeline-row-icon">📝</div>
+        <div className="timeline-row-content">
           <div className="tr-sub">{formatTime(item.dateTime)}</div>
         </div>
         <div className="markdown-text">
@@ -86,12 +86,12 @@ export default function TimelineRow({
           <div className="timeline-row-subtitle">{item.category} Tour</div>
           <div className="timeline-row-location">{item.location}</div>
 
+        </div>
           {item.notes && (
             <div className="markdown-text">
               <Markdown>{item.notes}</Markdown>
             </div>
           )}
-        </div>
       </div>
     );
   }

@@ -17,6 +17,7 @@ div.app-header {
 }
 
 .tls-search {
+  display: none;
   padding: 12px;
   border-bottom: 1px solid #ddd;
 }
@@ -48,12 +49,12 @@ div.app-header {
 }
 
 .tls-item.selected {
-  background: #e6f1fb;
+  background: var(--color-triplist-highlight);
   font-weight: 600;
 }
 
 .tls-item.cursor {
-  background: #dcecff;
+  background: var(--color-triplist-accent);
 }
 
 .tls-icon {
