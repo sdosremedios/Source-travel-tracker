@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { loadTrips, createTrip, updateTrip } from "../api";
 import { normalizeDate, isValidDateString, isChronological } from "../utils/dateHelpers";
+import { fetchTemplates } from "../api";
 import "../styles/TripEditorScreen.css";
 
 const TRIP_TYPE_ICONS = {
@@ -13,27 +14,35 @@ const TRIP_TYPE_ICONS = {
 };
 
 export default function TripEditorScreen({
-  trip,
+  activeItem,
+  setActiveItem,
   onClose,
   onSave
 }) {
-  const isEditing = Boolean(trip);
+  const isEditing = Boolean(activeItem);
+  /*
+    const [local, setLocal] = useState({
+      tripId: activeItem?.id || null,
+      name: activeItem?.name || "",
+      startDate: activeItem?.startDate || "",
+      endDate: activeItem?.endDate || "",
+      tripNotes: activeItem?.tripNotes || "",
+      type: activeItem?.type || "travel",
+      notes: activeItem?.notes || ""
+    });
+  */
+  const [templates, setTemplates] = useState([]);
+  useEffect(() => {
+    fetchTemplates("trip").then(setTemplates).catch(console.error);
+  }, []);
 
-  const [local, setLocal] = useState({
-    tripId: trip?.id || null,
-    name: trip?.name || "",
-    startDate: trip?.startDate || "",
-    endDate: trip?.endDate || "",
-    tripNotes: trip?.tripNotes || "",
-    type: trip?.type || "travel"
-  });
 
   function updateField(field, value) {
     setLocal(prev => ({ ...prev, [field]: value }));
   }
 
   async function handleSave() {
-    let { startDate, endDate } = local;
+    let { startDate, endDate } = activeItem;
 
     // Normalize first
     startDate = normalizeDate(startDate);
@@ -58,18 +67,18 @@ export default function TripEditorScreen({
       return;
     }
 
-    const id = local?.tripId ?? null;
+    const id = activeItem?.tripId ?? null;
     let tripObj = null;
 
     if (id === null) {
       // CREATE
-      tripObj = await createTrip(local);
+      tripObj = await createTrip(activeItem);
     } else {
       // UPDATE
-      tripObj = await updateTrip(id, local);
+      tripObj = await updateTrip(id, activeItem);
     }
     // Save normalized values
-    onSave(local);
+    onSave(activeItem);
   }
 
   //console.log("Rendering TripEditorScreen with local state:", local);
@@ -83,12 +92,12 @@ export default function TripEditorScreen({
       <label className="te-label">Trip Type</label>
       <div className="te-type-row">
         <span className="te-type-icon">
-          {TRIP_TYPE_ICONS[local.type]}
+          {TRIP_TYPE_ICONS[activeItem.type]}
         </span>
 
         <select
           className="te-input te-type-select"
-          value={local.type}
+          value={activeItem.type}
           onChange={e => updateField("type", e.target.value)}
         >
           <option value="travel">✈️ Travel</option>
@@ -105,7 +114,7 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="text"
-        value={local.name}
+        value={activeItem.name}
         onChange={e => updateField("name", e.target.value)}
       />
 
@@ -114,7 +123,7 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="date"
-        value={local.startDate}
+        value={activeItem.startDate}
         onChange={e => updateField("startDate", e.target.value)}
       />
 
@@ -123,20 +132,40 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="date"
-        value={local.endDate}
+        value={activeItem.endDate}
         onChange={e => updateField("endDate", e.target.value)}
       />
 
       {/* Notes */}
       <label className="te-label">Notes</label>
       <div>
-        <textarea
-          className="markdown-text"
-          value={local.tripNotes}
-          onChange={e => updateField("tripNotes", e.target.value)}
-        />
+        < div className="template-buttons" >
+          {
+            templates.map(t => (
+              <button
+                key={t.id}
+                className="template-button"
+                onClick={() => {
+                  setActiveItem(prev => ({
+                    ...prev,
+                    note: (prev.note || "") + "\n\n" + t.template
+                  }));
+                }}
+              >
+                {t.icon} {t.name}
+              </button>
+            ))
+          }
+        </div >
+        <div className="markdown-text">
+          <textarea
+            value={activeItem.note || ""}
+            onChange={e =>
+              setActiveItem(prev => ({ ...prev, note: e.target.value }))
+            }
+          />
+        </div>
       </div>
-
       {/* Buttons */}
       <div className="te-buttons">
         <button className="te-btn save" onClick={handleSave}>

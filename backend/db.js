@@ -63,7 +63,9 @@ CREATE TABLE IF NOT EXISTS notes (
 );
 
 CREATE TABLE IF NOT EXISTS templates (
-    id       INTEGER  PRIMARY KEY AUTOINCREMENT,
+    id       INTEGER PRIMARY KEY AUTOINCREMENT,
+    type     TEXT    DEFAULT segment,
+    icon     TEXT    DEFAULT ('📝'),
     name     TEXT,
     template TEXT
 );

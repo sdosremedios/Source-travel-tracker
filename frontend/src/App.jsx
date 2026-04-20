@@ -29,7 +29,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.3.1";
+  const appVersion = "0.3.2";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -115,7 +115,7 @@ export default function App() {
 
   function hydrateItem(item) {
     if (!item) return null;
-    //console.log("HydrateItem receives item:", item);
+    console.log("HydrateItem receives item:", item);
 
     const id = Number(item.id);
     const kind = item.kind || item.type;
@@ -180,13 +180,13 @@ export default function App() {
     });
   }, [selectedTripId]);
 
-useEffect(() => {
-  requestAnimationFrame(() => {
-    if (rightPaneRef.current) {
-      rightPaneRef.current.scrollTop = 0;
-    }
-  });
-}, [activeScreen, activeItem?.id]);
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      if (rightPaneRef.current) {
+        rightPaneRef.current.scrollTop = 0;
+      }
+    });
+  }, [activeScreen, activeItem?.id]);
 
   // ------------------------------------------------------------
   // Unified Navigation: Detail
@@ -225,7 +225,7 @@ useEffect(() => {
       console.log("Opening NEW editor for item:", item);
       setSelectedTripId(item.tripId);
       setActiveItem({
-        name: "(untitled)",   // ⭐ required because DB requires NOT NULL
+        name: "(untitled)",
         ...item
       });
 
@@ -422,7 +422,9 @@ useEffect(() => {
 
         {activeScreen === "tripEditor" && (
           <TripEditorScreen
-            trip={activeItem}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
+            //trip={activeItem}
             onClose={closeOverlay}
             onSave={async (trip) => {
               console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", trip);
@@ -499,8 +501,8 @@ useEffect(() => {
         )}
         {activeScreen === "noteEditor" && (
           <NoteEditorScreen
-            tripId={activeTrip.id}
-            note={activeItem}
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
             onCancel={closeOverlay}
             onRefresh={async (updatedNote) => {
               console.log("NoteEditorScreen refreshNotes", updatedNote);

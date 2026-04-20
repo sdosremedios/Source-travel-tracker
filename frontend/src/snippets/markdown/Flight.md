@@ -1,0 +1,1 @@
+Flight ` *flight number `; Seats ` x `, ` x `; Booking ` x `; see notes for more info.

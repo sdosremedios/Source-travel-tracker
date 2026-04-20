@@ -39,7 +39,18 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
 
       {/* Buttons ------------------------------------------------------------- */}
       <div className="nd-buttons">
-        <button className="nd-btn edit" onClick={() => onEdit(note)}>
+        <button
+          className="nd-btn edit"
+          onClick={() =>
+            onEdit({
+              id: note.id,
+              kind: "note",
+              tripId: note.tripId,
+              dateTime: note.dateTime,
+              note: note.note || ""
+            })
+          }
+        >
           Edit
         </button>
 

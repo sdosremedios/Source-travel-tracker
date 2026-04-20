@@ -1,12 +1,12 @@
 :root {
     /* Color Palette */
-    --color-blue:#0078d4;
+    --color-blue: #0078d4;
     --color-lt-blue: rgb(220, 235, 255);
     --color-pale-blue: rgb(230, 240, 255);
-    --color-dark-gray:#555;
-    --color-gray:#888;
-    --color-light-gray:#dadada;
-    --color-pale-gray:#eaeaea;
+    --color-dark-gray: #555;
+    --color-gray: #888;
+    --color-light-gray: #dadada;
+    --color-pale-gray: #eaeaea;
 
     /* Brand colors */
     --color-primary: var(--color-blue);

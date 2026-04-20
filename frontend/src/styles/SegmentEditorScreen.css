@@ -41,13 +41,6 @@
   flex-direction: column;
 }
 
-/*
-.se-field textarea {
-  height: 180px;
-  min-height: 180px;
-  resize: vertical;
-}
-*/
 .se-label {
   font-size: 12px;
   font-weight: 500;
@@ -65,13 +58,7 @@
   background: white;
 }
 
-/*
-.se-textarea {
-  height: 180px;
-  min-height: 180px;
-  resize: vertical;
-}
-*/
+
 /* Footer buttons */
 .se-actions {
   display: flex;
@@ -79,23 +66,3 @@
   gap: 8px;
   padding: 10px;
 }
-
-*/
-/*
-.se-btn {
-  padding: 8px 16px;
-  border-radius: 6px;
-  border: none;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-.se-btn.save {
-  background: #0078d4;
-  color: white;
-}
-
-.se-btn.cancel {
-  background: #ddd;
-}
-*/

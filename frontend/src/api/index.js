@@ -117,6 +117,18 @@ export async function deleteTour(id) {
   });
   return res.json();
 }
+//
+// Templates
+//
+export async function fetchTemplates(type) {
+  const url = type
+    ? `/api/templates?type=${encodeURIComponent(type)}`
+    : `/api/templates`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Failed to load templates");
+  return res.json();
+}
 
 export async function loadNotesForTrip(tripId) {
   console.log("loadNotesForTrip CALLED with tripId:", tripId);

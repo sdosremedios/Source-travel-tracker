@@ -1,23 +1,28 @@
 import React, { useState, useEffect } from "react";
 import { createNote, updateNote } from "../api";
+import { fetchTemplates } from "../api";
 import "../styles/NoteEditorScreen.css";
 
 export default function NoteEditorScreen({
-  tripId,
-  note,
+  activeItem,
+  setActiveItem,
   onCancel,
   onRefresh,
   onClose
 }) {
-  const isEditing = !!note?.id;
+  const isEditing = !!activeItem?.id;
 
-  const [text, setText] = useState(note?.note || "");
   const [dateTime, setDateTime] = useState("");
 
   // --- Load existing note (UTC → local) ---
   useEffect(() => {
-    if (note?.dateTime) {
-      const d = new Date(note.dateTime); // stored UTC → converted to local
+  if (activeItem && activeItem.note === undefined) {
+    setActiveItem(prev => ({ ...prev, note: "" }));
+  }
+}, [activeItem, setActiveItem]);
+useEffect(() => {
+    if (activeItem?.dateTime) {
+      const d = new Date(activeItem.dateTime); // stored UTC → converted to local
       const local = d
         .toLocaleString("sv-SE")        // YYYY-MM-DD HH:mm:ss (local)
         .replace(" ", "T")              // → YYYY-MM-DDTHH:mm:ss
@@ -32,28 +37,34 @@ export default function NoteEditorScreen({
         .slice(0, 16);
       setDateTime(local);
     }
-  }, [note]);
+  }, [activeItem]);
+
+  const [templates, setTemplates] = useState([]);
+
+  useEffect(() => {
+    fetchTemplates("note").then(setTemplates).catch(console.error);
+  }, []);
 
   // --- Save handler (local → UTC) ---
-  async function handleSave() {
-    const utc = new Date(dateTime).toISOString();
+async function handleSave() {
+  const utc = new Date(dateTime).toISOString();
 
-    const payload = {
-      tripId,
-      dateTime: utc,
-      note: text
-    };
+  const payload = {
+    tripId: activeItem.tripId,
+    dateTime: utc,
+    note: activeItem.note || ""
+  };
 
-    let saved;
+  let saved;
 
-    if (isEditing) {
-      saved = await updateNote(note.id, payload);
-    } else {
-      saved = await createNote(payload);
-    }
-
-    onRefresh(saved);   // return the updated note object
+  if (isEditing) {
+    saved = await updateNote(activeItem.id, payload);
+  } else {
+    saved = await createNote(payload);
   }
+
+  onRefresh(saved);
+}
 
   return (
     <div className="note-editor-screen">
@@ -69,13 +80,30 @@ export default function NoteEditorScreen({
       />
 
       <label>Note</label>
-      <div
-      >
-        <textarea
-          className="markdown-text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-        />
+      <div>
+        <div className="template-buttons">
+          {templates.map(t => (
+            <button
+              key={t.id}
+              className="template-button"
+              onClick={() => {
+                setActiveItem(prev => ({
+                  ...prev,
+                  note: (prev.note || "") + "\n\n" + t.template
+                }));
+              }}
+            >
+              {t.icon} {t.name}
+            </button>
+          ))}
+        </div>
+        <div className="markdown-text">
+          <textarea
+            value={activeItem.note || ""}
+            onChange={e =>
+              setActiveItem(prev => ({ ...prev, note: e.target.value }))
+            }
+          /></div>
       </div>
 
       <div className="editor-actions">
