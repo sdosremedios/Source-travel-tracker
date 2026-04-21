@@ -4,7 +4,7 @@ import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 import { updateTour, createTour } from "../api/index";
 
-export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) {
+export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
   // ---------------------------------------
   // 1. INITIALIZE LOCAL STATE (ONCE)
   // ---------------------------------------
@@ -84,9 +84,15 @@ export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) 
   // 5. RENDER
   // ---------------------------------------
   return (
-    <div className="editor">
-      <h2 className="editor-title">Edit Tour</h2>
-
+    <div className="tour-editor-screen">
+      <div className="header">
+        <h2 className="editor-title">Edit Tour</h2>
+        {/* SAVE / CANCEL */}
+        <div className="buttons">
+          <button className="save" onClick={handleSave}>Save</button>
+          <button className="cancel" onClick={onClose}>Cancel</button>
+        </div>
+      </div>
       {/* NAME */}
       <div className="editor-row">
         <label className="editor-label">Name</label>
@@ -177,11 +183,6 @@ export default function TourEditorScreen({ tour, tripId, onRefresh,  onClose }) 
         />
       </div>
 
-      {/* SAVE / CANCEL */}
-      <div className="editor-buttons">
-        <button className="save" onClick={handleSave}>Save</button>
-        <button className="cancel" onClick={onClose}>Cancel</button>
-      </div>
     </div>
   );
 }

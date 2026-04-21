@@ -16,11 +16,11 @@ export default function NoteEditorScreen({
 
   // --- Load existing note (UTC → local) ---
   useEffect(() => {
-  if (activeItem && activeItem.note === undefined) {
-    setActiveItem(prev => ({ ...prev, note: "" }));
-  }
-}, [activeItem, setActiveItem]);
-useEffect(() => {
+    if (activeItem && activeItem.note === undefined) {
+      setActiveItem(prev => ({ ...prev, note: "" }));
+    }
+  }, [activeItem, setActiveItem]);
+  useEffect(() => {
     if (activeItem?.dateTime) {
       const d = new Date(activeItem.dateTime); // stored UTC → converted to local
       const local = d
@@ -46,30 +46,34 @@ useEffect(() => {
   }, []);
 
   // --- Save handler (local → UTC) ---
-async function handleSave() {
-  const utc = new Date(dateTime).toISOString();
+  async function handleSave() {
+    const utc = new Date(dateTime).toISOString();
 
-  const payload = {
-    tripId: activeItem.tripId,
-    dateTime: utc,
-    note: activeItem.note || ""
-  };
+    const payload = {
+      tripId: activeItem.tripId,
+      dateTime: utc,
+      note: activeItem.note || ""
+    };
 
-  let saved;
+    let saved;
 
-  if (isEditing) {
-    saved = await updateNote(activeItem.id, payload);
-  } else {
-    saved = await createNote(payload);
+    if (isEditing) {
+      saved = await updateNote(activeItem.id, payload);
+    } else {
+      saved = await createNote(payload);
+    }
+
+    onRefresh(saved);
   }
-
-  onRefresh(saved);
-}
 
   return (
     <div className="note-editor-screen">
-      <div className="editor-header">
+      <div className="header">
         <h2>{isEditing ? "Edit Note" : "New Note"}</h2>
+        <div className="buttons">
+          <button className="save" onClick={handleSave}>Save</button>
+          <button className="cancel" onClick={onClose}>Cancel</button>
+        </div>
       </div>
 
       <label>Date & Time</label>
@@ -80,36 +84,30 @@ async function handleSave() {
       />
 
       <label>Note</label>
-      <div>
-        <div className="template-buttons">
-          {templates.map(t => (
-            <button
-              key={t.id}
-              className="template-button"
-              onClick={() => {
-                setActiveItem(prev => ({
-                  ...prev,
-                  note: (prev.note || "") + "\n\n" + t.template
-                }));
-              }}
-            >
-              {t.icon} {t.name}
-            </button>
-          ))}
-        </div>
-        <div className="markdown-text">
-          <textarea
-            value={activeItem.note || ""}
-            onChange={e =>
-              setActiveItem(prev => ({ ...prev, note: e.target.value }))
-            }
-          /></div>
+      <div className="template-buttons">
+        {templates.map(t => (
+          <button
+            key={t.id}
+            className="template-button"
+            onClick={() => {
+              setActiveItem(prev => ({
+                ...prev,
+                note: (prev.note || "") + "\n\n" + t.template
+              }));
+            }}
+          >
+            {t.icon} {t.name}
+          </button>
+        ))}
       </div>
+      <div className="markdown-edit">
+        <textarea
+          value={activeItem.note || ""}
+          onChange={e =>
+            setActiveItem(prev => ({ ...prev, note: e.target.value }))
+          }
+        /></div>
 
-      <div className="editor-actions">
-        <button onClick={handleSave}>Save</button>
-        <button onClick={onCancel}>Cancel</button>
-      </div>
     </div>
   );
 }

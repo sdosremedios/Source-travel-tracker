@@ -15,13 +15,6 @@
   margin-bottom: 16px;
 }
 
-/* Action bar */
-.td-actions {
-  display: flex;
-  gap: 8px;
-  margin: 24px 8px 24px 0;
-}
-
 .td-upper-section {
   background: #e8f2ff;
   padding: 14px;

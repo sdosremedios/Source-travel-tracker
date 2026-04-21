@@ -55,8 +55,17 @@ export default function SegmentEditorScreen({
 
   return (
     <div className="se-pane">
-      <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
-
+      <div className="header">
+        <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
+        <div className="buttons">
+          <button className="save" onClick={handleSave}>
+            Save
+          </button>
+          <button className="cancel" onClick={onCancel}>
+            Cancel
+          </button>
+        </div>
+      </div>
       <div className="se-row">
         <div className="se-field">
           <label>Mode</label>
@@ -150,14 +159,6 @@ export default function SegmentEditorScreen({
       </div>
 
 
-      <div className="se-actions">
-        <button className="se-btn save" onClick={handleSave}>
-          Save
-        </button>
-        <button className="se-btn cancel" onClick={onCancel}>
-          Cancel
-        </button>
-      </div>
     </div>
   );
 }

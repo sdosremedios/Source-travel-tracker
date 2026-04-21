@@ -16,14 +16,18 @@ export default function TripListScreen({
   const listRef = useRef(null);
 
   // Filter trips by search query
-  const filtered = trips.filter(t =>
-    t.name.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredTrips = trips.filter(t => {
+    const q = query.toLowerCase();
+    return (
+      t.name?.toLowerCase().includes(q) ||
+      t.tripNotes?.toLowerCase().includes(q)
+    );
+  });
 
   // The list includes a synthetic "New Trip" row at index 0
   const rows = [
     { type: "new" },
-    ...filtered.map(t => ({ type: "trip", trip: t }))
+    ...filteredTrips.map(t => ({ type: "trip", trip: t }))
   ];
 
   // Keep cursor in bounds
@@ -114,7 +118,7 @@ export default function TripListScreen({
     <div className="tls-root" onKeyDown={handleKey} tabIndex={0}>
 
       {/* Search */}
-      <div className="tls-search">
+      <div className="search">
         <input
           placeholder="Search trips…"
           value={query}
@@ -152,7 +156,7 @@ export default function TripListScreen({
         </div>
 
         {/* Trip rows */}
-        {filtered.map((t, i) => {
+        {filteredTrips.map((t, i) => {
           const rowIndex = i + 1; // because row 0 is "New Trip"
           const isSelected = t.id === selectedTripId;
           const isCursor = rowIndex === cursor;
@@ -167,9 +171,9 @@ export default function TripListScreen({
                 (new Date(t.startDate) <= new Date() ? " past" : " upcoming")}
               onClick={() => onSelectTrip(t.id)}
             >
-              <div className="tls-icon">{tripIcon(t)}</div>
-              <div className="tls-name">{t.name}</div>
-              <div className="tls-dates">{formatMonthYear(t.startDate)}
+              <div className="icon">{tripIcon(t)}</div>
+              <div className="name">{t.name}</div>
+              <div className="dates">{formatMonthYear(t.startDate)}
               </div>
             </div>
           );
@@ -177,7 +181,7 @@ export default function TripListScreen({
 
         {/* Empty state */}
         {trips.length === 0 && (
-          <div className="tls-empty-state">
+          <div className="empty-state">
             <div>No trips yet</div>
             <button onClick={onNewTrip}>Add your first trip</button>
           </div>

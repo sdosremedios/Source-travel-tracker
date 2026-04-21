@@ -23,25 +23,37 @@ export default function SegmentDetailScreen({
 
   console.log("SegmentDetailScreen received segment:", segment);
   return (
-    <div className="sd-pane">
+    <div className="segment-detail-screen">
       {/* Header -------------------------------------------------------------- */}
-      <div className="sd-header">
-        <div className="sd-icon">{modeIcon(segment.mode)}</div>
-        <h1 className="sd-title">
+      <div className="header">
+        <div className="icon">{modeIcon(segment.mode)}</div>
+        <h1 className="title">
           {segment.fromLocation} → {segment.toLocation}
         </h1>
+      {/* Buttons ------------------------------------------------------------- */}
+      <div className="buttons">
+        <button className="edit" onClick={() => onEdit(segment)}>
+          Edit
+        </button>
+        <button className="danger" onClick={handleDelete}>
+          Delete
+        </button>
+        <button className="close" onClick={onClose}>
+          Close
+        </button>
+      </div>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}
-      <div className="sd-meta">
+      <div className="data">
         <div><strong>Date:</strong> {segment.startDateTimeLabel} {segment.endDateTimeLabel ? "- " + segment.endDateTimeLabel : ""}</div>
-        <div><strong>Mode:</strong> <span className="sd-meta-badge">{segment.mode}</span></div>
+        <div><strong>Mode:</strong> <span className="sd-meta-badge">{modeIcon(segment.mode)} {segment.mode}</span></div>
         <div><strong>Carrier:</strong> {segment.carrier}</div>
       </div>
 
       {/* Notes --------------------------------------------------------------- */}
       {segment.notes && (
-        <div className="sd-notes">
+        <div className="notes">
           <h3>Notes</h3>
           <div className="markdown-text">
             <Markdown>{segment.notes}</Markdown>
@@ -49,18 +61,6 @@ export default function SegmentDetailScreen({
         </div>
       )}
 
-      {/* Buttons ------------------------------------------------------------- */}
-      <div className="sd-buttons">
-        <button className="sd-btn edit" onClick={() => onEdit(segment)}>
-          Edit
-        </button>
-        <button className="sd-btn danger" onClick={handleDelete}>
-          Delete
-        </button>
-        <button className="sd-btn close" onClick={onClose}>
-          Close
-        </button>
-      </div>
     </div>
   );
 }

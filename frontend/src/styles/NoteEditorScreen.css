@@ -13,8 +13,9 @@
   /*max-width: 520px;*/
   width: 100%;
   box-sizing: border-box;
+  min-height: 0;
 }
-
+/*
 .note-editor-screen .editor-header {
   display: flex;
   justify-content: space-between;
@@ -51,17 +52,15 @@
   border-color: #4a90e2;
   background: #ffffff;
 }
-
+*/
 /*
 .note-editor-screen textarea {
   min-height: 140px;
   resize: vertical;
   line-height: 1.4;
 }
-*/
 .note-editor-screen .editor-actions {
   display: flex;
-  /*  justify-content: flex-end; */
   gap: 8px;
   margin-top: 8px;
 }
@@ -89,3 +88,4 @@
 .note-editor-screen .editor-actions button:first-of-type:hover {
   background: #3b7ac0;
 }
+*/

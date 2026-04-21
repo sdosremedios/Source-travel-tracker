@@ -1,12 +1,36 @@
 :root {
+    /* flags */
+    --display-search: block;
+
+    /* Neutral palette */
+    --color-bg: #e8f2ff;
+    --color-bg-light: #e4e4ff;
+    --color-panel: #ffffff;
+    --color-border: #ddd;
+    --color-text: #222;
+
+    /* Calm accents */
+    --color-accent: #e8f0ff;
+    --color-accent-border: #c7d8ff;
+
+    --color-dark-text: var(--color-text);
+    --color-light-text: #eee;
+    --color-muted-text: #666;
+    --color-danger: #ff5050;
+
     /* Color Palette */
     --color-blue: #0078d4;
     --color-lt-blue: rgb(220, 235, 255);
     --color-pale-blue: rgb(230, 240, 255);
+
+    --color-pale-yellow: #ffffee;
+
     --color-dark-gray: #555;
     --color-gray: #888;
     --color-light-gray: #dadada;
     --color-pale-gray: #eaeaea;
+
+    --color-transparent: transparent;
 
     /* Brand colors */
     --color-primary: var(--color-blue);
@@ -20,10 +44,6 @@
     --color-primary-light-active: #eee;
     --color-primary-light-text: #222;
     --color-primary-light-border: #444;
-
-    --color-dark-text: #222;
-    --color-light-text: #eee;
-    --color-danger: #ff5050;
 
     --color-row-head: var(--color-light-gray);
     --color-row-subhead: var(--color-pale-gray);
@@ -65,26 +85,37 @@
     --color-btn-save-hover-bg: #006cbe;
     --color-btn-save-hover-text: var(--color-primary-text);
 
+    /* fonts */
+    --font-size-small: 12px;
+    --font-size-medium: 16px;
+    --font-size-large: 18px;
+
+    /* Icons */
+    --font-size-icon: 32px;
+
+    /* Data */
+    --font-size-data: var(--font-size-medium);
+
     /* Markdown */
-    --color-markdown-bg: #ffffee;
+    --color-markdown-bg: var(--color-pale-yellow);
     --color-markdown-text: var(--color-dark-text);
+    --font-size-markdown: var(--font-size-medium);
 
     /* Triplist */
     --color-triplist-accent: var(--color-lt-blue);
     --color-triplist-highlight: var(--color-pale-blue);
 
     /* Timeline */
-    --color-timeline-bg: transparent;
+    --color-timeline-bg: var(--color-transparent);
     --color-timeline-text: var(--color-dark-text);
 
-    /* Neutral palette */
-    --color-bg: #f7f9fc;
-    --color-panel: #ffffff;
-    --color-border: #dce1e8;
-    --color-text: #222;
-    --color-text-muted: #666;
+    /* margin sizes */
+    --margin-small: 4px;
+    --margin-standard: 8px;
+    --margin-large: 16px;
 
-    /* Calm accents */
-    --color-accent: #e8f0ff;
-    --color-accent-border: #c7d8ff;
+    /* padding sizes */
+    --padding-small: var(--margin-small);
+    --padding-standard: var(--margin-standard);
+    --padding-large: var(--margin-large);
 }

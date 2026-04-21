@@ -18,50 +18,51 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
   }
 
   return (
-    <div className="nd-pane">
+    <div className="note-detail-screen">
       {/* Header -------------------------------------------------------------- */}
-      <div className="nd-header">
-        <div className="nd-icon">📝</div>
-        <h1 className="nd-title">Note</h1>
-      </div>
+      <div className="header">
+        <div className="icon">📝</div>
+        <h1 className="title">Note</h1>
 
-      {/* Metadata ------------------------------------------------------------ */}
-      <div className="nd-meta">
-        <div>
-          <strong>Date:</strong> {note.dateTime}
+        {/* Metadata ------------------------------------------------------------ */}
+        <div className="data">
+          <div>
+            <strong>Date:</strong> {note.dateTime}
+          </div>
         </div>
+        {/* Buttons ------------------------------------------------------------- */}
+        <div className="buttons">
+          <button
+            className="nd-btn edit"
+            onClick={() =>
+              onEdit({
+                id: note.id,
+                kind: "note",
+                tripId: note.tripId,
+                dateTime: note.dateTime,
+                note: note.note || ""
+              })
+            }
+          >
+            Edit
+          </button>
+
+          <button className="nd-btn danger" onClick={handleDelete}>
+            Delete
+          </button>
+
+          <button className="nd-btn close" onClick={onClose}>
+            Close
+          </button>
+
+        </div>
+
+
       </div>
-
-      {/* Note text ----------------------------------------------------------- */}
-      <div className="markdown-text">
-        <Markdown>{note.note}</Markdown>
-      </div>
-
-      {/* Buttons ------------------------------------------------------------- */}
-      <div className="nd-buttons">
-        <button
-          className="nd-btn edit"
-          onClick={() =>
-            onEdit({
-              id: note.id,
-              kind: "note",
-              tripId: note.tripId,
-              dateTime: note.dateTime,
-              note: note.note || ""
-            })
-          }
-        >
-          Edit
-        </button>
-
-        <button className="nd-btn danger" onClick={handleDelete}>
-          Delete
-        </button>
-
-        <button className="nd-btn close" onClick={onClose}>
-          Close
-        </button>
-      </div>
+        {/* Note text ----------------------------------------------------------- */}
+        <div className="markdown-text">
+          <Markdown>{note.note}</Markdown>
+        </div>
     </div>
   );
 }

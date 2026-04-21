@@ -25,20 +25,32 @@ export default function TourDetailScreen({
 
   console.log("Rendering TourDetailScreen with tour:", tour);
   return (
-    <div className="tds-container">
-      <div className="tds-header">
-        <div className="tds-icon">{tourIcon(tour.category)}</div>
-        <h1 className="tds-title">{tour.name}</h1>
+    <div className="tour-detail-screen">
+      <div className="header">
+        <div className="icon">{tourIcon(tour.category)}</div>
+        <h1 className="title">{tour.name}</h1>
+        <div className="buttons">
+          <button className="edit" onClick={() => onEdit(tour)}>
+            Edit
+          </button>
+          <button className="danger" onClick={handleDelete}>
+            Delete
+          </button>
+          <button className="close" onClick={onClose}>
+            Close
+          </button>
+        </div>
+
       </div>
 
-      <div className="tds-meta">
+      <div className="data">
         <div><strong>Company:</strong> {tour.company}</div>
         <div><strong>Date:</strong> {formatDate(tour.startDate) + (tour.startTime ? " " + formatTime(tour.startTime) : "")}</div>
         <div><strong>Location:</strong> {tour.location}</div>
         <div>
           <strong>Category:</strong>
           <span className="tds-category-badge">
-            {TOUR_CATEGORIES[tour.category]}
+            {tourIcon(tour.category)} {TOUR_CATEGORIES[tour.category]}
           </span>
         </div>
       </div>
@@ -52,17 +64,6 @@ export default function TourDetailScreen({
         </div>
       )}
 
-      <div className="tds-buttons">
-        <button className="tds-btn edit" onClick={() => onEdit(tour)}>
-          Edit
-        </button>
-        <button className="tds-btn danger" onClick={handleDelete}>
-          Delete
-        </button>
-        <button className="tds-btn close" onClick={onClose}>
-          Close
-        </button>
-      </div>
     </div>
   );
 }

@@ -47,10 +47,17 @@ export default function App() {
 
 
   // Load trips on startup
-  useEffect(() => {
-    loadTrips().then(setTrips);
-  }, []);
+useEffect(() => {
+  loadTrips().then(data => {
+    console.log("loadTrips returned:", data);
+    setTrips(data);
+  });
+}, []);
 
+  // always scroll to top
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [activeScreen]);
 
   async function refreshSegments() {
     const segments = await loadSegmentsForTrip(selectedTripId);
@@ -426,16 +433,15 @@ export default function App() {
             setActiveItem={setActiveItem}
             //trip={activeItem}
             onClose={closeOverlay}
-            onSave={async (trip) => {
+            onRefesh={async (trip) => {
               console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", trip);
               const updatedTrips = await loadTrips();
               setTrips(updatedTrips);
-              setActiveItem(trip);
+              setActiveItem(updatedTrips);
               setActiveScreen("tripDetail");
             }}
           />
         )}
-
         {activeScreen === "segmentDetail" && activeItem && (
           <SegmentDetailScreen
             segment={activeItem}

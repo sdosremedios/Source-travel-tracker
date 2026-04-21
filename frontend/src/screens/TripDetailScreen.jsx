@@ -62,19 +62,19 @@ export default function TripDetailScreen({
   return (
     <div className="trip-detail-screen ref={rightPaneRef}">
       <div className="td-upper-section">
-        <div className="td-header">
-          <h1 className="td-title">
-            <span className="td-trip-icon">{tripIcon(trip)}</span>
+        <div className="header">
+          <h1 className="title">
+            <span className="icon">{tripIcon(trip)}</span>
             {trip.name}
           </h1>
 
-          <div className="td-actions">
+          <div className="actions">
 
-            <button className="td-btn icon" onClick={() => openTripEditor(trip.id)}>
+            <button className="icon" onClick={() => openTripEditor(trip.id)}>
               {actionIcon("edit")} Edit
             </button>
 
-            <button className="td-btn icon"
+            <button className="icon"
               onClick={() => {
                 const newSeg = createItem("segment", trip.id);
                 openItemEditor(newSeg);
@@ -83,7 +83,7 @@ export default function TripDetailScreen({
               {actionIcon("add")} Segment
             </button>
 
-            <button className="td-btn icon"
+            <button className="icon"
               onClick={() => {
                 const newTour = createItem("tour", trip.id);
                 openItemEditor(newTour);
@@ -92,7 +92,7 @@ export default function TripDetailScreen({
               {actionIcon("add")} Tour
             </button>
 
-            <button className="td-btn icon"
+            <button className="icon"
               onClick={() => {
                 const newNote = createItem("note", trip.id);
                 openItemEditor(newNote);
@@ -101,11 +101,11 @@ export default function TripDetailScreen({
               {actionIcon("add")} Note
             </button>
 
-            <button className="td-btn icon" onClick={() => handleDeleteTrip(trip.id)}>
+            <button className="icon" onClick={() => handleDeleteTrip(trip.id)}>
               {actionIcon("delete")} Delete
             </button>
 
-            <button className="td-btn icon" onClick={onClose}>
+            <button className="icon" onClick={onClose}>
               {actionIcon("close")} Close
             </button>
           </div>

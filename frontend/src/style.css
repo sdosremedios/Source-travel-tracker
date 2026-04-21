@@ -10,9 +10,9 @@
 /* --- Typography --------------------------------------------------------- */
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  font-size: 14px;
-  color: #222;
-  background: #f7f9fb;
+  font-size: var(--font-size-medium);
+  color: var(--color-text);
+  background: var(--color-bg);
   line-height: 1.45;
 }
 
@@ -73,37 +73,100 @@ button {
   display: flex;
   height: 100%;
   width: 100%;
+  align-items: stretch;
+  /* ⭐ critical */
   min-width: 720px;
+  min-height: 0;
   overflow: hidden;
 }
 
 .app-left {
   width: 280px;
   flex-shrink: 0;
+  min-width: 240px;
+
+  display: flex;
+  flex-direction: column;
+
+  height: 100%;
+  min-height: 0;
+
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+  background: var(--color-bg-light);
 }
 
 .app-root.editing .app-left {
   display: none;
 }
 
-.app-left {
-  /*  width: 280px; */
-  flex-shrink: 1;
-  min-width: 240px;
-  border-right: 1px solid #ddd;
-  overflow-y: auto;
-  background: #fafafa;
-}
-
 .app-right {
   flex: 1;
+  min-height: 0;
   min-width: 600px;
   /* ⭐ prevents collapsing */
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  background: white;
+  background: var(--color-bg);
   padding: 0 10px;
+}
+
+.app-root.note-editor-screen .app-left,
+.app-root.segment-editor-screen .app-left,
+.app-root.tour-editor-screen .app-left {
+  display: none;
+}
+
+/* Search */
+.search {
+  display: var(--display-search);
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+.search input {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+
+/* Action bar */
+.actions {
+  display: flex;
+  gap: 8px;
+  margin: 24px 8px 24px 0;
+  flex-direction: row;
+  margin-left: auto;
+}
+
+/* header items */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.data {
+  font-size: var(--font-size-data);
+}
+
+div.icon {
+  font-size: var(--font-size-icon);
+}
+
+/* button container */
+div.buttons {
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  padding: var(--padding-large);
+  vertical-align: center;
 }
 
 button {
@@ -194,28 +257,52 @@ button.close:hover {
 }
 
 /* Markdown block */
-.markdown-text {
-  display: block;
-  font-size: 14px;
+.markdown-text,
+.markdown-edit {
+  /*  display: flex;
+  flex: 1; */
+  font-size: var(--font-size-markdown);
   color: #444;
   background: var(--color-markdown-bg);
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   padding: 4px 8px;
-  margin-bottom: 10px;
   white-space: pre-wrap;
   line-height: 1.2;
   width: 100%;
-  min-height: 200px;
+  height: 100%;
+  min-height: 240px;
+}
+
+.markdown-edit {
+  flex: 1;
+  display: flex;
+  padding-bottom: 24px;
+  /* critical for flex children */
+}
+
+.markdown-edit textarea {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: transparent;
+  border: none;
+  padding: 8px;
+  overflow: hidden;
   resize: vertical;
 }
 
+
 .markdown-text textarea {
-  min-width: 100%;
-  min-height: 100%;
   background-color: transparent;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
   border: none;
-  padding:8px;
+  padding: 8px;
+  resize: vertical;
 }
 
 .markdown-text textarea:active {
@@ -262,6 +349,14 @@ button.close:hover {
 
 .emphasis {
   font-style: italic;
+}
+
+.left {
+  align-items: left;
+}
+
+.right {
+  align-items: right;
 }
 
 /*
