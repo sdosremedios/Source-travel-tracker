@@ -2,12 +2,17 @@ import { useState, useEffect } from "react";
 import "../styles/TourEditorScreen.css";          // ⭐ your CSS restored
 import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
-import { updateTour, createTour } from "../api/index";
+import { patchTour, postTour, fetchTemplates } from "../api/index";
 
-export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
+export default function TourEditorScreen({
+  activeItem,
+  setActiveItem,
+  onRefresh,
+  onClose }) {
   // ---------------------------------------
   // 1. INITIALIZE LOCAL STATE (ONCE)
   // ---------------------------------------
+  /*
   const [local, setLocal] = useState(() => ({
     id: tour?.id,                     // ⭐ REQUIRED
     tripId: tour?.tripId ?? tripId,
@@ -21,7 +26,6 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
     endTime: tour?.endTime ?? "",
     notes: tour?.notes ?? ""
   }));
-
   // ---------------------------------------
   // 2. RESET WHEN SWITCHING TO A NEW TOUR
   // ---------------------------------------
@@ -42,19 +46,20 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
       });
     }
   }, [tour?.id]);
+*/
 
   // ---------------------------------------
   // 3. UPDATE HELPER
   // ---------------------------------------
-  function update(field, value) {
-    setLocal(prev => ({ ...prev, [field]: value }));
-  }
+function update(field, value) {
+  setActiveItem(prev => ({ ...prev, [field]: value }));
+}
 
   // ---------------------------------------
   // 4. SAVE HANDLER (RESTORED)
   // ---------------------------------------
   function handleSave() {
-    const { startDate, startTime, endDate, endTime } = local;
+    const { startDate, startTime, endDate, endTime } = activeItem;
 
     // Optional: allow empty dates (unscheduled tours)
     const hasStart = startDate && startTime;
@@ -74,11 +79,15 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
       alert("End must be after start");
       return;
     }
-    console.log("Saving tour with data:", local);
-    local.id ? updateTour(local.id, local) : createTour(local);
+    console.log("Saving tour with data:", activeItem);
+    activeItem.id ? patchTour(activeItem.id, activeItem) : postTour(activeItem);
 
-    onRefresh(local);
+    onRefresh({ ...activeItem, kind: "tour" });
   }
+  const [templates, setTemplates] = useState([]);
+  useEffect(() => {
+    fetchTemplates("tour").then(setTemplates).catch(console.error);
+  }, []);
 
   // ---------------------------------------
   // 5. RENDER
@@ -99,7 +108,7 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
         <input
           className="editor-input"
           type="text"
-          value={local.name}
+          value={activeItem.name}
           onChange={e => update("name", e.target.value)}
         />
       </div>
@@ -110,7 +119,7 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
         <input
           className="editor-input"
           type="text"
-          value={local.company}
+          value={activeItem.company}
           onChange={e => update("company", e.target.value)}
         />
       </div>
@@ -119,7 +128,7 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
       <div className="editor-row">
         <label className="editor-label">Category</label>
         <TourCategorySelector
-          value={local.category}
+          value={activeItem.category}
           onChange={value => update("category", value)}
         />
       </div>
@@ -130,7 +139,7 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
         <input
           className="editor-input"
           type="text"
-          value={local.location}
+          value={activeItem.location}
           onChange={e => update("location", e.target.value)}
         />
       </div>
@@ -142,13 +151,13 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
           <input
             className="editor-input"
             type="date"
-            value={local.startDate}
+            value={activeItem.startDate}
             onChange={e => update("startDate", e.target.value)}
           />
           <input
             className="editor-input"
             type="time"
-            value={local.startTime}
+            value={activeItem.startTime}
             onChange={e => update("startTime", e.target.value)}
           />
         </div>
@@ -161,13 +170,13 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
           <input
             className="editor-input"
             type="date"
-            value={local.endDate}
+            value={activeItem.endDate}
             onChange={e => update("endDate", e.target.value)}
           />
           <input
             className="editor-input"
             type="time"
-            value={local.endTime}
+            value={activeItem.endTime}
             onChange={e => update("endTime", e.target.value)}
           />
         </div>
@@ -176,9 +185,27 @@ export default function TourEditorScreen({ tour, tripId, onRefresh, onClose }) {
       {/* NOTES */}
       <div className="editor-row">
         <label className="editor-label">Notes</label>
+        < div className="template-buttons" >
+          {
+            templates.map(t => (
+              <button
+                key={t.id}
+                className="template-button"
+                onClick={() => {
+                  setActiveItem(prev => ({
+                    ...prev,
+                    notes: (prev.notes || "") + "\n\n" + t.template
+                  }));
+                }}
+              >
+                {t.icon} {t.name}
+              </button>
+            ))
+          }
+        </div >
         <textarea
-          className="editor-textarea"
-          value={local.notes}
+          className="markdown-edit"
+          value={activeItem.notes}
           onChange={e => update("notes", e.target.value)}
         />
       </div>

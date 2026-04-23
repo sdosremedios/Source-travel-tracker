@@ -49,7 +49,7 @@ export default function TripDetailScreen({
   async function handleDeleteTrip(id) {
     if (!confirm("Delete this trip?")) return;
     await deleteTrip(id);
-    await onRefresh();
+//    await onRefresh();
     onClose();
   }
 
@@ -70,7 +70,7 @@ export default function TripDetailScreen({
 
           <div className="actions">
 
-            <button className="icon" onClick={() => openTripEditor(trip.id)}>
+            <button className="icon" onClick={() => openItemEditor(trip)}>
               {actionIcon("edit")} Edit
             </button>
 

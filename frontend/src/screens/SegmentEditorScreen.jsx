@@ -1,49 +1,53 @@
 import React, { useState } from "react";
 import "../styles/SegmentEditorScreen.css";
-import { updateSegment, createSegment } from "../api";
+import { postSegment, patchSegment } from "../api/index";
+import { defaultDate } from "../utils/dateHelpers";
 
 export default function SegmentEditorScreen({
+  activeItem,
+  setActiveItem,
   tripId,
   segment,
   onCancel,
   onRefresh
 }) {
   const isEditing = Boolean(segment);
-
-  const [local, setLocal] = useState({
-    tripId: segment?.tripId ?? tripId,
-    startDate: segment?.startDate ?? "",
-    endDate: segment?.endDate ?? "",
-    mode: segment?.mode ?? "flight",
-    fromLocation: segment?.fromLocation ?? "",
-    toLocation: segment?.toLocation ?? "",
-    departureTime: segment?.departureTime ?? "",   // ← FIX
-    arrivalTime: segment?.arrivalTime ?? "",       // ← FIX
-    notes: segment?.notes ?? "",
-    carrier: segment?.carrier ?? ""
-  });
+  /*
+    const [local, setLocal] = useState({
+      tripId: segment?.tripId ?? tripId,
+      startDate: segment?.startDate ?? "",
+      endDate: segment?.endDate ?? "",
+      mode: segment?.mode ?? "flight",
+      fromLocation: segment?.fromLocation ?? "",
+      toLocation: segment?.toLocation ?? "",
+      departureTime: segment?.departureTime ?? "",   // ← FIX
+      arrivalTime: segment?.arrivalTime ?? "",       // ← FIX
+      notes: segment?.notes ?? "",
+      carrier: segment?.carrier ?? ""
+    });
+  */
 
   function update(field, value) {
-    setLocal(prev => ({ ...prev, [field]: value }));
+    setActiveItem(prev => ({ ...prev, [field]: value }));
   }
   async function handleSave() {
+    let startDate = activeItem.startDate || defaultDate();
+
     const payload = {
-      ...local,
-      departureTime: local.departureTime || segment?.departureTime || null,
-      arrivalTime: local.arrivalTime || segment?.arrivalTime || null
+      ...activeItem,
+      departureTime: activeItem.departureTime || segment?.departureTime || null,
+      arrivalTime: activeItem.arrivalTime || segment?.arrivalTime || null
     };
 
     console.log("PAYLOAD BEING SENT:", payload);
 
-    const url = isEditing
-      ? `/api/segments/${segment.id}`
-      : `/api/segments`;
+    const isEditing = activeItem?.id != null;
 
-    isEditing ? await updateSegment(segment.id, local) : await createSegment(local);
+    isEditing ? await patchSegment(segment.id, activeItem) : await postSegment(activeItem);
 
 
     // Notify parent to refresh timeline
-    onRefresh(local);
+    onRefresh(activeItem);
 
     // Desktop workflow: keep editor open
     // Mobile workflow: parent decides whether to close
@@ -70,7 +74,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Mode</label>
           <select
-            value={local.mode}
+            value={activeItem.mode}
             onChange={e => update("mode", e.target.value)}
           >
             <option value="plane">Plane</option>
@@ -82,7 +86,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Carrier</label>
           <input
-            value={local.carrier || ""}
+            value={activeItem.carrier || ""}
             onChange={e => update("carrier", e.target.value)}
           />
         </div>
@@ -93,7 +97,7 @@ export default function SegmentEditorScreen({
           <label>Start Date</label>
           <input
             type="date"
-            value={local.startDate}
+            value={activeItem.startDate}
             onChange={e => update("startDate", e.target.value)}
           />
         </div>
@@ -102,7 +106,7 @@ export default function SegmentEditorScreen({
           <label>End Date</label>
           <input
             type="date"
-            value={local.endDate}
+            value={activeItem.endDate}
             onChange={e => update("endDate", e.target.value)}
           />
         </div>
@@ -112,7 +116,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Departure</label>
           <input
-            value={local.fromLocation}
+            value={activeItem.fromLocation}
             onChange={e => update("fromLocation", e.target.value)}
           />
         </div>
@@ -122,7 +126,7 @@ export default function SegmentEditorScreen({
           <input
             type="time"
             className="se-input"
-            value={local.departureTime}
+            value={activeItem.departureTime}
             onChange={e => update("departureTime", e.target.value)}
           />
         </div>
@@ -132,7 +136,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Destination</label>
           <input
-            value={local.toLocation}
+            value={activeItem.toLocation}
             onChange={e => update("toLocation", e.target.value)}
           />
         </div>
@@ -142,7 +146,7 @@ export default function SegmentEditorScreen({
           <input
             type="time"
             className="se-input"
-            value={local.arrivalTime}
+            value={activeItem.arrivalTime}
             onChange={e => update("arrivalTime", e.target.value)}
           />
         </div>
@@ -150,9 +154,9 @@ export default function SegmentEditorScreen({
 
       <div className="se-field">
         <label>Notes</label>
-        <div className="markdown-text">
-          <textarea
-            value={local.notes}
+        <div className="markdown-box">
+          <textarea className="markdown-edit"
+            value={activeItem.notes}
             onChange={e => update("notes", e.target.value)}
           />
         </div>

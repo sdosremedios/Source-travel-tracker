@@ -6,29 +6,46 @@ const router = express.Router();
 
 // GET all trips
 router.get("/", (req, res) => {
-  const stmt = db.prepare("SELECT * FROM trips ORDER BY startDate desc");
-  res.json(stmt.all());
+  const stmt = db.prepare("SELECT * FROM trips ORDER BY startDate DESC");
+  const rows = stmt.all();
+
+  const trips = rows.map(t => ({
+    ...t,
+    kind: "trip"
+  }));
+
+  res.json(trips);
 });
 
 // GET full trip (trip + segments + tours)
 router.get("/:id/full", (req, res) => {
   const id = req.params.id;
 
-  const trip = db.prepare("SELECT * FROM trips WHERE id = ?").get(id);
+  // Trip row
+  const trip = db.prepare("SELECT * FROM trips WHERE id = ? ORDER BY startDate DESC").get(id);
 
-  const rows = db.prepare(
+  // Segments
+  const segments = db.prepare(
     "SELECT * FROM segments WHERE tripId = ? ORDER BY startDate, departureTime"
-  ).all(id);
-  const segments = rows.map(s => ({ ...s, kind: "segment" }));
+  )
+    .all(id)
+    .map(s => ({ ...s, kind: "segment" }));
 
+  // Tours
   const tours = db.prepare(
     "SELECT * FROM tours WHERE tripId = ? ORDER BY startDate, startTime"
-  ).all(id);
+  )
+    .all(id)
+    .map(t => ({ ...t, kind: "tour" }));
+
+  // Notes
   const notes = db.prepare(
     "SELECT * FROM notes WHERE tripId = ? ORDER BY dateTime"
-  ).all(id);
+  )
+    .all(id)
+    .map(n => ({ ...n, kind: "note" }));
 
-  res.json({ trip, segments, tours });
+  res.json({ trip, segments, tours, notes });
 });
 
 // POST new trip
@@ -42,7 +59,9 @@ router.post("/", (req, res) => {
   `);
 
   const result = stmt.run(name, startDate, endDate, tripNotes, type);
-  res.json({ id: result.lastInsertRowid });
+  // Fetch the full row
+  const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(result.lastInsertRowid);
+  res.json({ ...row, kind: "trip" });
 });
 
 // PATCH update trip
@@ -57,7 +76,11 @@ router.patch("/:id", (req, res) => {
   `);
 
   stmt.run(name, startDate, endDate, tripNotes, type, req.params.id);
-  res.json({ success: true });
+
+  // Fetch updated row
+  const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(req.params.id);
+
+  res.json({ ...row, kind: "trip" });
 });
 
 router.post("/import", (req, res) => {

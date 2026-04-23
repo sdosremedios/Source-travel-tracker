@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { createNote, updateNote } from "../api";
+import { postNote, patchNote } from "../api/index";
 import { fetchTemplates } from "../api";
 import "../styles/NoteEditorScreen.css";
 
@@ -7,8 +7,7 @@ export default function NoteEditorScreen({
   activeItem,
   setActiveItem,
   onCancel,
-  onRefresh,
-  onClose
+  onRefresh
 }) {
   const isEditing = !!activeItem?.id;
 
@@ -58,9 +57,9 @@ export default function NoteEditorScreen({
     let saved;
 
     if (isEditing) {
-      saved = await updateNote(activeItem.id, payload);
+      saved = await patchNote(activeItem.id, payload);
     } else {
-      saved = await createNote(payload);
+      saved = await postNote(payload);
     }
 
     onRefresh(saved);
@@ -72,7 +71,7 @@ export default function NoteEditorScreen({
         <h2>{isEditing ? "Edit Note" : "New Note"}</h2>
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
-          <button className="cancel" onClick={onClose}>Cancel</button>
+          <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
 

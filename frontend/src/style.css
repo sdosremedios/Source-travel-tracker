@@ -258,7 +258,7 @@ button.close:hover {
 
 /* Markdown block */
 .markdown-text,
-.markdown-edit {
+textarea.markdown-edit {
   /*  display: flex;
   flex: 1; */
   font-size: var(--font-size-markdown);
@@ -274,27 +274,30 @@ button.close:hover {
   min-height: 240px;
 }
 
-.markdown-edit {
-  flex: 1;
-  display: flex;
-  padding-bottom: 24px;
-  /* critical for flex children */
-}
-
-.markdown-edit textarea {
-  flex: 1;
+.markdown-text {
   min-height: 0;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  background-color: transparent;
-  border: none;
-  padding: 8px;
+  max-height: 48px;
   overflow: hidden;
-  resize: vertical;
 }
 
+/*
+.td-upper-section .markdown-text {
+  height: auto;
+  min-height: 240px;
+}
+  */
 
+textarea.markdown-edit {
+  width: 100%;
+  min-height: 240px;
+  height: auto;
+  box-sizing: border-box;
+  padding-bottom: 24px;
+  resize: vertical;      /* ⭐ works now */
+  overflow: auto;        /* allow scroll when resized smaller */
+}
+
+/*
 .markdown-text textarea {
   background-color: transparent;
   width: 100%;
@@ -304,7 +307,7 @@ button.close:hover {
   padding: 8px;
   resize: vertical;
 }
-
+*/
 .markdown-text textarea:active {
   border: none;
 }

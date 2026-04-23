@@ -10,6 +10,7 @@ import NoteEditorScreen from "./screens/NoteEditorScreen";
 import NoteDetailScreen from "./screens/NoteDetailScreen";
 import CommandPalette from "./components/CommandPalette";
 import ContextMenu from "./components/ContextMenu";
+import { createItem } from "./api/createItem";
 import { formatDate, formatTime } from "./utils/dateHelpers";
 
 import {
@@ -17,11 +18,11 @@ import {
   loadSegmentsForTrip,
   loadToursForTrip,
   loadNotesForTrip,
-  updateTrip,
-  createTrip,
-  createTour,
-  updateTour,
-  updateSegment,
+  patchTrip,
+  postTrip,
+  postTour,
+  patchTour,
+  patchSegment,
   deleteSegment,
   deleteTour
 } from "./api/index";
@@ -34,9 +35,10 @@ export default function App() {
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
+  const [trips, setTrips] = useState([]);
+  const [activeTrip, setActiveTrip] = useState(null);
 
   // Data
-  const [trips, setTrips] = useState([]);
   const [segments, setSegments] = useState([]);
   const [tours, setTours] = useState([]);
   const [notes, setNotes] = useState([]);
@@ -47,17 +49,17 @@ export default function App() {
 
 
   // Load trips on startup
-useEffect(() => {
-  loadTrips().then(data => {
-    console.log("loadTrips returned:", data);
-    setTrips(data);
-  });
-}, []);
+  useEffect(() => {
+    loadTrips().then(data => {
+      console.log("loadTrips returned:", data);
+      setTrips(data);
+    });
+  }, []);
 
   // always scroll to top
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [activeScreen]);
+  }, [activeScreen, selectedTripId]);
 
   async function refreshSegments() {
     const segments = await loadSegmentsForTrip(selectedTripId);
@@ -200,6 +202,7 @@ useEffect(() => {
   // ------------------------------------------------------------
   function openItemDetail(item) {
     console.log("App openItemDetail item:", item);
+
     const hydrated = hydrateItem(item);
     console.log("App hydrated item:", hydrated);
     if (!hydrated) return;
@@ -214,6 +217,8 @@ useEffect(() => {
       setActiveScreen("tourDetail");
     } else if (hydrated.kind === "note") {
       setActiveScreen("noteDetail");
+    } else if (hydrated.kind === "trip") {
+      setActiveScreen("tripDetail");
     }
     console.log("Detail screen should be open now with activeItem:", hydrated);
   }
@@ -222,8 +227,18 @@ useEffect(() => {
   // Unified Navigation: Editor
   // ------------------------------------------------------------
   useEffect(() => {
-    console.log("activeScreen:", activeScreen);
+    console.log("activeScreen:", activeScreen, " with activeItem:", activeItem);
   }, [activeScreen]);
+
+  useEffect(() => {
+    if (!selectedTripId) {
+      setActiveTrip(null);
+      return;
+    }
+
+    const trip = trips.find(t => t.id === selectedTripId) || null;
+    setActiveTrip(trip);
+  }, [selectedTripId, trips]);
 
   function openItemEditor(item) {
     // NEW ITEM → DO NOT HYDRATE
@@ -242,6 +257,8 @@ useEffect(() => {
         setActiveScreen("tourEditor");
       } else if (item.kind === "note") {
         setActiveScreen("noteEditor");
+      } else if (item.kind === "trip") {
+        setActiveScreen("tripEditor")
       }
       return;
     }
@@ -259,6 +276,8 @@ useEffect(() => {
       setActiveScreen("tourEditor");
     } else if (hydrated.kind === "note") {
       setActiveScreen("noteEditor");
+    } else if (hydrated.kind === "trip") {
+      setActiveScreen("tripEditor");
     }
   }
 
@@ -327,13 +346,16 @@ useEffect(() => {
   // ------------------------------------------------------------
   // Close overlay
   // ------------------------------------------------------------
-  function closeTripDetail() {
-    setActiveItem("null");
-    setActiveScreen("empty");
+  async function closeTripDetail() {
+    const trips = await loadTrips();
+    setTrips(trips);
+
+    setSelectedTripId(null);   // ⭐ THIS is the missing piece
+    setActiveItem(null);       // "null" (string) was a bug — use null
+    setActiveTrip(null);
+    setActiveScreen("tripList");
   }
 
-  // Active trip
-  const activeTrip = trips.find(t => t.id === selectedTripId) || null;
 
   // ------------------------------------------------------------
   // Render
@@ -361,7 +383,12 @@ useEffect(() => {
             setActiveScreen("tripDetail");
           }}
           onRefresh={loadTrips}
-          onNewTrip={() => setActiveScreen("tripEditor")}
+          onNewTrip={() => {
+            const newTrip = createItem("trip");
+            setSelectedTripId(null);
+            setActiveItem(newTrip);
+            setActiveScreen("tripEditor");
+          }}
           appVersion={appVersion}
         />
       </div>
@@ -388,23 +415,18 @@ useEffect(() => {
             rightPaneRef={rightPaneRef}
 
             onRefresh={async (id) => {
-              // Reload everything for this trip
               const trip = await loadTrip(id);
               const segments = await loadSegmentsForTrip(id);
               const tours = await loadToursForTrip(id);
               const notes = await loadNotesForTrip(id);
 
-              // Update state
-              setActiveTrip(trip);
+              setActiveTrip(trip);   // ⭐ MUST update this
               setSegments(segments);
               setTours(tours);
               setNotes(notes);
 
-              // Rebuild timeline naturally inside TripDetailScreen
-              // (no need to compute it here)
-
-              // Stay on TripDetailScreen
-              setActiveScreen("tripDetail");
+              // ⭐ DO NOT setActiveScreen("tripDetail")
+              // You're already on tripDetail, so this would cause a loop.
             }}
             openTripEditor={(id) => {
               //console.log("Edit trip with id:", id);
@@ -427,17 +449,49 @@ useEffect(() => {
           />
         )}
 
-        {activeScreen === "tripEditor" && (
+        {activeScreen === "tripEditor" && activeItem && (
           <TripEditorScreen
             activeItem={activeItem}
             setActiveItem={setActiveItem}
             //trip={activeItem}
-            onClose={closeOverlay}
-            onRefesh={async (trip) => {
-              console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", trip);
+            onClose={() => {
+              const id = activeItem?.id;
+
+              if (id) {
+                setSelectedTripId(id);
+                setActiveScreen("tripDetail");
+              } else {
+                // User cancelled creating a new trip
+                setSelectedTripId(null);
+                setActiveScreen("tripList");
+              }
+            }}
+            onRefresh={async (savedTrip) => {
+              console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", savedTrip);
+
+              // 1. Reload the trip list
               const updatedTrips = await loadTrips();
               setTrips(updatedTrips);
-              setActiveItem(updatedTrips);
+
+              // 2. Hydrate the saved trip from the updated list
+              const hydratedTrip = updatedTrips.find(t => t.id === savedTrip.id);
+
+              // 3. Update activeItem + selectedTripId
+              setActiveItem(hydratedTrip);
+              setSelectedTripId(savedTrip.id);
+
+              // 4. Reload trip detail data
+              // const trip = await loadTrip(savedTrip.id);
+              const segments = await loadSegmentsForTrip(savedTrip.id);
+              const tours = await loadToursForTrip(savedTrip.id);
+              const notes = await loadNotesForTrip(savedTrip.id);
+
+              // setActiveTrip(trip);
+              setSegments(segments);
+              setTours(tours);
+              setNotes(notes);
+
+              // 5. Switch to TripDetailScreen
               setActiveScreen("tripDetail");
             }}
           />
@@ -453,8 +507,10 @@ useEffect(() => {
           />
         )}
 
-        {activeScreen === "segmentEditor" && (
+        {activeScreen === "segmentEditor" && activeItem && (
           <SegmentEditorScreen
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
             tripId={selectedTripId}
             segment={activeItem}
             onCancel={closeOverlay}
@@ -483,6 +539,8 @@ useEffect(() => {
         )}
         {activeScreen === "tourEditor" && activeItem && (
           <TourEditorScreen
+            activeItem={activeItem}
+            setActiveItem={setActiveItem}
             tour={activeItem}
             tours={tours}
             onEdit={() => openItemEditor(activeItem)}
@@ -505,18 +563,17 @@ useEffect(() => {
             onRefresh={refreshNotes}
           />
         )}
-        {activeScreen === "noteEditor" && (
+        {activeScreen === "noteEditor" && activeItem && (
           <NoteEditorScreen
             activeItem={activeItem}
             setActiveItem={setActiveItem}
-            onCancel={closeOverlay}
+            onCancel={{ openItemDetail }}
             onRefresh={async (updatedNote) => {
               console.log("NoteEditorScreen refreshNotes", updatedNote);
               await refreshNotes();     // updates notes array
               setActiveItem(updatedNote); // ⭐ always correct
               setActiveScreen("noteDetail");
             }}
-            onClose={closeOverlay}
           />
         )}
       </div>

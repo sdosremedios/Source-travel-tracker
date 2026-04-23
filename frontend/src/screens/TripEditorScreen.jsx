@@ -1,7 +1,7 @@
 import React, { useState, useEffect, act } from "react";
-import { loadTrips, createTrip, updateTrip } from "../api";
+import { loadTrips, postTrip, patchTrip, fetchTemplates } from "../api/index";
 import { normalizeDate, isValidDateString, isChronological } from "../utils/dateHelpers";
-import { fetchTemplates } from "../api";
+import { createItem } from "../api/createItem"
 import "../styles/TripEditorScreen.css";
 
 const TRIP_TYPE_ICONS = {
@@ -17,7 +17,7 @@ export default function TripEditorScreen({
   activeItem,
   setActiveItem,
   onClose,
-  onRefesh
+  onRefresh
 }) {
   const isEditing = Boolean(activeItem);
   /*
@@ -68,17 +68,25 @@ export default function TripEditorScreen({
     }
     console.log("TripEditorScreen handleSave with:", activeItem)
     const id = activeItem?.id ?? null;
-    let tripObj = null;
+
+    // Build a clean payload from activeItem
+    const payload = {
+      ...activeItem,
+      startDate,
+      endDate
+    };
+
+    let savedTrip;
 
     if (id === null) {
-      // CREATE
-      tripObj = await createTrip(activeItem);
+      savedTrip = await postTrip(payload);
     } else {
-      // UPDATE
-      tripObj = await updateTrip(id, activeItem);
+      savedTrip = await patchTrip(id, payload);
     }
     // Save normalized values
-    onRefresh(activeItem);
+    console.log("TripEditorScreen onRefresh trip savedItem = ", savedTrip);
+    onRefresh(savedTrip);
+    //onClose();
   }
 
   //console.log("Rendering TripEditorScreen with local state:", local);
@@ -168,15 +176,13 @@ export default function TripEditorScreen({
           ))
         }
       </div >
-      <div className="markdown-edit">
-        <textarea
-          name="markdown-edit"
-          value={activeItem.tripNotes || ""}
-          onChange={e =>
-            setActiveItem(prev => ({ ...prev, tripNotes: e.target.value }))
-          }
-        />
-      </div>
+      <textarea className="markdown-edit"
+        name="markdown-edit"
+        value={activeItem.tripNotes || ""}
+        onChange={e =>
+          setActiveItem(prev => ({ ...prev, tripNotes: e.target.value }))
+        }
+      />
     </div>
   );
 }

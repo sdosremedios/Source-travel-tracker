@@ -2,25 +2,25 @@
 // Trips
 //
 export async function loadTrips() {
-  return fetch("/api/trips").then(r => r.json());
+  return await fetch("/api/trips").then(r => r.json());
 }
 
 export async function loadFullTrip(id) {
-  return fetch(`/api/trips/${id}/full`).then(r => r.json());
+  return await fetch(`/api/trips/${id}/full`).then(r => r.json());
 }
 
-export async function createTrip(data) {
-  console.log("createTrip CALLED with data:", data);
-  return fetch("/api/trips", {
+export async function postTrip(data) {
+  console.log("postTrip CALLED with data:", data);
+  return await fetch("/api/trips", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   }).then(r => r.json());
 }
 
-export async function updateTrip(id, data) {
-  console.log("updateTrip CALLED with id:", id, "data:", data);
-  return fetch(`/api/trips/${id}`, {
+export async function patchTrip(id, data) {
+  console.log("patchTrip CALLED with id:", id, "data:", data);
+  return await fetch(`/api/trips/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
@@ -44,21 +44,21 @@ export async function deleteTrip(id) {
 // Segments
 //
 export async function loadSegmentsForTrip(tripId) {
-  return fetch(`/api/segments/trip/${tripId}`).then(r => r.json());
+  return await fetch(`/api/segments/trip/${tripId}`).then(r => r.json());
 }
 
-export async function createSegment(data) {
-  console.log("createSegment CALLED with data:", data);
-  return fetch("/api/segments", {
+export async function postSegment(data) {
+  console.log("postSegment CALLED with data:", data);
+  return await fetch("/api/segments", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
   }).then(r => r.json());
 }
 
-export async function updateSegment(id, data) {
-  console.log("updateSegment CALLED with id:", id, "data:", data);
-  return fetch(`/api/segments/${id}`, {
+export async function patchSegment(id, data) {
+  console.log("patchSegment CALLED with id:", id, "data:", data);
+  return await fetch(`/api/segments/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
@@ -77,7 +77,7 @@ export async function deleteSegment(id) {
 //import { hydrateItem } from "../models/hydrate";
 
 export async function loadToursForTrip(tripId) {
-  return fetch(`/api/tours/trip/${tripId}`).then(r => r.json());
+  return await fetch(`/api/tours/trip/${tripId}`).then(r => r.json());
   /*
   console.log("loadToursForTrip CALLED with tripId:", tripId);
   const res = await fetch(`/api/tours/trip/${tripId}`);
@@ -86,8 +86,8 @@ export async function loadToursForTrip(tripId) {
   return data.map(hydrateTour); */
 }
 
-export async function createTour(data) {
-  console.log("createTour CALLED with data:", data);
+export async function postTour(data) {
+  console.log("postTour CALLED with data:", data);
   const response = await fetch("/api/tours", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -95,15 +95,15 @@ export async function createTour(data) {
   });
 
   if (!response.ok) {
-    throw new Error("Failed to create tour");
+    throw new Error("Failed to post tour");
   }
 
   return response.json();
 }
 
-export async function updateTour(id, data) {
-  console.log("updateTour CALLED with id:", id, "data:", data);
-  return fetch(`/api/tours/${id}`, {
+export async function patchTour(id, data) {
+  console.log("patchTour CALLED with id:", id, "data:", data);
+  return await fetch(`/api/tours/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data)
@@ -136,7 +136,7 @@ export async function loadNotesForTrip(tripId) {
   return res.json();
 }
 
-export async function createNote(data) {
+export async function postNote(data) {
   const res = await fetch(`/api/notes`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -145,7 +145,7 @@ export async function createNote(data) {
   return res.json();
 }
 
-export async function updateNote(id, data) {
+export async function patchNote(id, data) {
   const res = await fetch(`/api/notes/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },

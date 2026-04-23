@@ -8,6 +8,9 @@ If we need shared date utilities, they should go here. For example:
 import { isValidDateTime, isChronological } from "../utils/dateHelpers"; 
 
 */
+export function defaultDate() {
+  return new Date().toISOString().slice(0, 10); // "2026-04-22"
+}
 
 export function normalizeDate(input) {
   if (!input) return "";
