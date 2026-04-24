@@ -1,17 +1,21 @@
 import React, { useState, useEffect } from "react";
-import { postNote, patchNote } from "../api/index";
-import { fetchTemplates } from "../api";
+import { postNote, patchNote, fetchTemplates } from "../api/index";
+import { buildNotePayload } from "../api/createItem";
 import "../styles/NoteEditorScreen.css";
 
 export default function NoteEditorScreen({
   activeItem,
   setActiveItem,
+  activeTrip, // parent
   onCancel,
-  onRefresh
+  onRefresh,
+  allTemplates
 }) {
   const isEditing = !!activeItem?.id;
 
   const [dateTime, setDateTime] = useState("");
+  const templates = allTemplates.filter(t => t.types.includes("note"));
+
 
   // --- Load existing note (UTC → local) ---
   useEffect(() => {
@@ -38,32 +42,16 @@ export default function NoteEditorScreen({
     }
   }, [activeItem]);
 
-  const [templates, setTemplates] = useState([]);
-
-  useEffect(() => {
-    fetchTemplates("note").then(setTemplates).catch(console.error);
-  }, []);
-
   // --- Save handler (local → UTC) ---
-  async function handleSave() {
-    const utc = new Date(dateTime).toISOString();
+async function handleSave() {
+  const payload = buildNotePayload(activeItem);
 
-    const payload = {
-      tripId: activeItem.tripId,
-      dateTime: utc,
-      note: activeItem.note || ""
-    };
+  const updated = isEditing
+    ? await patchNote(activeTrip.id, activeItem.id, payload)
+    : await postNote(activeTrip.id, payload);
 
-    let saved;
-
-    if (isEditing) {
-      saved = await patchNote(activeItem.id, payload);
-    } else {
-      saved = await postNote(payload);
-    }
-
-    onRefresh(saved);
-  }
+  onRefresh(updated);
+}
 
   return (
     <div className="note-editor-screen">
@@ -99,14 +87,12 @@ export default function NoteEditorScreen({
           </button>
         ))}
       </div>
-      <div className="markdown-edit">
-        <textarea
-          value={activeItem.note || ""}
-          onChange={e =>
-            setActiveItem(prev => ({ ...prev, note: e.target.value }))
-          }
-        /></div>
-
+      <textarea className="markdown-edit"
+        value={activeItem.note || ""}
+        onChange={e =>
+          setActiveItem(prev => ({ ...prev, note: e.target.value }))
+        }
+      />
     </div>
   );
 }

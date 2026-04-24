@@ -1,60 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
+import { buildSegmentPayload } from "../api/createItem";
 import { defaultDate } from "../utils/dateHelpers";
 
 export default function SegmentEditorScreen({
   activeItem,
   setActiveItem,
-  tripId,
-  segment,
+  activeTrip, // parent
   onCancel,
-  onRefresh
+  onRefresh,
+  allTemplates
 }) {
-  const isEditing = Boolean(segment);
-  /*
-    const [local, setLocal] = useState({
-      tripId: segment?.tripId ?? tripId,
-      startDate: segment?.startDate ?? "",
-      endDate: segment?.endDate ?? "",
-      mode: segment?.mode ?? "flight",
-      fromLocation: segment?.fromLocation ?? "",
-      toLocation: segment?.toLocation ?? "",
-      departureTime: segment?.departureTime ?? "",   // ← FIX
-      arrivalTime: segment?.arrivalTime ?? "",       // ← FIX
-      notes: segment?.notes ?? "",
-      carrier: segment?.carrier ?? ""
-    });
-  */
+
+  const templates = allTemplates.filter(t => t.types.includes("segment"));
 
   function update(field, value) {
     setActiveItem(prev => ({ ...prev, [field]: value }));
   }
+  const isEditing = activeItem?.id != null;
+
   async function handleSave() {
-    let startDate = activeItem.startDate || defaultDate();
+    const payload = buildSegmentPayload(activeItem);
 
-    const payload = {
-      ...activeItem,
-      departureTime: activeItem.departureTime || segment?.departureTime || null,
-      arrivalTime: activeItem.arrivalTime || segment?.arrivalTime || null
-    };
+    console.log("buildSegmentPayload:", payload);
+    const updated = isEditing
+      ? await patchSegment(activeTrip.id, activeItem.id, payload)
+      : await postSegment(activeTrip.id, payload);
 
-    console.log("PAYLOAD BEING SENT:", payload);
-
-    const isEditing = activeItem?.id != null;
-
-    isEditing ? await patchSegment(segment.id, activeItem) : await postSegment(activeItem);
-
-
-    // Notify parent to refresh timeline
-    onRefresh(activeItem);
-
-    // Desktop workflow: keep editor open
-    // Mobile workflow: parent decides whether to close
-    // So we DO NOT auto-close here.
+    onRefresh(updated);
   }
 
-  console.log("segment passed into editor:", segment);
+  console.log("segment passed into editor:", activeItem);
   console.log("isEditing:", isEditing);
 
   return (
@@ -97,7 +74,7 @@ export default function SegmentEditorScreen({
           <label>Start Date</label>
           <input
             type="date"
-            value={activeItem.startDate}
+            value={activeItem.startDate || ""}
             onChange={e => update("startDate", e.target.value)}
           />
         </div>
@@ -106,7 +83,7 @@ export default function SegmentEditorScreen({
           <label>End Date</label>
           <input
             type="date"
-            value={activeItem.endDate}
+            value={activeItem.endDate || ""}
             onChange={e => update("endDate", e.target.value)}
           />
         </div>
@@ -116,7 +93,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Departure</label>
           <input
-            value={activeItem.fromLocation}
+            value={activeItem.fromLocation || ""}
             onChange={e => update("fromLocation", e.target.value)}
           />
         </div>
@@ -126,7 +103,7 @@ export default function SegmentEditorScreen({
           <input
             type="time"
             className="se-input"
-            value={activeItem.departureTime}
+            value={activeItem.departureTime || ""}
             onChange={e => update("departureTime", e.target.value)}
           />
         </div>
@@ -136,7 +113,7 @@ export default function SegmentEditorScreen({
         <div className="se-field">
           <label>Destination</label>
           <input
-            value={activeItem.toLocation}
+            value={activeItem.toLocation || ""}
             onChange={e => update("toLocation", e.target.value)}
           />
         </div>
@@ -146,7 +123,7 @@ export default function SegmentEditorScreen({
           <input
             type="time"
             className="se-input"
-            value={activeItem.arrivalTime}
+            value={activeItem.arrivalTime || ""}
             onChange={e => update("arrivalTime", e.target.value)}
           />
         </div>
@@ -154,12 +131,26 @@ export default function SegmentEditorScreen({
 
       <div className="se-field">
         <label>Notes</label>
-        <div className="markdown-box">
-          <textarea className="markdown-edit"
-            value={activeItem.notes}
-            onChange={e => update("notes", e.target.value)}
-          />
+        <div className="template-buttons">
+          {templates.map(t => (
+            <button
+              key={t.id}
+              className="template-button"
+              onClick={() => {
+                setActiveItem(prev => ({
+                  ...prev,
+                  note: (prev.note || "") + "\n\n" + t.template
+                }));
+              }}
+            >
+              {t.icon} {t.name}
+            </button>
+          ))}
         </div>
+        <textarea className="markdown-edit"
+          value={activeItem.notes}
+          onChange={e => update("notes", e.target.value)}
+        />
       </div>
 
 

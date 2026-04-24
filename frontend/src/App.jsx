@@ -12,6 +12,7 @@ import CommandPalette from "./components/CommandPalette";
 import ContextMenu from "./components/ContextMenu";
 import { createItem } from "./api/createItem";
 import { formatDate, formatTime } from "./utils/dateHelpers";
+import hydrateItem from "./api/hydrate"
 
 import {
   loadTrips,
@@ -24,19 +25,21 @@ import {
   patchTour,
   patchSegment,
   deleteSegment,
-  deleteTour
+  deleteTour,
+  fetchTemplates
 } from "./api/index";
 
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.3.2";
+  const appVersion = "0.3.3";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
   const [activeItem, setActiveItem] = useState(null);
   const [trips, setTrips] = useState([]);
   const [activeTrip, setActiveTrip] = useState(null);
+  const [allTemplates, setAllTemplates] = useState([]);
 
   // Data
   const [segments, setSegments] = useState([]);
@@ -46,6 +49,14 @@ export default function App() {
   const [isPaletteOpen, setPaletteOpen] = useState(false);
   const [contextMenu, setContextMenu] = useState(null);
   const rightPaneRef = useRef(null);
+
+  useEffect(() => {
+    fetch("/api/templates")
+      .then(res => res.json())
+      .then(setAllTemplates)
+      .catch(err => console.error("Failed to load templates", err));
+    console.log("allTemplates loaded:", allTemplates)
+  }, []);
 
 
   // Load trips on startup
@@ -76,24 +87,35 @@ export default function App() {
     setNotes(notes);
     return notes;
   }
+  async function handleSave() {
+    const item = activeItem;
+    const isEditing = item.id != null;
 
-  async function handleSaveTrip(trip) {
-    console.log("handleSaveTrip CALLED with trip:", trip);
-    let saved;
+    const saved = isEditing
+      ? await patchItem(item)
+      : await postItem(item);
 
-    console.log("Updating existing trip with:", trip.tripId, trip);
-    saved = await updateTrip(trip.tripId, trip);
-
-    const updatedTrips = await loadTrips();
-    setTrips(updatedTrips);
-
-    const updatedTrip = updatedTrips.find(t => t.id === trip.tripId);
-    setSelectedTripId(trip.tripId);
-    console.log("Updated trip found:", trip.tripId, updatedTrip);
-    setActiveItem(updatedTrip);
-    setActiveScreen("tripDetail");
+    onRefresh(saved);
+    openDetail(saved);
   }
-
+  /*
+    async function handleSaveTrip(trip) {
+      console.log("handleSaveTrip CALLED with trip:", trip);
+      let saved;
+  
+      console.log("Updating existing trip with:", trip.tripId, trip);
+      saved = await updateTrip(trip.tripId, trip);
+  
+      const updatedTrips = await loadTrips();
+      setTrips(updatedTrips);
+  
+      const updatedTrip = updatedTrips.find(t => t.id === trip.tripId);
+      setSelectedTripId(trip.tripId);
+      console.log("Updated trip found:", trip.tripId, updatedTrip);
+      setActiveItem(updatedTrip);
+      setActiveScreen("tripDetail");
+    }
+  */
   async function handleSaveTour(updated) {
     console.log("handleSaveTour START");
 
@@ -121,57 +143,57 @@ export default function App() {
     console.log("Tours after reload:", data);
     setTours(data);
   }
-
-  function hydrateItem(item) {
-    if (!item) return null;
-    console.log("HydrateItem receives item:", item);
-
-    const id = Number(item.id);
-    const kind = item.kind || item.type;
-
-    const addFormattedFields = (obj) => {
-      const startDate = obj.startDate;
-      const endDate = obj.endDate || obj.startDate;
-      const startTime = obj.startTime || obj.departureTime;
-      const endTime = obj.endTime || obj.arrivalTime;
-
-      return {
-        ...obj,
-        startDateLabel: formatDate(startDate),
-        endDateLabel: formatDate(endDate),
-        startTimeLabel: formatTime(startTime),
-        endTimeLabel: formatTime(endTime),
-        startDateTimeLabel: `${formatDate(startDate)} ${formatTime(startTime)}`,
-        endDateTimeLabel: `${formatDate(endDate)} ${formatTime(endTime)}`
+  /*
+    function hydrateItem(item) {
+      if (!item) return null;
+      console.log("HydrateItem receives item:", item);
+  
+      const id = Number(item.id);
+      const kind = item.kind || item.type;
+  
+      const addFormattedFields = (obj) => {
+        const startDate = obj.startDate;
+        const endDate = obj.endDate || obj.startDate;
+        const startTime = obj.startTime || obj.departureTime;
+        const endTime = obj.endTime || obj.arrivalTime;
+  
+        return {
+          ...obj,
+          startDateLabel: formatDate(startDate),
+          endDateLabel: formatDate(endDate),
+          startTimeLabel: formatTime(startTime),
+          endTimeLabel: formatTime(endTime),
+          startDateTimeLabel: `${formatDate(startDate)} ${formatTime(startTime)}`,
+          endDateTimeLabel: `${formatDate(endDate)} ${formatTime(endTime)}`
+        };
       };
-    };
-
-    // SEGMENT
-    if (kind === "segment") {
-      const hydrated = segments.find(s => Number(s.id) === id);
-      const base = hydrated
-        ? { ...hydrated, kind: "segment" }   // ⭐ force kind
-        : { ...item, kind: "segment" };
-
-      return addFormattedFields(base);
+  
+      // SEGMENT
+      if (kind === "segment") {
+        const hydrated = segments.find(s => Number(s.id) === id);
+        const base = hydrated
+          ? { ...hydrated, kind: "segment" }   // ⭐ force kind
+          : { ...item, kind: "segment" };
+  
+        return addFormattedFields(base);
+      }
+  
+      // TOUR
+      if (kind === "tour") {
+        const hydrated = tours.find(t => Number(t.id) === id);
+        const base = hydrated
+          ? { ...hydrated, kind: "tour" }      // ⭐ force kind
+          : { ...item, kind: "tour" };
+  
+        return addFormattedFields({
+          ...base,
+          company: base.company ?? ""
+        });
+      }
+  
+      return { ...item, kind };
     }
-
-    // TOUR
-    if (kind === "tour") {
-      const hydrated = tours.find(t => Number(t.id) === id);
-      const base = hydrated
-        ? { ...hydrated, kind: "tour" }      // ⭐ force kind
-        : { ...item, kind: "tour" };
-
-      return addFormattedFields({
-        ...base,
-        company: base.company ?? ""
-      });
-    }
-
-    return { ...item, kind };
-  }
-
+  */
   // Load segments + tours when selectedTripId changes
   useEffect(() => {
     if (!selectedTripId) return;
@@ -335,7 +357,45 @@ export default function App() {
       setTours(refreshed);
     }
   }
+  /*
+    Usage:
+      openEditor(createItem("segment", trip));
+      openEditor(existingTrip);
+      openEditor(existingSegment);
+      openEditor(existingTour);
+      openEditor(existingNote);
+  */
+  function openEditor(item) {
+    const hydrated = hydrateItem(item);
+    setActiveItem(hydrated);
+    setActiveScreen(hydrated.kind + "Editor");
+  }
+  function closeEditor() {
+    const item = activeItem;
 
+    if (!item) {
+      setActiveScreen("tripList");
+      return;
+    }
+
+    if (item.id != null) {
+      setSelectedTripId(item.tripId ?? item.id);
+      setActiveScreen(item.kind + "Detail");
+      return;
+    }
+
+    if (item.tripId) {
+      setSelectedTripId(item.tripId);
+      setActiveScreen("tripDetail");
+    } else {
+      setActiveScreen("tripList");
+    }
+  }
+  function openDetail(item) {
+    setActiveItem(item);
+    setSelectedTripId(item.tripId ?? item.id);
+    setActiveScreen(item.kind + "Detail");
+  }
   // ------------------------------------------------------------
   // Close overlay
   // ------------------------------------------------------------
@@ -499,8 +559,12 @@ export default function App() {
         {activeScreen === "segmentDetail" && activeItem && (
           <SegmentDetailScreen
             segment={activeItem}
-            onEdit={() => openItemEditor(activeItem)}
-            onClose={closeOverlay}
+            onEdit={() => {
+              openItemEditor(activeItem);
+            }}
+            onClose={async (tripId) => {
+              setActiveScreen("tripDetail")
+            }}
             onRefresh={async () => {
               setTrips(await loadSegmentsForTrip(selectedTripId));
             }}
@@ -511,15 +575,14 @@ export default function App() {
           <SegmentEditorScreen
             activeItem={activeItem}
             setActiveItem={setActiveItem}
-            tripId={selectedTripId}
-            segment={activeItem}
+            activeTrip={activeTrip}
             onCancel={closeOverlay}
             onRefresh={async (updatedSegment) => {
               await refreshSegments();
               setActiveItem(updatedSegment);
               setActiveScreen("segmentDetail");
             }}
-            onClose={refreshSegments}
+            allTemplates={allTemplates}
           />
         )}
 
@@ -541,17 +604,15 @@ export default function App() {
           <TourEditorScreen
             activeItem={activeItem}
             setActiveItem={setActiveItem}
-            tour={activeItem}
-            tours={tours}
-            onEdit={() => openItemEditor(activeItem)}
-            onSelectSegment={openItemDetail}
-            onClose={closeOverlay}
+            activeTrip={activeTrip}
+            onCancel={closeOverlay}
             onRefresh={async (updatedTour) => {
               console.log("Refreshing tours after delete or edit");
               await refreshTours();
               setActiveItem(updatedTour);
               setActiveScreen("tourDetail");
             }}
+            allTemplates={allTemplates}
           />
         )}
         {activeScreen === "noteDetail" && activeItem && (
@@ -567,13 +628,17 @@ export default function App() {
           <NoteEditorScreen
             activeItem={activeItem}
             setActiveItem={setActiveItem}
-            onCancel={{ openItemDetail }}
+            activeTrip={activeTrip}
+            onCancel={async () =>{ 
+              openItemDetail(activeItem); 
+            }}
             onRefresh={async (updatedNote) => {
               console.log("NoteEditorScreen refreshNotes", updatedNote);
               await refreshNotes();     // updates notes array
               setActiveItem(updatedNote); // ⭐ always correct
               setActiveScreen("noteDetail");
             }}
+            allTemplates={allTemplates}
           />
         )}
       </div>

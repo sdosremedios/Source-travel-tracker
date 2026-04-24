@@ -15,10 +15,11 @@ app.use(cors());
 app.use(express.json());
 
 // Mount routes
+// Mount routes (REST‑pure, trip‑scoped)
 app.use("/api/trips", trips);
-app.use("/api/segments", segments);
-app.use("/api/tours", tours);
-app.use("/api", notes);
+app.use("/api/trips/:tripId/segments", segments);
+app.use("/api/trips/:tripId/tours", tours);
+app.use("/api/trips/:tripId/notes", notes);
 app.use("/api/templates", templates);
 
 

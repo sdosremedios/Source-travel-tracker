@@ -27,7 +27,7 @@ export default function TimelineRow({
         <div className="timeline-row-content">
           <div className="tr-sub">{formatTime(item.dateTime)}</div>
         </div>
-        <div className="markdown-text">
+        <div className="markdown-text preview">
           <Markdown>{item.note}</Markdown>
         </div>
       </div>
@@ -58,7 +58,7 @@ export default function TimelineRow({
           </div>
 
           {item.notes && (
-            <div className="markdown-text">
+            <div className=" preview">
               <Markdown>{item.notes}</Markdown>
             </div>
           )}
@@ -88,7 +88,7 @@ export default function TimelineRow({
 
         </div>
           {item.notes && (
-            <div className="markdown-text">
+            <div className="markdown-text preview">
               <Markdown>{item.notes}</Markdown>
             </div>
           )}

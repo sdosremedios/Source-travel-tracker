@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Markdown from "../components/Markdown";
 import { modeIcon } from "../utils/icons";
 import { deleteSegment } from "../api/index";
 
 import "../styles/SegmentDetailScreen.css";
+
+
 
 export default function SegmentDetailScreen({
   segment,
@@ -11,14 +13,15 @@ export default function SegmentDetailScreen({
   onClose,
   onRefresh
 }) {
+  
   if (!segment) return null;
 
   async function handleDelete() {
     if (!confirm("Delete this segment?")) return;
     await deleteSegment(segment.id);
 
-    onClose();
     onRefresh(segment.tripId);
+    onClose(segment.tripId);
   }
 
   console.log("SegmentDetailScreen received segment:", segment);
@@ -30,18 +33,18 @@ export default function SegmentDetailScreen({
         <h1 className="title">
           {segment.fromLocation} → {segment.toLocation}
         </h1>
-      {/* Buttons ------------------------------------------------------------- */}
-      <div className="buttons">
-        <button className="edit" onClick={() => onEdit(segment)}>
-          Edit
-        </button>
-        <button className="danger" onClick={handleDelete}>
-          Delete
-        </button>
-        <button className="close" onClick={onClose}>
-          Close
-        </button>
-      </div>
+        {/* Buttons ------------------------------------------------------------- */}
+        <div className="buttons">
+          <button className="edit" onClick={() => onEdit(segment)}>
+            Edit
+          </button>
+          <button className="danger" onClick={handleDelete}>
+            Delete
+          </button>
+          <button className="close" onClick={onClose}>
+            Close
+          </button>
+        </div>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}

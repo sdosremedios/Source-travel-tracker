@@ -2,63 +2,31 @@ import { useState, useEffect } from "react";
 import "../styles/TourEditorScreen.css";          // ⭐ your CSS restored
 import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
-import { patchTour, postTour, fetchTemplates } from "../api/index";
+import { patchTour, postTour } from "../api/index";
+import { buildTourPayload } from "../api/createItem";
 
 export default function TourEditorScreen({
   activeItem,
   setActiveItem,
+  activeTrip, // parent
+  onCancel,
   onRefresh,
-  onClose }) {
-  // ---------------------------------------
-  // 1. INITIALIZE LOCAL STATE (ONCE)
-  // ---------------------------------------
-  /*
-  const [local, setLocal] = useState(() => ({
-    id: tour?.id,                     // ⭐ REQUIRED
-    tripId: tour?.tripId ?? tripId,
-    name: tour?.name ?? "(untitled)",
-    company: tour?.company ?? "",
-    category: tour?.category ?? "",
-    location: tour?.location ?? "",
-    startDate: tour?.startDate ?? "",
-    startTime: tour?.startTime ?? "",
-    endDate: tour?.endDate ?? "",
-    endTime: tour?.endTime ?? "",
-    notes: tour?.notes ?? ""
-  }));
-  // ---------------------------------------
-  // 2. RESET WHEN SWITCHING TO A NEW TOUR
-  // ---------------------------------------
-  useEffect(() => {
-    if (tour) {
-      setLocal({
-        id: tour.id,                 // ⭐ REQUIRED
-        tripId: tour.tripId,
-        name: tour.name ?? "(untitled)",
-        company: tour.company ?? "",
-        category: tour.category ?? "",
-        location: tour.location ?? "",
-        startDate: tour.startDate ?? "",
-        startTime: tour.startTime ?? "",
-        endDate: tour.endDate ?? "",
-        endTime: tour.endTime ?? "",
-        notes: tour.notes ?? ""
-      });
-    }
-  }, [tour?.id]);
-*/
+  allTemplates
+}) {
+
+  const templates = allTemplates.filter(t => t.types.includes("tour"));
 
   // ---------------------------------------
   // 3. UPDATE HELPER
   // ---------------------------------------
-function update(field, value) {
-  setActiveItem(prev => ({ ...prev, [field]: value }));
-}
+  function update(field, value) {
+    setActiveItem(prev => ({ ...prev, [field]: value }));
+  }
 
   // ---------------------------------------
   // 4. SAVE HANDLER (RESTORED)
   // ---------------------------------------
-  function handleSave() {
+  async function handleSave() {
     const { startDate, startTime, endDate, endTime } = activeItem;
 
     // Optional: allow empty dates (unscheduled tours)
@@ -80,14 +48,15 @@ function update(field, value) {
       return;
     }
     console.log("Saving tour with data:", activeItem);
-    activeItem.id ? patchTour(activeItem.id, activeItem) : postTour(activeItem);
+    const isEditing = activeItem?.id ?? Boolean;
+    const payload = buildTourPayload(activeItem);
 
-    onRefresh({ ...activeItem, kind: "tour" });
+    const updated = isEditing
+      ? await patchTour(activeTrip.id, activeItem.id, payload)
+      : await postTour(activeTrip.id, payload);
+
+    onRefresh(updated);
   }
-  const [templates, setTemplates] = useState([]);
-  useEffect(() => {
-    fetchTemplates("tour").then(setTemplates).catch(console.error);
-  }, []);
 
   // ---------------------------------------
   // 5. RENDER
@@ -99,7 +68,7 @@ function update(field, value) {
         {/* SAVE / CANCEL */}
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
-          <button className="cancel" onClick={onClose}>Cancel</button>
+          <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
       {/* NAME */}

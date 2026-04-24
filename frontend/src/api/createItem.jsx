@@ -62,7 +62,7 @@ export function createSegment(trip) {
     tripId: trip?.id ?? null,
 
     startDate: defaultStartDateForTrip(trip),
-    endDate: "",
+    endDate: defaultStartDateForTrip(trip),
     mode: "",
     fromLocation: "",
     toLocation: "",
@@ -70,6 +70,19 @@ export function createSegment(trip) {
     arrivalTime: "",
     notes: "",
     carrier: ""
+  };
+}
+export function buildSegmentPayload(item) {
+  return {
+    startDate: item.startDate || null,
+    endDate: item.endDate || null,
+    mode: item.mode || "",
+    fromLocation: item.fromLocation || "",
+    toLocation: item.toLocation || "",
+    departureTime: item.departureTime || null,
+    arrivalTime: item.arrivalTime || null,
+    carrier: item.carrier || "",
+    notes: item.notes || ""
   };
 }
 /*
@@ -97,12 +110,25 @@ export function createTour(trip) {
     name: "",
     startDate: defaultStartDateForTrip(trip),
     startTime: "",
-    endDate: "",
+    endDate: defaultStartDateForTrip(trip),
     endTime: "",
     location: "",
     category: "",
     notes: "",
     company: ""
+  };
+}
+export function buildTourPayload(item) {
+  return {
+    startDate: item.startDate || null,
+    startTime: item.startTime || null,
+    endDate: item.endDate || null,
+    endTime: item.endTime || null,
+    name: item.name || "",
+    location: item.location || "",
+    category: item.category || "",
+    notes: item.notes || "",
+    company: item.company || ""
   };
 }
 /*
@@ -124,6 +150,15 @@ export function createNote(trip) {
     note: ""
   };
 }
+export function buildNotePayload(item) {
+  const utc = new Date(dateTime).toISOString();
+
+  return {
+    dateTime: utc,
+    note: item.note || ""
+  };
+}
+
 function todayISO() {
   return new Date().toISOString().slice(0, 10); // "2026-04-22"
 }

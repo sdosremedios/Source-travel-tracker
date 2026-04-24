@@ -1,17 +1,20 @@
-import { fetchTemplates } from "../api";
+import React, { useState, useEffect } from "react";
 
-const [templates, setTemplates] = useState([]);
 
 export default function xxxEditorScreen({
     activeItem,
     setActiveItem,
     onCancel,
-    onRefresh
+    onRefresh,
+    allTemplates
 }) {
 
-    useEffect(() => {
-        fetchTemplates("trip segment tour note").then(setTemplates).catch(console.error);
-    }, []);
+    /* pick one below
+    const templates = allTemplates.filter(t => t.types.includes("trip"));
+    const templates = allTemplates.filter(t => t.types.includes("segment"));
+    const templates = allTemplates.filter(t => t.types.includes("tour"));
+    const templates = allTemplates.filter(t => t.types.includes("note"));
+    */
 
 
     return (

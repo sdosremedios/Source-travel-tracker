@@ -76,7 +76,7 @@ export default function TripDetailScreen({
 
             <button className="icon"
               onClick={() => {
-                const newSeg = createItem("segment", trip.id);
+                const newSeg = createItem("segment", trip);
                 openItemEditor(newSeg);
               }}
             >
@@ -85,7 +85,7 @@ export default function TripDetailScreen({
 
             <button className="icon"
               onClick={() => {
-                const newTour = createItem("tour", trip.id);
+                const newTour = createItem("tour", trip);
                 openItemEditor(newTour);
               }}
             >
@@ -94,7 +94,7 @@ export default function TripDetailScreen({
 
             <button className="icon"
               onClick={() => {
-                const newNote = createItem("note", trip.id);
+                const newNote = createItem("note", trip);
                 openItemEditor(newNote);
               }}
             >
@@ -126,7 +126,7 @@ export default function TripDetailScreen({
         )}
         {showNotes && trip.tripNotes.trim() && (
           <>
-            <div className="markdown-text">
+            <div className="markdown-text fullHeight">
               <Markdown>{trip.tripNotes.trim()}</Markdown>
             </div>
           </>

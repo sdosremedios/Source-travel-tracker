@@ -56,8 +56,6 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
           </button>
 
         </div>
-
-
       </div>
         {/* Note text ----------------------------------------------------------- */}
         <div className="markdown-text">

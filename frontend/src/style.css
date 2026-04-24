@@ -274,10 +274,19 @@ textarea.markdown-edit {
   min-height: 240px;
 }
 
-.markdown-text {
+.markdown-text.preview {
   min-height: 0;
   max-height: 48px;
   overflow: hidden;
+}
+
+.markdown-text ol,
+.markdown-text ul {
+  column-count: 2;
+  line-height: 2;
+}
+.markdown-text li {
+  line-height: 1.2;
 }
 
 /*
@@ -293,8 +302,10 @@ textarea.markdown-edit {
   height: auto;
   box-sizing: border-box;
   padding-bottom: 24px;
-  resize: vertical;      /* ⭐ works now */
-  overflow: auto;        /* allow scroll when resized smaller */
+  resize: vertical;
+  /* ⭐ works now */
+  overflow: auto;
+  /* allow scroll when resized smaller */
 }
 
 /*

@@ -1,74 +1,81 @@
 import express from "express";
 import db from "../db.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-router.post("/notes", (req, res) => {
-  const { tripId, dateTime, note } = req.body;
+// GET all notes for a trip
+router.get("/", (req, res) => {
+  const { tripId } = req.params;
 
-  const insertStmt = db.prepare(`
-    INSERT INTO notes (tripId, dateTime, note)
-    VALUES (?, ?, ?)
-  `);
+  const rows = db.prepare(`
+    SELECT *
+    FROM notes
+    WHERE tripId = ?
+    ORDER BY dateTime ASC
+  `).all(tripId);
 
-  const result = insertStmt.run(tripId, dateTime, note);
-
-  // ⭐ Fetch the newly created note
-  const selectStmt = db.prepare(`
-    SELECT * FROM notes WHERE id = ?
-  `);
-
-  const newNote = selectStmt.get(result.lastInsertRowid);
-
-  res.json({...newNote, kind:"note"}); // ⭐ Return full note object plus kind
+  const notes = rows.map(n => ({ ...n, kind: "note" }));
+  res.json(notes);
 });
 
-router.patch("/notes/:id", (req, res) => {
-  const { id } = req.params;
+// GET a single note
+router.get("/:id", (req, res) => {
+  const { id, tripId } = req.params;
+
+  const row = db.prepare(`
+    SELECT *
+    FROM notes
+    WHERE id = ? AND tripId = ?
+  `).get(id, tripId);
+
+  if (!row) return res.status(404).json({ error: "note not found" });
+
+  res.json({ ...row, kind: "note" });
+});
+
+// CREATE a note
+router.post("/", (req, res) => {
+  const { tripId } = req.params;
   const { dateTime, note } = req.body;
 
-  const updateStmt = db.prepare(`
-    UPDATE notes
-    SET dateTime = ?, note = ?
-    WHERE id = ?
-  `);
+  const result = db.prepare(`
+    INSERT INTO notes (tripId, dateTime, note)
+    VALUES (?, ?, ?)
+  `).run(tripId, dateTime, note);
 
-  updateStmt.run(dateTime, note, id);
-
-  // ⭐ Fetch the updated note
-  const selectStmt = db.prepare(`
-    SELECT * FROM notes WHERE id = ?
-  `);
-
-  const updatedNote = selectStmt.get(id);
-
-  res.json({...updatedNote, kind:"note"}); // ⭐ Return the full updated note
+  const row = db.prepare(`SELECT * FROM notes WHERE id = ?`).get(result.lastInsertRowid);
+  res.json({ ...row, kind: "note" });
 });
 
-router.delete("/notes/:id", (req, res) => {
-  const { id } = req.params;
+// UPDATE a note
+router.patch("/:id", (req, res) => {
+  const { id, tripId } = req.params;
+  const { dateTime, note } = req.body;
 
-  const stmt = db.prepare("DELETE FROM notes WHERE id = ?");
-  const result = stmt.run(id);
+  db.prepare(`
+    UPDATE notes
+    SET dateTime = ?, note = ?
+    WHERE id = ? AND tripId = ?
+  `).run(dateTime, note, id, tripId);
+
+  const row = db.prepare(`SELECT * FROM notes WHERE id = ?`).get(id);
+  res.json({ ...row, kind: "note" });
+});
+
+// DELETE a note
+router.delete("/:id", (req, res) => {
+  const { id, tripId } = req.params;
+
+  const result = db.prepare(`
+    DELETE FROM notes
+    WHERE id = ? AND tripId = ?
+  `).run(id, tripId);
 
   if (result.changes === 0) {
-    return res.status(404).json({ error: "Note not found" });
+    return res.status(404).json({ error: "note not found" });
   }
 
   res.status(204).end();
-});
-
-router.get("/trips/:tripId/notes", (req, res) => {
-  const rows = db.prepare(
-    "SELECT * FROM notes WHERE tripId = ? ORDER BY dateTime"
-  ).all(req.params.tripId);
-
-  const notes = rows.map(n => ({
-    ...n,
-    kind: "note"
-  }));
-
-  res.json(notes);
 });
 
 export default router;

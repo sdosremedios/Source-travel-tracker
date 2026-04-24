@@ -1,141 +1,112 @@
-// routes/tours.js
 import express from "express";
 import db from "../db.js";
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
-// GET tours for a trip
-router.get("/trip/:tripId", (req, res) => {
-  const rows = db.prepare(
-    "SELECT * FROM tours WHERE tripId = ? ORDER BY startDate, startTime"
-  ).all(req.params.tripId);
+// GET all tours for a trip
+router.get("/", (req, res) => {
+  const { tripId } = req.params;
+
+  const rows = db.prepare(`
+    SELECT *
+    FROM tours
+    WHERE tripId = ?
+    ORDER BY startDate, startTime
+  `).all(tripId);
 
   const tours = rows.map(t => ({ ...t, kind: "tour" }));
-
   res.json(tours);
 });
 
-// POST create tour
+// GET a single tour
+router.get("/:id", (req, res) => {
+  const { id, tripId } = req.params;
+
+  const row = db.prepare(`
+    SELECT *
+    FROM tours
+    WHERE id = ? AND tripId = ?
+  `).get(id, tripId);
+
+  if (!row) return res.status(404).json({ error: "tour not found" });
+
+  res.json({ ...row, kind: "tour" });
+});
+
+// CREATE a tour
 router.post("/", (req, res) => {
+  const { tripId } = req.params;
   const {
-    tripId,
-    name,
     startDate,
     startTime,
     endDate,
     endTime,
+    name,
     location,
     category,
     notes,
     company
   } = req.body;
 
-  console.log("POST /tours CALLED with body:", req.body);
-
-  const insertStmt = db.prepare(`
+  const result = db.prepare(`
     INSERT INTO tours (
-      tripId, name, startDate, startTime, endDate, endTime, location, category, notes, company
+      tripId, startDate, startTime, endDate, endTime,
+      name, location, category, notes, company
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `);
+  `).run(
+    tripId, startDate, startTime, endDate, endTime,
+    name, location, category, notes, company
+  );
 
-  try {
-    const result = insertStmt.run(
-      tripId,
-      name,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      location,
-      category,
-      notes,
-      company
-    );
-
-    // ⭐ Fetch the newly created tour
-    const selectStmt = db.prepare(`
-      SELECT * FROM tours WHERE id = ?
-    `);
-
-    const newTour = selectStmt.get(result.lastInsertRowid);
-
-    res.json({ ...newTour, kind: "tour" }); // ⭐ Return full tour object
-  } catch (err) {
-    console.error("POST /tours ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
+  const row = db.prepare(`SELECT * FROM tours WHERE id = ?`).get(result.lastInsertRowid);
+  res.json({ ...row, kind: "tour" });
 });
 
-// PATCH update tour
+// UPDATE a tour
 router.patch("/:id", (req, res) => {
-  try {
-    const {
-      tripId,
-      name,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      location,
-      category,
-      notes,
-      company
-    } = req.body;
+  const { id, tripId } = req.params;
+  const {
+    startDate,
+    startTime,
+    endDate,
+    endTime,
+    name,
+    location,
+    category,
+    notes,
+    company
+  } = req.body;
 
-    const updateStmt = db.prepare(`
-      UPDATE tours
-      SET tripId = ?, name = ?, startDate = ?, startTime = ?, endDate = ?, endTime = ?,
-          location = ?, category = ?, notes = ?, company = ?
-      WHERE id = ?
-    `);
+  db.prepare(`
+    UPDATE tours
+    SET startDate = ?, startTime = ?, endDate = ?, endTime = ?,
+        name = ?, location = ?, category = ?, notes = ?, company = ?
+    WHERE id = ? AND tripId = ?
+  `).run(
+    startDate, startTime, endDate, endTime,
+    name, location, category, notes, company,
+    id, tripId
+  );
 
-    updateStmt.run(
-      tripId,
-      name,
-      startDate,
-      startTime,
-      endDate,
-      endTime,
-      location,
-      category,
-      notes,
-      company,
-      req.params.id
-    );
-
-    // ⭐ Fetch the updated tour
-    const selectStmt = db.prepare(`
-      SELECT * FROM tours WHERE id = ?
-    `);
-
-    const updatedTour = selectStmt.get(req.params.id);
-
-    res.json({ ...updatedTour, kind: "tour" }); // ⭐ Return the full updated tour
-  } catch (err) {
-    console.error("PATCH /tours/:id ERROR:", err);
-    res.status(500).json({ error: err.message });
-  }
+  const row = db.prepare(`SELECT * FROM tours WHERE id = ?`).get(id);
+  res.json({ ...row, kind: "tour" });
 });
 
-// DELETE /api/tours/:id
+// DELETE a tour
 router.delete("/:id", (req, res) => {
-  console.log("DELETE /tours/:id CALLED with id:", req.params);
-  const { id } = req.params;
+  const { id, tripId } = req.params;
 
-  try {
-    const stmt = db.prepare("DELETE FROM tours WHERE id = ?");
-    const result = stmt.run(id);
+  const result = db.prepare(`
+    DELETE FROM tours
+    WHERE id = ? AND tripId = ?
+  `).run(id, tripId);
 
-    if (result.changes === 0) {
-      return res.status(404).json({ error: "Tour not found" });
-    }
-
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Error deleting tour:", err);
-    res.status(500).json({ error: "Failed to delete tour" });
+  if (result.changes === 0) {
+    return res.status(404).json({ error: "tour not found" });
   }
+
+  res.status(204).end();
 });
 
 export default router;
