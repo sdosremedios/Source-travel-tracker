@@ -1,7 +1,6 @@
-import React, { useState, useEffect, act } from "react";
-import { loadTrips, postTrip, patchTrip, fetchTemplates } from "../api/index";
-import { normalizeDate, isValidDateString, isChronological } from "../utils/dateHelpers";
-import { createItem } from "../api/createItem"
+import React, { useState, useEffect } from "react";
+import { postTrip, patchTrip, fetchTemplates } from "../api/index";
+import { buildTripPayload } from "../api/createItem";
 import "../styles/TripEditorScreen.css";
 
 const TRIP_TYPE_ICONS = {
@@ -14,111 +13,76 @@ const TRIP_TYPE_ICONS = {
 };
 
 export default function TripEditorScreen({
-  activeItem,
-  setActiveItem,
-  onClose,
+  trip,          // <-- pass the trip directly, NOT activeItem
+  onCancel,
   onRefresh
 }) {
-  const isEditing = Boolean(activeItem);
-  /*
-    const [local, setLocal] = useState({
-      tripId: activeItem?.id || null,
-      name: activeItem?.name || "",
-      startDate: activeItem?.startDate || "",
-      endDate: activeItem?.endDate || "",
-      tripNotes: activeItem?.tripNotes || "",
-      type: activeItem?.type || "travel",
-      tripNotes: activeItem?.tripNotes || ""
-    });
-  */
+
+  const isEditing = Boolean(trip?.id);
+
+  // LOCAL STATE ONLY — trips never use activeItem
+  const [local, setLocal] = useState({
+    name: trip?.name || "",
+    startDate: trip?.startDate || "",
+    endDate: trip?.endDate || "",
+    tripNotes: trip?.tripNotes || "",
+    type: trip?.type || "travel"
+  });
+
+  useEffect(() => {
+    if (trip) {
+      setLocal({
+        name: trip.name || "",
+        startDate: trip.startDate || "",
+        endDate: trip.endDate || "",
+        tripNotes: trip.tripNotes || "",
+        type: trip.type || "travel"
+      });
+    }
+  }, [trip]);
+  
   const [templates, setTemplates] = useState([]);
+
   useEffect(() => {
     fetchTemplates("trip").then(setTemplates).catch(console.error);
   }, []);
 
-
-  function updateField(field, value) {
-    setActiveItem(prev => ({ ...prev, [field]: value }));
-  }
-
   async function handleSave() {
-    let { startDate, endDate } = activeItem;
+    const payload = buildTripPayload(local);
 
-    // Normalize first
-    startDate = normalizeDate(startDate);
-    endDate = normalizeDate(endDate);
+    const updated = isEditing
+      ? await patchTrip(trip.id, payload)
+      : await postTrip(payload);
 
-    // Validate
-    const hasStart = !!startDate;
-    const hasEnd = !!endDate;
-
-    if (hasStart && !isValidDateString(startDate)) {
-      alert("Start date is invalid");
-      return;
-    }
-
-    if (hasEnd && !isValidDateString(endDate)) {
-      alert("End date is invalid");
-      return;
-    }
-
-    if (hasStart && hasEnd && !isChronological(startDate, "00:00", endDate, "00:00")) {
-      alert("End date must be on or after start date");
-      return;
-    }
-    console.log("TripEditorScreen handleSave with:", activeItem)
-    const id = activeItem?.id ?? null;
-
-    // Build a clean payload from activeItem
-    const payload = {
-      ...activeItem,
-      startDate,
-      endDate
-    };
-
-    let savedTrip;
-
-    if (id === null) {
-      savedTrip = await postTrip(payload);
-    } else {
-      savedTrip = await patchTrip(id, payload);
-    }
-    // Save normalized values
-    console.log("TripEditorScreen onRefresh trip savedItem = ", savedTrip);
-    onRefresh(savedTrip);
-    //onClose();
+    console.log("TripEditorScreen onRefresh trip updatedItem = ", updated);
+    onRefresh(updated);
+    onClose();
   }
 
-  //console.log("Rendering TripEditorScreen with local state:", local);
   return (
     <div className="trip-editor-screen">
       <div className="header">
         <h1 className="te-title">
           {isEditing ? "Edit Trip" : "New Trip"}
         </h1>
-        {/* Buttons */}
+
         <div className="buttons">
-          <button className="save" onClick={handleSave}>
-            Save
-          </button>
-          <button className="cancel" onClick={onClose}>
-            Cancel
-          </button>
+          <button className="save" onClick={handleSave}>Save</button>
+          <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
 
       {/* Trip Type */}
       <div className="te-type-row">
         <label className="te-label">
-          <span className="icon">
-            {TRIP_TYPE_ICONS[activeItem.type]}
-          </span> Trip Type
+          <span className="icon">{TRIP_TYPE_ICONS[local.type]}</span>
+          Trip Type
         </label>
 
         <select
           className="te-input te-type-select"
-          value={activeItem.type}
-          onChange={e => updateField("type", e.target.value)}
+          value={local.type}
+          onChange={e => setLocal(prev => ({ ...prev, type: e.target.value }))}
         >
           <option value="travel">✈️ Travel</option>
           <option value="tour">🧭 Tour</option>
@@ -134,8 +98,8 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="text"
-        value={activeItem.name}
-        onChange={e => updateField("name", e.target.value)}
+        value={local.name}
+        onChange={e => setLocal(prev => ({ ...prev, name: e.target.value }))}
       />
 
       {/* Start Date */}
@@ -143,8 +107,8 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="date"
-        value={activeItem.startDate}
-        onChange={e => updateField("startDate", e.target.value)}
+        value={local.startDate}
+        onChange={e => setLocal(prev => ({ ...prev, startDate: e.target.value }))}
       />
 
       {/* End Date */}
@@ -152,35 +116,35 @@ export default function TripEditorScreen({
       <input
         className="te-input"
         type="date"
-        value={activeItem.endDate}
-        onChange={e => updateField("endDate", e.target.value)}
+        value={local.endDate}
+        onChange={e => setLocal(prev => ({ ...prev, endDate: e.target.value }))}
       />
 
       {/* Notes */}
       <label className="te-label">Notes</label>
-      < div className="template-buttons" >
-        {
-          templates.map(t => (
-            <button
-              key={t.id}
-              className="template-button"
-              onClick={() => {
-                setActiveItem(prev => ({
-                  ...prev,
-                  tripNotes: (prev.tripNotes || "") + "\n\n" + t.template
-                }));
-              }}
-            >
-              {t.icon} {t.name}
-            </button>
-          ))
-        }
-      </div >
-      <textarea className="markdown-edit"
-        name="markdown-edit"
-        value={activeItem.tripNotes || ""}
+
+      <div className="template-buttons">
+        {templates.map(t => (
+          <button
+            key={t.id}
+            className="template-button"
+            onClick={() =>
+              setLocal(prev => ({
+                ...prev,
+                tripNotes: (prev.tripNotes || "") + "\n" + t.template
+              }))
+            }
+          >
+            {t.icon} {t.name}
+          </button>
+        ))}
+      </div>
+
+      <textarea
+        className="markdown-edit"
+        value={local.tripNotes}
         onChange={e =>
-          setActiveItem(prev => ({ ...prev, tripNotes: e.target.value }))
+          setLocal(prev => ({ ...prev, tripNotes: e.target.value.trim }))
         }
       />
     </div>

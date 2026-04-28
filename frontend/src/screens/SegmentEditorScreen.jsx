@@ -3,6 +3,7 @@ import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";
 import { defaultDate } from "../utils/dateHelpers";
+import { refreshSegments } from "../utils/refreshHelpers";
 
 export default function SegmentEditorScreen({
   activeItem,
@@ -24,11 +25,14 @@ export default function SegmentEditorScreen({
     const payload = buildSegmentPayload(activeItem);
 
     console.log("buildSegmentPayload:", payload);
+    const isEditing = activeItem?.id ? true : false;
+
     const updated = isEditing
       ? await patchSegment(activeTrip.id, activeItem.id, payload)
       : await postSegment(activeTrip.id, payload);
 
-    onRefresh(updated);
+      onRefresh(updated);
+      onCancel();
   }
 
   console.log("segment passed into editor:", activeItem);
@@ -139,7 +143,7 @@ export default function SegmentEditorScreen({
               onClick={() => {
                 setActiveItem(prev => ({
                   ...prev,
-                  note: (prev.note || "") + "\n\n" + t.template
+                  notes: (prev.notes || "") + "\n" + t.template
                 }));
               }}
             >
@@ -149,7 +153,7 @@ export default function SegmentEditorScreen({
         </div>
         <textarea className="markdown-edit"
           value={activeItem.notes}
-          onChange={e => update("notes", e.target.value)}
+          onChange={e => update("notes", e.target.value.trim)}
         />
       </div>
 

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Markdown from "../components/Markdown";
 import { modeIcon } from "../utils/icons";
 import { deleteSegment } from "../api/index";
+import { refreshSegments } from "../utils/refreshHelpers";
 
 import "../styles/SegmentDetailScreen.css";
 
@@ -16,13 +17,14 @@ export default function SegmentDetailScreen({
   
   if (!segment) return null;
 
-  async function handleDelete() {
-    if (!confirm("Delete this segment?")) return;
-    await deleteSegment(segment.id);
+async function handleDelete() {
+  if (!confirm("Delete this segment?")) return;
 
-    onRefresh(segment.tripId);
-    onClose(segment.tripId);
-  }
+  await deleteSegment(segment.tripId, segment.id);
+
+  onRefresh(segment);
+  onClose();
+}
 
   console.log("SegmentDetailScreen received segment:", segment);
   return (

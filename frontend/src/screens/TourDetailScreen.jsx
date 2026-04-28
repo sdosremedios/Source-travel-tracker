@@ -3,6 +3,7 @@ import { TOUR_CATEGORIES, tourIcon } from "../models/categories";
 import { formatDate, formatTime } from "../utils/dateHelpers";
 import Markdown from "../components/Markdown";
 import { deleteTour } from "../api/index";
+import { refreshTrips } from "../utils/refreshHelpers";
 
 import "../styles/TourDetailScreen.css";
 
@@ -17,10 +18,24 @@ export default function TourDetailScreen({
 
   async function handleDelete() {
     if (!confirm("Delete this tour?")) return;
-    await deleteTour(tour.id);
+    await deleteTour(tour.tripId, tour.id);
 
+    onRefresh(tour);
+    /*
+    await refreshTrips({
+      savedTrip: { id: tour.tripId },
+      loadSegmentsForTrip,
+      loadToursForTrip,
+      loadNotesForTrip,
+      setTrips,
+      setSelectedTripId,
+      setSegments,
+      setTours,
+      setNotes,
+      setActiveScreen
+    });
+    */
     onClose();
-    onRefresh(tour.tripId);
   }
 
   console.log("Rendering TourDetailScreen with tour:", tour);

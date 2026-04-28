@@ -1,3 +1,5 @@
+import { normalizeDate, isValidDateString, isChronological, isoDateTime } from "../utils/dateHelpers";
+
 export function createItem(kind, trip = null) {
   switch (kind) {
     case "trip":
@@ -34,10 +36,51 @@ export function createTrip() {
     kind: "trip",
     name: "(untitled)",
     startDate: todayISO(),
-    endDate: "",
+    endDate: todayISO(),
     tripNotes: "",
     type: ""
   };
+}
+export function buildTripPayload(item) {
+  function toUTC(date, time) {
+    if (!date || !time) return null;
+    return new Date(`${date}T${time}`).toISOString();
+  }
+  let { startDate, endDate } = item;
+
+  // Normalize first
+  startDate = normalizeDate(startDate);
+  endDate = normalizeDate(endDate);
+
+  // Validate
+  const hasStart = !!startDate;
+  const hasEnd = !!endDate;
+
+  if (hasStart && !isValidDateString(startDate)) {
+    alert("Start date is invalid");
+    return;
+  }
+
+  if (hasEnd && !isValidDateString(endDate)) {
+    alert("End date is invalid");
+    return;
+  }
+
+  if (hasStart && hasEnd && !isChronological(startDate, "00:00", endDate, "00:00")) {
+    alert("End date must be on or after start date");
+    return;
+  }
+  console.log("TripEditorScreen handleSave with:", item)
+  const id = item?.id ?? null;
+
+  // Build a clean payload from activeItem
+  const payload = {
+    ...item,
+    startDate,
+    endDate
+  };
+
+  return payload;
 }
 /*
 CREATE TABLE segments (
@@ -63,24 +106,29 @@ export function createSegment(trip) {
 
     startDate: defaultStartDateForTrip(trip),
     endDate: defaultStartDateForTrip(trip),
-    mode: "",
+    mode: "plane",
     fromLocation: "",
     toLocation: "",
-    departureTime: "",
-    arrivalTime: "",
+    departureTime: "", // deprecated
+    arrivalTime: "", // deprecated
     notes: "",
     carrier: ""
   };
 }
 export function buildSegmentPayload(item) {
+  function toUTC(date, time) {
+    if (!date || !time) return null;
+    return new Date(`${date}T${time}`).toISOString();
+  }
+
   return {
     startDate: item.startDate || null,
     endDate: item.endDate || null,
     mode: item.mode || "",
     fromLocation: item.fromLocation || "",
     toLocation: item.toLocation || "",
-    departureTime: item.departureTime || null,
-    arrivalTime: item.arrivalTime || null,
+    departureTime: toUTC(item.startDate, item.departureTime),
+    arrivalTime: toUTC(item.endDate, item.arrivalTime),
     carrier: item.carrier || "",
     notes: item.notes || ""
   };
@@ -119,16 +167,16 @@ export function createTour(trip) {
   };
 }
 export function buildTourPayload(item) {
+  function toUTC(date, time) {
+    if (!date || !time) return null;
+    return new Date(`${date}T${time}`).toISOString();
+  }
+
   return {
-    startDate: item.startDate || null,
-    startTime: item.startTime || null,
-    endDate: item.endDate || null,
-    endTime: item.endTime || null,
     name: item.name || "",
     location: item.location || "",
-    category: item.category || "",
-    notes: item.notes || "",
-    company: item.company || ""
+    dateTime: toUTC(item.date, item.time),
+    notes: item.notes || ""
   };
 }
 /*
@@ -151,7 +199,7 @@ export function createNote(trip) {
   };
 }
 export function buildNotePayload(item) {
-  const utc = new Date(dateTime).toISOString();
+  const utc = new Date(item.dateTime).toISOString();
 
   return {
     dateTime: utc,

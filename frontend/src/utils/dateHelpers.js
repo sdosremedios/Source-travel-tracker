@@ -9,7 +9,7 @@ import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 
 */
 export function defaultDate() {
-  return new Date().toISOString().slice(0, 10); // "2026-04-22"
+  return isoDate.toISOString().slice(0, 10); // "2026-04-22"
 }
 
 export function normalizeDate(input) {
@@ -89,9 +89,12 @@ export function formatDate(dateStr, includeWeekday = true) {
 export function formatTime(timeStr) {
   if (!timeStr) return "";
 
-  let [hour, minute] = timeStr.split(":").map(Number);
+  const localTime = new Date(timeStr).toLocaleTimeString();
+
+  let [hour, minute] = localTime.split(":").map(Number);
   const ampm = hour >= 12 ? "PM" : "AM";
   hour = hour % 12 || 12;
+  minute = minute || 0;
 
   return `${hour}:${minute.toString().padStart(2, "0")} ${ampm}`;
 }
@@ -134,4 +137,7 @@ export function formatMonth(dateStr, { short = false } = {}) {
 }
 export function formatWeekday(date, { short = false } = {}) {
   return new Date(date).toLocaleString("en-US", {weekday: short ? "short" : "long" });
+}
+export function isoDateTime(dateStr) {
+  return new Date(dateStr ? dateStr : null).toISOString;
 }

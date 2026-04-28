@@ -64,18 +64,18 @@ router.patch("/:id", (req, res) => {
 
 // DELETE a note
 router.delete("/:id", (req, res) => {
-  const { id, tripId } = req.params;
+  const { tripId, id } = req.params;
 
-  const result = db.prepare(`
+  console.log("notes router delete tripId:", tripId,", id:",id)
+
+  const stmt = db.prepare(`
     DELETE FROM notes
     WHERE id = ? AND tripId = ?
-  `).run(id, tripId);
+  `);
 
-  if (result.changes === 0) {
-    return res.status(404).json({ error: "note not found" });
-  }
+  stmt.run(id, tripId);
 
-  res.status(204).end();
+  res.json({ success: true });
 });
 
 export default router;

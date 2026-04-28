@@ -32,12 +32,12 @@ router.get("/:tripId", (req, res) => {
 
 // CREATE a trip
 router.post("/", (req, res) => {
-  const { name, startDate, endDate, notes } = req.body;
+  const { name, startDate, endDate, tripNotes } = req.body;
 
   const result = db.prepare(`
-    INSERT INTO trips (name, startDate, endDate, notes)
+    INSERT INTO trips (name, startDate, endDate, tripNotes)
     VALUES (?, ?, ?, ?)
-  `).run(name, startDate, endDate, notes);
+  `).run(name, startDate, endDate, tripNotes);
 
   const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(result.lastInsertRowid);
   res.json({ ...row, kind: "trip" });
@@ -46,13 +46,13 @@ router.post("/", (req, res) => {
 // UPDATE a trip
 router.patch("/:tripId", (req, res) => {
   const { tripId } = req.params;
-  const { name, startDate, endDate, notes } = req.body;
+  const { name, startDate, endDate, tripNotes } = req.body;
 
   db.prepare(`
     UPDATE trips
-    SET name = ?, startDate = ?, endDate = ?, notes = ?
+    SET name = ?, startDate = ?, endDate = ?, tripNotes = ?
     WHERE id = ?
-  `).run(name, startDate, endDate, notes, tripId);
+  `).run(name, startDate, endDate, tripNotes, tripId);
 
   const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(tripId);
   res.json({ ...row, kind: "trip" });

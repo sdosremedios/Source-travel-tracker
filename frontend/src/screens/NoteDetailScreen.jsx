@@ -1,20 +1,34 @@
 import React from "react";
 import Markdown from "../components/Markdown";
 import { deleteNote } from "../api/index";
+import { refreshNotes } from "../utils/refreshHelpers";
 
 import "../styles/NoteDetailScreen.css";
 
 
-export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
+export default function NoteDetailScreen({
+  note,
+  onEdit,
+  onClose,
+  onRefresh
+}) {
   if (!note) return null;
 
   async function handleDelete() {
     if (!confirm("Delete this note?")) return;
 
-    await deleteNote(note.id);
+    await deleteNote(note.tripId, note.id);
 
+    /*
+      onRefresh(note);
+      selectedTripId,
+      loadNotesForTrip,
+      setNotes,
+      setActiveScreen
+    
+    */
+    onRefresh(note);
     onClose();
-    onRefresh();
   }
 
   return (
@@ -27,7 +41,7 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
         {/* Metadata ------------------------------------------------------------ */}
         <div className="data">
           <div>
-            <strong>Date:</strong> {note.dateTime}
+            <strong>Date:</strong> {new Date(note.dateTime).toLocaleString()}
           </div>
         </div>
         {/* Buttons ------------------------------------------------------------- */}
@@ -57,10 +71,10 @@ export default function NoteDetailScreen({ note, onEdit, onClose, onRefresh }) {
 
         </div>
       </div>
-        {/* Note text ----------------------------------------------------------- */}
-        <div className="markdown-text">
-          <Markdown>{note.note}</Markdown>
-        </div>
+      {/* Note text ----------------------------------------------------------- */}
+      <div className="markdown-text">
+        <Markdown>{note.note}</Markdown>
+      </div>
     </div>
   );
 }

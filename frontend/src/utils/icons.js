@@ -107,3 +107,13 @@ export function actionIcon(name) {
   };
   return map[name] || "❓";
 }
+export const kindIcons = {
+  trip: "🧭",
+  segment: "🛫",     // or 🚗 / 🚆 / 🛳 depending on mode, if you want dynamic
+  tour: "🏞️",
+  note: "📝"
+};
+
+export function kindIcon(kind) {
+  return kindIcons[kind] || "❓";
+}

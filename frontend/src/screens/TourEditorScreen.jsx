@@ -48,7 +48,7 @@ export default function TourEditorScreen({
       return;
     }
     console.log("Saving tour with data:", activeItem);
-    const isEditing = activeItem?.id ?? Boolean;
+    const isEditing = activeItem?.id ? true : false;
     const payload = buildTourPayload(activeItem);
 
     const updated = isEditing
@@ -56,6 +56,7 @@ export default function TourEditorScreen({
       : await postTour(activeTrip.id, payload);
 
     onRefresh(updated);
+    onCancel(); // Close
   }
 
   // ---------------------------------------
@@ -163,7 +164,7 @@ export default function TourEditorScreen({
                 onClick={() => {
                   setActiveItem(prev => ({
                     ...prev,
-                    notes: (prev.notes || "") + "\n\n" + t.template
+                    notes: (prev.notes || "") + "\n" + t.template
                   }));
                 }}
               >
@@ -175,7 +176,7 @@ export default function TourEditorScreen({
         <textarea
           className="markdown-edit"
           value={activeItem.notes}
-          onChange={e => update("notes", e.target.value)}
+          onChange={e => update("notes", e.target.value.trim)}
         />
       </div>
 

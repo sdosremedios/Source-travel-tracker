@@ -6,7 +6,7 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
   const items = [];
 
   //
-  // Parse YYYY-MM-DD safely everywhere
+  // Parse YYYY-MM-DD safely everywhere (date-only fields)
   //
   function parseYMD(value) {
     if (!value) return null;
@@ -18,12 +18,18 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     return new Date(y, m - 1, d);
   }
 
-  function normalizeDate(d) {
-    return new Date(d); // JS auto-converts UTC → local
+  //
+  // Normalize ANY timestamp (UTC ISO or naive local) → local JS Date
+  //
+  function normalizeToLocal(dateTime) {
+    return new Date(dateTime); // JS auto-converts UTC → local
   }
 
   function capitalizeEachWord(text) {
-    return text.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+    return text
+      .split(" ")
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   //
@@ -46,29 +52,34 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     return "";
   }
 
+  //
   // TOURS
-  // console.log("Building timeline with tours:", tours);
+  //
   tours.forEach(tour => {
     const start = parseYMD(tour.startDate);
     const end = parseYMD(tour.endDate || tour.startDate);
     if (!start || !end) return;
+
+    // Normalize using UTC → local
+    const d = normalizeToLocal(tour.dateTime || tour.startDate);
 
     items.push({
       id: tour.id,
       kind: "tour",
       tripId: tour.tripId,
 
-      rawDate: tour.startDate,
-      date: start.toLocaleDateString(),
-      weekday: start.toLocaleString("default", { weekday: "short" }),
-      monthLabel: start.toLocaleString("default", { month: "long", year: "numeric" }),
+      rawDate: tour.dateTime || tour.startDate,
+
+      // Grouping fields — ALL derived from the same normalized Date
+      date: d.toLocaleDateString(),
+      weekday: d.toLocaleString("default", { weekday: "short" }),
+      monthLabel: d.toLocaleString("default", { month: "long", year: "numeric" }),
 
       name: tour.name,
       category: tour.category,
       notes: tour.notes,
       location: tour.location,
 
-      // ⬇️ add these
       startDate: tour.startDate,
       endDate: tour.endDate,
       startTime: tour.startTime,
@@ -76,16 +87,21 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
       finishDate: end.toLocaleDateString(),
 
       durationLabel: computeDuration(start, end),
-      arrivalOffset: computeArrivalOffset(start, end)
+      arrivalOffset: computeArrivalOffset(start, end),
+
+      sortDate: d
     });
   });
 
+  //
   // SEGMENTS
-  // console.log("Building timeline with segments:", segments);
+  //
   segments.forEach(seg => {
     const start = parseYMD(seg.startDate);
     const end = parseYMD(seg.endDate || seg.startDate);
     if (!start || !end) return;
+
+    const d = normalizeToLocal(seg.departureTime || seg.startDate);
 
     const capMode = capitalizeEachWord(seg.mode);
     const capCarrier = capitalizeEachWord(seg.carrier);
@@ -95,10 +111,11 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
       kind: "segment",
       tripId: seg.tripId,
 
-      rawDate: seg.startDate,
-      date: start.toLocaleDateString(),
-      weekday: start.toLocaleString("default", { weekday: "short" }),
-      monthLabel: start.toLocaleString("default", { month: "long", year: "numeric" }),
+      rawDate: seg.departureTime || seg.startDate,
+
+      date: d.toLocaleDateString(),
+      weekday: d.toLocaleString("default", { weekday: "short" }),
+      monthLabel: d.toLocaleString("default", { month: "long", year: "numeric" }),
 
       from: seg.fromLocation,
       to: seg.toLocation,
@@ -110,37 +127,44 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
       finishDate: end.toLocaleDateString(),
       carrier: capCarrier,
 
-      // ⭐ time mapping
       startTime: seg.departureTime,
       endTime: seg.arrivalTime,
 
       durationLabel: computeDuration(start, end),
-      arrivalOffset: computeArrivalOffset(start, end)
+      arrivalOffset: computeArrivalOffset(start, end),
+
+      sortDate: d
     });
   });
-  // NOTES ------------------------------------------------------------------
-  /*
-      monthLabel: formatMonth(normalizeDate(n.dateTime)),
-      date: formatDateTime(n.dateTime),
-      weekday: formatWeekday(n.dateTime),
- */
-  console.log("buildUnifiedTimeline with notes:", notes);
+
+  //
+  // NOTES
+  //
   notes.forEach(n => {
+    const d = normalizeToLocal(n.dateTime);
+
     items.push({
       kind: "note",
       id: n.id,
+
       rawDate: n.dateTime,
-      monthLabel: formatMonth(new Date(n.dateTime)), // convert to local dateTime
-      date: formatDateTime(new Date(n.dateTime)),
-      weekday: formatWeekday(new Date(n.dateTime)),
+
+      date: d.toLocaleDateString(),
+      weekday: d.toLocaleString("default", { weekday: "short" }),
+      monthLabel: d.toLocaleString("default", { month: "long", year: "numeric" }),
+
       note: n.note,
+
+      sortDate: d,
+
       ...n
     });
   });
+
   //
-  // SORT chronologically by start date
+  // SORT newest → oldest
   //
-  items.sort((b, a) => new Date(a.rawDate) - new Date(b.rawDate));
+  items.sort((a, b) => b.sortDate - a.sortDate);
 
   return items;
 }

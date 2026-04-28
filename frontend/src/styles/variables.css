@@ -84,6 +84,7 @@
     --color-btn-save-text: white;
     --color-btn-save-hover-bg: #006cbe;
     --color-btn-save-hover-text: var(--color-primary-text);
+    --font-size-button: var(--font-size-small);
 
     /* fonts */
     --font-size-small: 12px;
@@ -91,7 +92,7 @@
     --font-size-large: 18px;
 
     /* Icons */
-    --font-size-icon: 32px;
+    --font-size-icon: 36px;
 
     /* Data */
     --font-size-data: var(--font-size-medium);

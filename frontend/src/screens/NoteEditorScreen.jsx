@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { postNote, patchNote, fetchTemplates } from "../api/index";
 import { buildNotePayload } from "../api/createItem";
 import "../styles/NoteEditorScreen.css";
+import { isoDateTime } from "../utils/dateHelpers";
 
 export default function NoteEditorScreen({
   activeItem,
@@ -43,15 +44,17 @@ export default function NoteEditorScreen({
   }, [activeItem]);
 
   // --- Save handler (local → UTC) ---
-async function handleSave() {
-  const payload = buildNotePayload(activeItem);
+  async function handleSave() {
+    const payload = buildNotePayload(activeItem);
 
-  const updated = isEditing
-    ? await patchNote(activeTrip.id, activeItem.id, payload)
-    : await postNote(activeTrip.id, payload);
+    const updated = isEditing
+      ? await patchNote(activeTrip.id, activeItem.id, payload)
+      : await postNote(activeTrip.id, payload);
 
-  onRefresh(updated);
-}
+      onRefresh(updated);
+
+    onCancel(); //Close
+  }
 
   return (
     <div className="note-editor-screen">
@@ -67,7 +70,9 @@ async function handleSave() {
       <input
         type="datetime-local"
         value={dateTime}
-        onChange={(e) => setDateTime(e.target.value)}
+        onChange={e =>
+          setActiveItem(prev => ({ ...prev, dateTime: e.target.value }))
+        }
       />
 
       <label>Note</label>
@@ -79,7 +84,7 @@ async function handleSave() {
             onClick={() => {
               setActiveItem(prev => ({
                 ...prev,
-                note: (prev.note || "") + "\n\n" + t.template
+                note: (prev.note || "") + "\n" + t.template
               }));
             }}
           >
@@ -90,7 +95,7 @@ async function handleSave() {
       <textarea className="markdown-edit"
         value={activeItem.note || ""}
         onChange={e =>
-          setActiveItem(prev => ({ ...prev, note: e.target.value }))
+          setActiveItem(prev => ({ ...prev, note: e.target.value.trim }))
         }
       />
     </div>

@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Markdown from "../components/Markdown";
 import UnifiedTimeline from "../components/UnifiedTimeline";
-import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
+//import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
 import { tripIcon, actionIcon } from "../utils/icons";
 import { deleteTrip } from "../api";
 import { formatDate } from "../utils/dateHelpers";
@@ -15,13 +15,10 @@ export default function TripDetailScreen({
   segments,
   tours,
   notes,
+  timelineItems,
   onClose,
   onSelectItem,
   openItemEditor,
-  openTripEditor,
-  openSegmentEditor,
-  openTourEditor,
-  openNoteEditor,
   onContextMenu,
   onRefresh,
   rightPaneRef,
@@ -29,7 +26,10 @@ export default function TripDetailScreen({
 }) {
 
   // Build the unified timeline (segments + tours + notes)
-  const timelineItems = buildUnifiedTimeline(segments, tours, notes);
+  //const timelineItems = buildUnifiedTimeline(segments, tours, notes);
+  // Already computed in parent
+  // const timelineItems = props.timelineItems;
+
   const [showNotes, setTripNotes] = useState(false);
 
 
@@ -49,7 +49,7 @@ export default function TripDetailScreen({
   async function handleDeleteTrip(id) {
     if (!confirm("Delete this trip?")) return;
     await deleteTrip(id);
-//    await onRefresh();
+    //    await onRefresh();
     onClose();
   }
 
@@ -70,7 +70,7 @@ export default function TripDetailScreen({
 
           <div className="actions">
 
-            <button className="icon" onClick={() => openItemEditor(trip)}>
+            <button className="icon" onClick={() => openItemEditor({ kind: "trip", ...trip })}>
               {actionIcon("edit")} Edit
             </button>
 
@@ -132,13 +132,16 @@ export default function TripDetailScreen({
           </>
         )}
       </div>
-      <div className="td-lower-section">
-        <UnifiedTimeline
-          items={timelineItems}
-          onSelectItem={onSelectItem}
-          onContextMenu={onContextMenu}
-        />
+        {timelineItems.length > 0 && (
+          <div className="td-lower-section">
+            <UnifiedTimeline
+              items={timelineItems}
+              onSelectItem={handleSelectItem}
+              onContextMenu={onContextMenu}
+              onInlineEdit={onInlineEdit}
+            />
+          </div>
+        )}
       </div>
-    </div>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import TripListScreen from "./screens/TripListScreen";
 import TripDetailScreen from "./screens/TripDetailScreen";
 import TripEditorScreen from "./screens/TripEditorScreen";
@@ -13,6 +13,13 @@ import ContextMenu from "./components/ContextMenu";
 import { createItem } from "./api/createItem";
 import { formatDate, formatTime } from "./utils/dateHelpers";
 import hydrateItem from "./api/hydrate"
+import { buildUnifiedTimeline } from "./models/buildUnifiedTimeline";
+import {
+  refreshTrips,
+  refreshSegments,
+  refreshTours,
+  refreshNotes
+} from "./utils/refreshHelpers";
 
 import {
   loadTrips,
@@ -32,7 +39,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.3.3";
+  const appVersion = "0.4.0";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -69,24 +76,25 @@ export default function App() {
 
   // always scroll to top
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeScreen, selectedTripId]);
-
-  async function refreshSegments() {
-    const segments = await loadSegmentsForTrip(selectedTripId);
-    setSegments(segments);
-    return segments;
-  }
-  async function refreshTours() {
-    const tours = await loadToursForTrip(selectedTripId);
-    setTours(tours);
-    return tours;
-  }
-  async function refreshNotes() {
-    const notes = await loadNotesForTrip(selectedTripId);
-    setNotes(notes);
-    return notes;
-  }
+  /*
+    async function refreshSegments() {
+      const segments = await loadSegmentsForTrip(selectedTripId);
+      setSegments(segments);
+      return segments;
+    }
+    async function refreshTours() {
+      const tours = await loadToursForTrip(selectedTripId);
+      setTours(tours);
+      return tours;
+    }
+    async function refreshNotes() {
+      const notes = await loadNotesForTrip(selectedTripId);
+      setNotes(notes);
+      return notes;
+    }
+    */
   async function handleSave() {
     const item = activeItem;
     const isEditing = item.id != null;
@@ -226,22 +234,28 @@ export default function App() {
     console.log("App openItemDetail item:", item);
 
     const hydrated = hydrateItem(item);
-    console.log("App hydrated item:", hydrated);
     if (!hydrated) return;
+
     console.log("Opening hydrated detail for hydrated:", hydrated);
 
+    // Always set selectedTripId
     setSelectedTripId(hydrated.tripId);
-    setActiveItem(hydrated);
 
+    // Only segments, tours, notes use activeItem
     if (hydrated.kind === "segment") {
+      setActiveItem(hydrated);
       setActiveScreen("segmentDetail");
     } else if (hydrated.kind === "tour") {
+      setActiveItem(hydrated);
       setActiveScreen("tourDetail");
     } else if (hydrated.kind === "note") {
+      setActiveItem(hydrated);
       setActiveScreen("noteDetail");
     } else if (hydrated.kind === "trip") {
+      // Trips do NOT use activeItem
       setActiveScreen("tripDetail");
     }
+
     console.log("Detail screen should be open now with activeItem:", hydrated);
   }
 
@@ -262,44 +276,63 @@ export default function App() {
     setActiveTrip(trip);
   }, [selectedTripId, trips]);
 
+  const timelineItems = useMemo(
+    () => buildUnifiedTimeline(segments, tours, notes),
+    [segments, tours, notes]
+  );
+
+
   function openItemEditor(item) {
-    // NEW ITEM → DO NOT HYDRATE
     console.log("openItemEditor receives item:", item);
+
+    // NEW ITEM → DO NOT HYDRATE
     if (!item.id) {
-      console.log("Opening NEW editor for item:", item);
       setSelectedTripId(item.tripId);
-      setActiveItem({
-        name: "(untitled)",
-        ...item
-      });
 
       if (item.kind === "segment") {
+        setActiveItem({ name: "(untitled)", ...item });
         setActiveScreen("segmentEditor");
       } else if (item.kind === "tour") {
+        setActiveItem({ name: "(untitled)", ...item });
         setActiveScreen("tourEditor");
       } else if (item.kind === "note") {
+        setActiveItem({ name: "(untitled)", ...item });
         setActiveScreen("noteEditor");
       } else if (item.kind === "trip") {
-        setActiveScreen("tripEditor")
+        if (item.id == null) {
+          const newTrip = createItem("trip");
+          setActiveItem(newTrip);        // <-- this is the missing piece
+          return;
+        }
+        setSelectedTripId(null);
+        // Trips do NOT use activeItem
+        setActiveScreen("tripEditor");
       }
+
       return;
     }
-    console.log("Opening editor for EXISTING item:", item);
+
     // EXISTING ITEM → HYDRATE
     const hydrated = hydrateItem(item);
     if (!hydrated) return;
 
     setSelectedTripId(hydrated.tripId);
-    setActiveItem(hydrated);
 
     if (hydrated.kind === "segment") {
+      setActiveItem(hydrated);
       setActiveScreen("segmentEditor");
     } else if (hydrated.kind === "tour") {
+      setActiveItem(hydrated);
       setActiveScreen("tourEditor");
     } else if (hydrated.kind === "note") {
+      setActiveItem(hydrated);
       setActiveScreen("noteEditor");
     } else if (hydrated.kind === "trip") {
+      // EXISTING TRIP
+      setActiveItem(null);
+      setSelectedTripId(item.id);
       setActiveScreen("tripEditor");
+      return;
     }
   }
 
@@ -373,17 +406,20 @@ export default function App() {
   function closeEditor() {
     const item = activeItem;
 
+    // If no activeItem → we were editing a trip
     if (!item) {
       setActiveScreen("tripList");
       return;
     }
 
+    // Existing child item (segment/tour/note)
     if (item.id != null) {
-      setSelectedTripId(item.tripId ?? item.id);
+      setSelectedTripId(item.tripId);
       setActiveScreen(item.kind + "Detail");
       return;
     }
 
+    // New child item
     if (item.tripId) {
       setSelectedTripId(item.tripId);
       setActiveScreen("tripDetail");
@@ -391,6 +427,7 @@ export default function App() {
       setActiveScreen("tripList");
     }
   }
+
   function openDetail(item) {
     setActiveItem(item);
     setSelectedTripId(item.tripId ?? item.id);
@@ -410,12 +447,10 @@ export default function App() {
     const trips = await loadTrips();
     setTrips(trips);
 
-    setSelectedTripId(null);   // ⭐ THIS is the missing piece
-    setActiveItem(null);       // "null" (string) was a bug — use null
-    setActiveTrip(null);
+    setSelectedTripId(null);
+    setActiveItem(null);   // only affects child editors
     setActiveScreen("tripList");
   }
-
 
   // ------------------------------------------------------------
   // Render
@@ -471,9 +506,9 @@ export default function App() {
             segments={segments}
             tours={tours}
             notes={notes}
+            timelineItems={timelineItems}
             onClose={closeTripDetail}
             rightPaneRef={rightPaneRef}
-
             onRefresh={async (id) => {
               const trip = await loadTrip(id);
               const segments = await loadSegmentsForTrip(id);
@@ -488,71 +523,40 @@ export default function App() {
               // ⭐ DO NOT setActiveScreen("tripDetail")
               // You're already on tripDetail, so this would cause a loop.
             }}
-            openTripEditor={(id) => {
-              //console.log("Edit trip with id:", id);
-
-              const trip = trips.find(t => t.id === id);   // ⭐ hydrate here
-
-              setSelectedTripId(id);
-              setActiveItem(trip);                         // ⭐ pass full object
-              setActiveScreen("tripEditor");
-            }}
-
             onSelectItem={(item) => openItemDetail(item)}
-
             openItemEditor={openItemEditor}
-            openSegmentEditor={openItemEditor}
-            openTourEditor={openItemEditor}
-            openNoteEditor={openItemEditor}
             onContextMenu={openContextMenu}
             onInlineEdit={handleInlineEdit}
           />
         )}
 
-        {activeScreen === "tripEditor" && activeItem && (
+        {activeScreen === "tripEditor" && (
           <TripEditorScreen
-            activeItem={activeItem}
-            setActiveItem={setActiveItem}
-            //trip={activeItem}
-            onClose={() => {
-              const id = activeItem?.id;
-
-              if (id) {
-                setSelectedTripId(id);
+            trip={
+              selectedTripId
+                ? trips.find(t => t.id === selectedTripId)   // existing trip
+                : activeItem                                  // new trip
+            } onCancel={() => {
+              if (selectedTripId) {
                 setActiveScreen("tripDetail");
               } else {
-                // User cancelled creating a new trip
-                setSelectedTripId(null);
                 setActiveScreen("tripList");
               }
             }}
             onRefresh={async (savedTrip) => {
-              console.log("Refreshing after CREATE or UPDATE in TripEditorScreen:", savedTrip);
-
-              // 1. Reload the trip list
-              const updatedTrips = await loadTrips();
-              setTrips(updatedTrips);
-
-              // 2. Hydrate the saved trip from the updated list
-              const hydratedTrip = updatedTrips.find(t => t.id === savedTrip.id);
-
-              // 3. Update activeItem + selectedTripId
-              setActiveItem(hydratedTrip);
-              setSelectedTripId(savedTrip.id);
-
-              // 4. Reload trip detail data
-              // const trip = await loadTrip(savedTrip.id);
-              const segments = await loadSegmentsForTrip(savedTrip.id);
-              const tours = await loadToursForTrip(savedTrip.id);
-              const notes = await loadNotesForTrip(savedTrip.id);
-
-              // setActiveTrip(trip);
-              setSegments(segments);
-              setTours(tours);
-              setNotes(notes);
-
-              // 5. Switch to TripDetailScreen
-              setActiveScreen("tripDetail");
+              await refreshTrips({
+                savedTrip,
+                loadTrips,
+                loadSegmentsForTrip,
+                loadToursForTrip,
+                loadNotesForTrip,
+                setTrips,
+                setSelectedTripId,
+                setSegments,
+                setTours,
+                setNotes,
+                setActiveScreen
+              });
             }}
           />
         )}
@@ -565,8 +569,13 @@ export default function App() {
             onClose={async (tripId) => {
               setActiveScreen("tripDetail")
             }}
-            onRefresh={async () => {
-              setTrips(await loadSegmentsForTrip(selectedTripId));
+            onRefresh={async (segment) => {
+              await refreshSegments({
+                selectedTripId: segment.tripId,
+                loadSegmentsForTrip,
+                setSegments,
+                setActiveScreen
+              });
             }}
           />
         )}
@@ -577,10 +586,13 @@ export default function App() {
             setActiveItem={setActiveItem}
             activeTrip={activeTrip}
             onCancel={closeOverlay}
-            onRefresh={async (updatedSegment) => {
-              await refreshSegments();
-              setActiveItem(updatedSegment);
-              setActiveScreen("segmentDetail");
+            onRefresh={async (segment) => {
+              await refreshSegments({
+                selectedTripId: segment.tripId,   // ✔ FIXED
+                loadSegmentsForTrip,
+                setSegments,
+                setActiveScreen
+              });
             }}
             allTemplates={allTemplates}
           />
@@ -593,9 +605,13 @@ export default function App() {
             onEdit={() => openItemEditor(activeItem)}
             onSelectSegment={openItemDetail}
             onClose={closeOverlay}
-            onRefresh={async () => {
-              console.log("Refreshing tours after delete...");
-              setTrips(await loadToursForTrip(selectedTripId));
+            onRefresh={async (tour) => {
+              await refreshTours({
+                selectedTripId: tour.tripId,
+                loadToursForTrip,
+                setTours,
+                setActiveScreen
+              });
             }}
 
           />
@@ -606,13 +622,14 @@ export default function App() {
             setActiveItem={setActiveItem}
             activeTrip={activeTrip}
             onCancel={closeOverlay}
-            onRefresh={async (updatedTour) => {
-              console.log("Refreshing tours after delete or edit");
-              await refreshTours();
-              setActiveItem(updatedTour);
-              setActiveScreen("tourDetail");
-            }}
-            allTemplates={allTemplates}
+            onRefresh={async (tour) => {
+              await refreshTours({
+                selectedTripId: tour.tripId,
+                loadToursForTrip,
+                setTours,
+                setActiveScreen
+              });
+            }} allTemplates={allTemplates}
           />
         )}
         {activeScreen === "noteDetail" && activeItem && (
@@ -621,7 +638,14 @@ export default function App() {
             onEdit={() => openItemEditor(activeItem)}
             onSelectSegment={openItemDetail}
             onClose={closeOverlay}
-            onRefresh={refreshNotes}
+            onRefresh={async (note) => {
+              await refreshNotes({
+                selectedTripId: note.tripId,
+                loadNotesForTrip,
+                setNotes,
+                setActiveScreen
+              });
+            }}
           />
         )}
         {activeScreen === "noteEditor" && activeItem && (
@@ -629,14 +653,18 @@ export default function App() {
             activeItem={activeItem}
             setActiveItem={setActiveItem}
             activeTrip={activeTrip}
-            onCancel={async () =>{ 
-              openItemDetail(activeItem); 
-            }}
-            onRefresh={async (updatedNote) => {
-              console.log("NoteEditorScreen refreshNotes", updatedNote);
-              await refreshNotes();     // updates notes array
-              setActiveItem(updatedNote); // ⭐ always correct
-              setActiveScreen("noteDetail");
+            onCancel={closeOverlay}
+            /*            onRefresh={async (note) =>{
+                          notes = await loadNotesForTrip(note.tripId);
+                        }}
+            */
+            onRefresh={async (note) => {
+              await refreshNotes({
+                selectedTripId: note.tripId,
+                loadNotesForTrip,
+                setNotes,
+                setActiveScreen
+              });
             }}
             allTemplates={allTemplates}
           />

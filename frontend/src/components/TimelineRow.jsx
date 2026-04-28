@@ -1,6 +1,6 @@
 // src/components/TimelineRow.jsx
 import React from "react";
-import { modeIcon, tourIcon, actionIcon } from "../utils/icons";
+import { modeIcon, tourIcon, actionIcon, kindIcon } from "../utils/icons";
 import { formatTime } from "../utils/dateHelpers";
 import "../styles/TimelineRow.css";
 import Markdown from "./Markdown";
@@ -23,9 +23,11 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="timeline-row-icon">📝</div>
+        <div className="timeline-icon">
+          {kindIcon("note")}
+        </div>
         <div className="timeline-row-content">
-          <div className="tr-sub">{formatTime(item.dateTime)}</div>
+          <div className="timeline-note-time">{formatTime(item.dateTime)}</div>
         </div>
         <div className="markdown-text preview">
           <Markdown>{item.note}</Markdown>
@@ -42,7 +44,11 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="timeline-row-icon">{modeIcon(item.mode)}</div>
+        <div className="timeline-row-icon">
+          {item.mode ? 
+          modeIcon(item.mode)
+            : item.kindIcon(item.kind)}
+          </div>
 
         <div className="timeline-row-content">
           <div className="timeline-row-date">
@@ -58,7 +64,7 @@ export default function TimelineRow({
           </div>
 
           {item.notes && (
-            <div className=" preview">
+            <div className="markdown-text preview">
               <Markdown>{item.notes}</Markdown>
             </div>
           )}
@@ -75,23 +81,24 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="timeline-row-icon">{tourIcon(item.category)}</div>
+        <div className="timeline-row-icon">{item.kind === "tour"
+          ? tourIcon(item.category)
+          : kindIcon(item.kind)}</div>
 
         <div className="timeline-row-content">
           <div className="timeline-row-date">
             {item.weekday} — {item.date} → {item.finishDate || item.startDate}
           </div>
-
           <div className="timeline-row-title">{item.name}</div>
           <div className="timeline-row-subtitle">{item.category} Tour</div>
           <div className="timeline-row-location">{item.location}</div>
-
+          <div className="timeline-row-company">{item.company || "No company"}</div>
         </div>
-          {item.notes && (
-            <div className="markdown-text preview">
-              <Markdown>{item.notes}</Markdown>
-            </div>
-          )}
+        {item.notes && (
+          <div className="markdown-text preview">
+            <Markdown>{item.notes}</Markdown>
+          </div>
+        )}
       </div>
     );
   }
