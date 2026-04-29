@@ -29,11 +29,11 @@ CREATE TABLE IF NOT EXISTS  segments (
     tripId        INTEGER NOT NULL
                           REFERENCES trips (id) ON DELETE CASCADE,
     mode          TEXT,
-    startDate     TEXT,
-    endDate       TEXT,
+    startDate     DATETIME,
+    endDate       DATETIME,
     fromLocation  TEXT,
-    toLocation    TEXT,
-    departureTime TEXT,
+    toLocation    TEXT, /* deprecated */
+    departureTime TEXT, /* deprecated */
     arrivalTime   TEXT,
     notes         TEXT,
     carrier       TEXT
@@ -44,10 +44,10 @@ CREATE TABLE IF NOT EXISTS tours (
     tripId    INTEGER NOT NULL
                       REFERENCES trips (id) ON DELETE CASCADE,
     name      TEXT,
-    startDate TEXT,
-    startTime TEXT,
-    endDate   TEXT,
-    endTime   TEXT,
+    startDate DATETIME,
+    startTime TEXT, /* deprecated */
+    endDate   DATETIME,
+    endTime   TEXT, /* deprecated */
     location  TEXT,
     category  TEXT,
     notes     TEXT,

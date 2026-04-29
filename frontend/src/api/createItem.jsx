@@ -1,5 +1,5 @@
 import { normalizeDate, isValidDateString, isChronological, isoDateTime } from "../utils/dateHelpers";
-
+// Unified routines
 export function createItem(kind, trip = null) {
   switch (kind) {
     case "trip":
@@ -122,15 +122,15 @@ export function buildSegmentPayload(item) {
   }
 
   return {
-    startDate: item.startDate || null,
-    endDate: item.endDate || null,
     mode: item.mode || "",
     fromLocation: item.fromLocation || "",
     toLocation: item.toLocation || "",
-    departureTime: toUTC(item.startDate, item.departureTime),
-    arrivalTime: toUTC(item.endDate, item.arrivalTime),
     carrier: item.carrier || "",
-    notes: item.notes || ""
+    notes: item.notes || "",
+
+    // canonical UTC datetime fields
+    startDate: toUTC(item.startDate, item.departureTime),
+    endDate: toUTC(item.endDate, item.arrivalTime)
   };
 }
 /*
@@ -175,8 +175,11 @@ export function buildTourPayload(item) {
   return {
     name: item.name || "",
     location: item.location || "",
-    dateTime: toUTC(item.date, item.time),
-    notes: item.notes || ""
+    category: item.category || "",
+    notes: item.notes || "",
+    company: item.company || "",
+    startDate: toUTC(item.startDate, item.startTime || "12:00"),
+    endDate: toUTC(item.endDate || item.startDate, item.endTime || "12:00")
   };
 }
 /*
@@ -199,14 +202,19 @@ export function createNote(trip) {
   };
 }
 export function buildNotePayload(item) {
-  const utc = new Date(item.dateTime).toISOString();
+  let utc;
+
+  try {
+    utc = new Date(item.dateTime).toISOString();
+  } catch {
+    utc = new Date().toISOString();
+  }
 
   return {
-    dateTime: utc,
-    note: item.note || ""
+    note: item.note || "",
+    dateTime: utc
   };
 }
-
 function todayISO() {
   return new Date().toISOString().slice(0, 10); // "2026-04-22"
 }

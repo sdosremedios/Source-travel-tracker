@@ -57,7 +57,7 @@ export default function UnifiedTimeline({
 
             {showDate && (
               <div className="timeline-day-divider">
-                {item.weekday} — {item.date}
+                {item.weekday} {item.date}
               </div>
             )}
 

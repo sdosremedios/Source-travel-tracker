@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import "../styles/TourEditorScreen.css";          // ⭐ your CSS restored
+import "../styles/TourEditorScreen.css";
 import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 import { patchTour, postTour } from "../api/index";
@@ -8,28 +8,28 @@ import { buildTourPayload } from "../api/createItem";
 export default function TourEditorScreen({
   activeItem,
   setActiveItem,
-  activeTrip, // parent
+  activeTrip,
   onCancel,
   onRefresh,
   allTemplates
 }) {
-
   const templates = allTemplates.filter(t => t.types.includes("tour"));
 
-  // ---------------------------------------
-  // 3. UPDATE HELPER
-  // ---------------------------------------
+  // Local-only textarea state
+  const [text, setText] = useState("");
+
+  // Initialize textarea ONLY when editor opens or item changes
+  useEffect(() => {
+    setText(activeItem?.notes || "");
+  }, [activeItem?.id]);
+
   function update(field, value) {
     setActiveItem(prev => ({ ...prev, [field]: value }));
   }
 
-  // ---------------------------------------
-  // 4. SAVE HANDLER (RESTORED)
-  // ---------------------------------------
   async function handleSave() {
     const { startDate, startTime, endDate, endTime } = activeItem;
 
-    // Optional: allow empty dates (unscheduled tours)
     const hasStart = startDate && startTime;
     const hasEnd = endDate && endTime;
 
@@ -47,31 +47,33 @@ export default function TourEditorScreen({
       alert("End must be after start");
       return;
     }
-    console.log("Saving tour with data:", activeItem);
-    const isEditing = activeItem?.id ? true : false;
-    const payload = buildTourPayload(activeItem);
+
+    // Sync textarea into payload
+    const payload = buildTourPayload({
+      ...activeItem,
+      notes: text
+    });
+
+    const isEditing = !!activeItem?.id;
 
     const updated = isEditing
       ? await patchTour(activeTrip.id, activeItem.id, payload)
       : await postTour(activeTrip.id, payload);
 
     onRefresh(updated);
-    onCancel(); // Close
+    onCancel();
   }
 
-  // ---------------------------------------
-  // 5. RENDER
-  // ---------------------------------------
   return (
     <div className="tour-editor-screen">
       <div className="header">
-        <h2 className="editor-title">Edit Tour</h2>
-        {/* SAVE / CANCEL */}
+        <h2 className="editor-title">{activeItem.id ? "Edit Tour" : "Add Tour"}</h2>
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
           <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
+
       {/* NAME */}
       <div className="editor-row">
         <label className="editor-label">Name</label>
@@ -94,7 +96,7 @@ export default function TourEditorScreen({
         />
       </div>
 
-      {/* CATEGORY SELECTOR */}
+      {/* CATEGORY */}
       <div className="editor-row">
         <label className="editor-label">Category</label>
         <TourCategorySelector
@@ -114,7 +116,7 @@ export default function TourEditorScreen({
         />
       </div>
 
-      {/* START DATE/TIME */}
+      {/* START */}
       <div className="editor-row">
         <label className="editor-label">Start</label>
         <div className="editor-inline">
@@ -133,7 +135,7 @@ export default function TourEditorScreen({
         </div>
       </div>
 
-      {/* END DATE/TIME */}
+      {/* END */}
       <div className="editor-row">
         <label className="editor-label">End</label>
         <div className="editor-inline">
@@ -155,31 +157,25 @@ export default function TourEditorScreen({
       {/* NOTES */}
       <div className="editor-row">
         <label className="editor-label">Notes</label>
-        < div className="template-buttons" >
-          {
-            templates.map(t => (
-              <button
-                key={t.id}
-                className="template-button"
-                onClick={() => {
-                  setActiveItem(prev => ({
-                    ...prev,
-                    notes: (prev.notes || "") + "\n" + t.template
-                  }));
-                }}
-              >
-                {t.icon} {t.name}
-              </button>
-            ))
-          }
-        </div >
+
+        <div className="template-buttons">
+          {templates.map(t => (
+            <button
+              key={t.id}
+              className="template-button"
+              onClick={() => setText(prev => prev + "\n" + t.template)}
+            >
+              {t.icon} {t.name}
+            </button>
+          ))}
+        </div>
+
         <textarea
           className="markdown-edit"
-          value={activeItem.notes}
-          onChange={e => update("notes", e.target.value.trim)}
+          value={text}
+          onChange={e => setText(e.target.value)}
         />
       </div>
-
     </div>
   );
 }

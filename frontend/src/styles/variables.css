@@ -49,6 +49,12 @@
     --color-row-subhead: var(--color-pale-gray);
     --color-row-bg: #f9f9f9;
 
+    /* Badge */
+    --color-badge-bg: var(--color-pale-gray);
+    --color-badge-text: var(--color-dark-text);
+    --color-badge-border:var(--color-dark-gray);
+    --font-size-badge: var(--font-size-medium);
+
     /* Buttons */
     --color-btn-bg: #ddd;
     --color-btn-border: #666;

@@ -1,39 +1,37 @@
 import React, { useState, useEffect } from "react";
-import { postNote, patchNote, fetchTemplates } from "../api/index";
+import { postNote, patchNote } from "../api/index";
 import { buildNotePayload } from "../api/createItem";
 import "../styles/NoteEditorScreen.css";
-import { isoDateTime } from "../utils/dateHelpers";
 
 export default function NoteEditorScreen({
   activeItem,
   setActiveItem,
-  activeTrip, // parent
+  activeTrip,
   onCancel,
   onRefresh,
   allTemplates
 }) {
   const isEditing = !!activeItem?.id;
-
-  const [dateTime, setDateTime] = useState("");
   const templates = allTemplates.filter(t => t.types.includes("note"));
 
+  // --- Local state (single source of truth) ---
+  const [text, setText] = useState("");
+  const [dateTime, setDateTime] = useState("");
 
-  // --- Load existing note (UTC → local) ---
+  // --- Initialize local state when switching notes ---
   useEffect(() => {
-    if (activeItem && activeItem.note === undefined) {
-      setActiveItem(prev => ({ ...prev, note: "" }));
-    }
-  }, [activeItem, setActiveItem]);
-  useEffect(() => {
+    // Note text
+    setText(activeItem?.note || "");
+
+    // Date/time
     if (activeItem?.dateTime) {
-      const d = new Date(activeItem.dateTime); // stored UTC → converted to local
+      const d = new Date(activeItem.dateTime);
       const local = d
-        .toLocaleString("sv-SE")        // YYYY-MM-DD HH:mm:ss (local)
-        .replace(" ", "T")              // → YYYY-MM-DDTHH:mm:ss
-        .slice(0, 16);                  // → YYYY-MM-DDTHH:mm
+        .toLocaleString("sv-SE")
+        .replace(" ", "T")
+        .slice(0, 16);
       setDateTime(local);
     } else {
-      // NEW note → default to now (local)
       const now = new Date();
       const local = now
         .toLocaleString("sv-SE")
@@ -41,19 +39,24 @@ export default function NoteEditorScreen({
         .slice(0, 16);
       setDateTime(local);
     }
-  }, [activeItem]);
+  }, [activeItem?.id]); // only reinitialize when switching notes
 
-  // --- Save handler (local → UTC) ---
+  // --- Save handler ---
   async function handleSave() {
-    const payload = buildNotePayload(activeItem);
+    // Push local state back into activeItem
+    const updatedItem = {
+      ...activeItem,
+      note: text,
+      dateTime
+    };
 
-    const updated = isEditing
+    const payload = buildNotePayload(updatedItem);
+
+    const saved = isEditing
       ? await patchNote(activeTrip.id, activeItem.id, payload)
       : await postNote(activeTrip.id, payload);
 
-      onRefresh(updated);
-
-    onCancel(); //Close
+    onRefresh(saved);
   }
 
   return (
@@ -70,33 +73,27 @@ export default function NoteEditorScreen({
       <input
         type="datetime-local"
         value={dateTime}
-        onChange={e =>
-          setActiveItem(prev => ({ ...prev, dateTime: e.target.value }))
-        }
+        onChange={e => setDateTime(e.target.value)}
       />
 
       <label>Note</label>
+
       <div className="template-buttons">
         {templates.map(t => (
           <button
             key={t.id}
             className="template-button"
-            onClick={() => {
-              setActiveItem(prev => ({
-                ...prev,
-                note: (prev.note || "") + "\n" + t.template
-              }));
-            }}
+            onClick={() => setText(prev => prev + "\n" + t.template)}
           >
             {t.icon} {t.name}
           </button>
         ))}
       </div>
-      <textarea className="markdown-edit"
-        value={activeItem.note || ""}
-        onChange={e =>
-          setActiveItem(prev => ({ ...prev, note: e.target.value.trim }))
-        }
+
+      <textarea
+        className="markdown-edit"
+        value={text}
+        onChange={e => setText(e.target.value)}
       />
     </div>
   );

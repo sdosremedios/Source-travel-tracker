@@ -25,6 +25,7 @@ export default function TimelineRow({
       >
         <div className="timeline-icon">
           {kindIcon("note")}
+          <span className="timeline-row-category"><br />Note</span>
         </div>
         <div className="timeline-row-content">
           <div className="timeline-note-time">{formatTime(item.dateTime)}</div>
@@ -45,18 +46,19 @@ export default function TimelineRow({
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
         <div className="timeline-row-icon">
-          {item.mode ? 
-          modeIcon(item.mode)
+          {item.mode ?
+            modeIcon(item.mode)
             : item.kindIcon(item.kind)}
-          </div>
+          <span className="timeline-row-category"><br />{item.mode}</span>
+        </div>
 
         <div className="timeline-row-content">
           <div className="timeline-row-date">
-            {item.weekday} — {item.date} → {item.finishDate || item.startDate}
+            {item.weekday} - {item.date} → {item.finishDate || item.date}
           </div>
 
           <div className="timeline-row-title">
-            {item.from} → {item.to}
+            {item.fromLocation || "From ?"} → {item.toLocation || "To ?"}
           </div>
 
           <div className="timeline-row-subtitle">
@@ -83,14 +85,15 @@ export default function TimelineRow({
       >
         <div className="timeline-row-icon">{item.kind === "tour"
           ? tourIcon(item.category)
-          : kindIcon(item.kind)}</div>
-
+          : kindIcon(item.kind)}
+          <br />
+          <span className="timeline-row-category">{item.category}</span>
+        </div>
         <div className="timeline-row-content">
           <div className="timeline-row-date">
-            {item.weekday} — {item.date} → {item.finishDate || item.startDate}
+            {item.weekday} {item.date} → {item.finishDate || item.startDate}
           </div>
           <div className="timeline-row-title">{item.name}</div>
-          <div className="timeline-row-subtitle">{item.category} Tour</div>
           <div className="timeline-row-location">{item.location}</div>
           <div className="timeline-row-company">{item.company || "No company"}</div>
         </div>

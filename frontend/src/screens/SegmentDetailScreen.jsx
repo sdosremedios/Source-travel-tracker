@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Markdown from "../components/Markdown";
 import { modeIcon } from "../utils/icons";
 import { deleteSegment } from "../api/index";
-import { refreshSegments } from "../utils/refreshHelpers";
-
 import "../styles/SegmentDetailScreen.css";
-
-
 
 export default function SegmentDetailScreen({
   segment,
@@ -14,19 +10,16 @@ export default function SegmentDetailScreen({
   onClose,
   onRefresh
 }) {
-  
   if (!segment) return null;
 
-async function handleDelete() {
-  if (!confirm("Delete this segment?")) return;
-
-  await deleteSegment(segment.tripId, segment.id);
-
-  onRefresh(segment);
-  onClose();
-}
+  async function handleDelete() {
+    if (!confirm("Delete this segment?")) return;
+    await deleteSegment(segment.tripId, segment.id);
+    onRefresh(segment);
+  }
 
   console.log("SegmentDetailScreen received segment:", segment);
+
   return (
     <div className="segment-detail-screen">
       {/* Header -------------------------------------------------------------- */}
@@ -35,25 +28,33 @@ async function handleDelete() {
         <h1 className="title">
           {segment.fromLocation} → {segment.toLocation}
         </h1>
-        {/* Buttons ------------------------------------------------------------- */}
+
         <div className="buttons">
-          <button className="edit" onClick={() => onEdit(segment)}>
-            Edit
-          </button>
-          <button className="danger" onClick={handleDelete}>
-            Delete
-          </button>
-          <button className="close" onClick={onClose}>
-            Close
-          </button>
+          <button className="edit" onClick={() => onEdit(segment)}>Edit</button>
+          <button className="danger" onClick={handleDelete}>Delete</button>
+          <button className="close" onClick={onClose}>Close</button>
         </div>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}
       <div className="data">
-        <div><strong>Date:</strong> {segment.startDateTimeLabel} {segment.endDateTimeLabel ? "- " + segment.endDateTimeLabel : ""}</div>
-        <div><strong>Mode:</strong> <span className="sd-meta-badge">{modeIcon(segment.mode)} {segment.mode}</span></div>
-        <div><strong>Carrier:</strong> {segment.carrier}</div>
+        <div>
+          <strong>Date:</strong>{" "}
+          {segment.startDate} {segment.departureTime}
+          {" — "}
+          {segment.endDate} {segment.arrivalTime}
+        </div>
+
+        <div>
+          <strong>Mode:</strong>{" "}
+          <span className="sd-meta-badge">
+            {modeIcon(segment.mode)} {segment.mode}
+          </span>
+        </div>
+
+        <div>
+          <strong>Carrier:</strong> {segment.carrier}
+        </div>
       </div>
 
       {/* Notes --------------------------------------------------------------- */}
@@ -65,7 +66,6 @@ async function handleDelete() {
           </div>
         </div>
       )}
-
     </div>
   );
 }

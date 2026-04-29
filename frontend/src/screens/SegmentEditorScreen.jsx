@@ -2,55 +2,56 @@ import React, { useState, useEffect } from "react";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";
-import { defaultDate } from "../utils/dateHelpers";
-import { refreshSegments } from "../utils/refreshHelpers";
 
 export default function SegmentEditorScreen({
   activeItem,
   setActiveItem,
-  activeTrip, // parent
+  activeTrip,
   onCancel,
   onRefresh,
   allTemplates
 }) {
-
   const templates = allTemplates.filter(t => t.types.includes("segment"));
+
+  // Local-only state for textarea
+  const [text, setText] = useState("");
+
+  // Initialize textarea ONLY when the editor opens or item changes
+  useEffect(() => {
+    setText(activeItem?.notes || "");
+  }, [activeItem?.id]);
 
   function update(field, value) {
     setActiveItem(prev => ({ ...prev, [field]: value }));
   }
+
   const isEditing = activeItem?.id != null;
 
   async function handleSave() {
-    const payload = buildSegmentPayload(activeItem);
-
-    console.log("buildSegmentPayload:", payload);
-    const isEditing = activeItem?.id ? true : false;
+    // Sync textarea into activeItem before building payload
+    const payload = buildSegmentPayload({
+      ...activeItem,
+      notes: text
+    });
 
     const updated = isEditing
       ? await patchSegment(activeTrip.id, activeItem.id, payload)
       : await postSegment(activeTrip.id, payload);
 
-      onRefresh(updated);
-      onCancel();
+    onRefresh(updated);
+    onCancel();
   }
-
-  console.log("segment passed into editor:", activeItem);
-  console.log("isEditing:", isEditing);
 
   return (
     <div className="se-pane">
       <div className="header">
         <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
         <div className="buttons">
-          <button className="save" onClick={handleSave}>
-            Save
-          </button>
-          <button className="cancel" onClick={onCancel}>
-            Cancel
-          </button>
+          <button className="save" onClick={handleSave}>Save</button>
+          <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
+
       <div className="se-row">
         <div className="se-field">
           <label>Mode</label>
@@ -59,11 +60,12 @@ export default function SegmentEditorScreen({
             onChange={e => update("mode", e.target.value)}
           >
             <option value="plane">Plane</option>
+            <option value="bus">Bus</option>
             <option value="train">Train</option>
             <option value="car">Car</option>
-            <option value="bus">Bus</option>
           </select>
         </div>
+
         <div className="se-field">
           <label>Carrier</label>
           <input
@@ -135,29 +137,25 @@ export default function SegmentEditorScreen({
 
       <div className="se-field">
         <label>Notes</label>
+
         <div className="template-buttons">
           {templates.map(t => (
             <button
               key={t.id}
               className="template-button"
-              onClick={() => {
-                setActiveItem(prev => ({
-                  ...prev,
-                  notes: (prev.notes || "") + "\n" + t.template
-                }));
-              }}
+              onClick={() => setText(prev => prev + "\n" + t.template)}
             >
               {t.icon} {t.name}
             </button>
           ))}
         </div>
-        <textarea className="markdown-edit"
-          value={activeItem.notes}
-          onChange={e => update("notes", e.target.value.trim)}
+
+        <textarea
+          className="markdown-edit"
+          value={text}
+          onChange={e => setText(e.target.value)}
         />
       </div>
-
-
     </div>
   );
 }

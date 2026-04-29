@@ -33,13 +33,14 @@ import {
   patchSegment,
   deleteSegment,
   deleteTour,
-  fetchTemplates
+  fetchTemplates,
+  fetchItemById,
 } from "./api/index";
 
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.4.0";
+  const appVersion = "0.4.2";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -73,136 +74,29 @@ export default function App() {
       setTrips(data);
     });
   }, []);
+  // ------------------------------------------------------------
+  // Timeline Items
+  // ------------------------------------------------------------
+  const [timelineItems, setTimelineItems] = useState([]);
+  useEffect(() => {
+    setTimelineItems(buildUnifiedTimeline(segments, tours, notes));
+  }, [segments, tours, notes]);
+
+
+  // DEBUG Logging 
+  useEffect(() => {
+    console.log("activeItem changed:", activeItem);
+  }, [activeItem]);
+
+  useEffect(() => {
+    console.log("activeScreen:", activeScreen, " with activeItem:", activeItem);
+  }, [activeScreen]);
 
   // always scroll to top
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: "instant" });
   }, [activeScreen, selectedTripId]);
-  /*
-    async function refreshSegments() {
-      const segments = await loadSegmentsForTrip(selectedTripId);
-      setSegments(segments);
-      return segments;
-    }
-    async function refreshTours() {
-      const tours = await loadToursForTrip(selectedTripId);
-      setTours(tours);
-      return tours;
-    }
-    async function refreshNotes() {
-      const notes = await loadNotesForTrip(selectedTripId);
-      setNotes(notes);
-      return notes;
-    }
-    */
-  async function handleSave() {
-    const item = activeItem;
-    const isEditing = item.id != null;
 
-    const saved = isEditing
-      ? await patchItem(item)
-      : await postItem(item);
-
-    onRefresh(saved);
-    openDetail(saved);
-  }
-  /*
-    async function handleSaveTrip(trip) {
-      console.log("handleSaveTrip CALLED with trip:", trip);
-      let saved;
-  
-      console.log("Updating existing trip with:", trip.tripId, trip);
-      saved = await updateTrip(trip.tripId, trip);
-  
-      const updatedTrips = await loadTrips();
-      setTrips(updatedTrips);
-  
-      const updatedTrip = updatedTrips.find(t => t.id === trip.tripId);
-      setSelectedTripId(trip.tripId);
-      console.log("Updated trip found:", trip.tripId, updatedTrip);
-      setActiveItem(updatedTrip);
-      setActiveScreen("tripDetail");
-    }
-  */
-  async function handleSaveTour(updated) {
-    console.log("handleSaveTour START");
-
-    try {
-      if (updated.id) {
-        console.log("Calling updateTour");
-        await updateTour(updated.id, updated);
-      } else {
-        console.log("Calling createTour");
-        await createTour(updated);
-      }
-
-      console.log("Calling refreshTours");
-      await refreshTours();
-
-      console.log("Setting screen to tripDetail");
-      setActiveScreen("tripDetail");
-    } catch (err) {
-      console.error("handleSaveTour ERROR:", err);
-    }
-  }
-
-  async function reloadTours() {
-    const data = await fetchTours();
-    console.log("Tours after reload:", data);
-    setTours(data);
-  }
-  /*
-    function hydrateItem(item) {
-      if (!item) return null;
-      console.log("HydrateItem receives item:", item);
-  
-      const id = Number(item.id);
-      const kind = item.kind || item.type;
-  
-      const addFormattedFields = (obj) => {
-        const startDate = obj.startDate;
-        const endDate = obj.endDate || obj.startDate;
-        const startTime = obj.startTime || obj.departureTime;
-        const endTime = obj.endTime || obj.arrivalTime;
-  
-        return {
-          ...obj,
-          startDateLabel: formatDate(startDate),
-          endDateLabel: formatDate(endDate),
-          startTimeLabel: formatTime(startTime),
-          endTimeLabel: formatTime(endTime),
-          startDateTimeLabel: `${formatDate(startDate)} ${formatTime(startTime)}`,
-          endDateTimeLabel: `${formatDate(endDate)} ${formatTime(endTime)}`
-        };
-      };
-  
-      // SEGMENT
-      if (kind === "segment") {
-        const hydrated = segments.find(s => Number(s.id) === id);
-        const base = hydrated
-          ? { ...hydrated, kind: "segment" }   // ⭐ force kind
-          : { ...item, kind: "segment" };
-  
-        return addFormattedFields(base);
-      }
-  
-      // TOUR
-      if (kind === "tour") {
-        const hydrated = tours.find(t => Number(t.id) === id);
-        const base = hydrated
-          ? { ...hydrated, kind: "tour" }      // ⭐ force kind
-          : { ...item, kind: "tour" };
-  
-        return addFormattedFields({
-          ...base,
-          company: base.company ?? ""
-        });
-      }
-  
-      return { ...item, kind };
-    }
-  */
-  // Load segments + tours when selectedTripId changes
   useEffect(() => {
     if (!selectedTripId) return;
 
@@ -226,46 +120,6 @@ export default function App() {
       }
     });
   }, [activeScreen, activeItem?.id]);
-
-  // ------------------------------------------------------------
-  // Unified Navigation: Detail
-  // ------------------------------------------------------------
-  function openItemDetail(item) {
-    console.log("App openItemDetail item:", item);
-
-    const hydrated = hydrateItem(item);
-    if (!hydrated) return;
-
-    console.log("Opening hydrated detail for hydrated:", hydrated);
-
-    // Always set selectedTripId
-    setSelectedTripId(hydrated.tripId);
-
-    // Only segments, tours, notes use activeItem
-    if (hydrated.kind === "segment") {
-      setActiveItem(hydrated);
-      setActiveScreen("segmentDetail");
-    } else if (hydrated.kind === "tour") {
-      setActiveItem(hydrated);
-      setActiveScreen("tourDetail");
-    } else if (hydrated.kind === "note") {
-      setActiveItem(hydrated);
-      setActiveScreen("noteDetail");
-    } else if (hydrated.kind === "trip") {
-      // Trips do NOT use activeItem
-      setActiveScreen("tripDetail");
-    }
-
-    console.log("Detail screen should be open now with activeItem:", hydrated);
-  }
-
-  // ------------------------------------------------------------
-  // Unified Navigation: Editor
-  // ------------------------------------------------------------
-  useEffect(() => {
-    console.log("activeScreen:", activeScreen, " with activeItem:", activeItem);
-  }, [activeScreen]);
-
   useEffect(() => {
     if (!selectedTripId) {
       setActiveTrip(null);
@@ -276,63 +130,277 @@ export default function App() {
     setActiveTrip(trip);
   }, [selectedTripId, trips]);
 
-  const timelineItems = useMemo(
-    () => buildUnifiedTimeline(segments, tours, notes),
-    [segments, tours, notes]
-  );
+  // Load segments + tours when selectedTripId changes
+  // ------------------------------------------------------------
+  // Segment helpers
+  // ------------------------------------------------------------
+  function normalizeSegmentForEditor(segment) {
+    const dep = new Date(segment.startDate);
+    const arr = new Date(segment.endDate);
 
+    return {
+      ...segment,
 
-  function openItemEditor(item) {
+      // Local date fields for <input type="date">
+      startDate: dep.toLocaleDateString("en-CA"), // YYYY-MM-DD
+      endDate: arr.toLocaleDateString("en-CA"),
+
+      // Local time fields for <input type="time">
+      departureTime: dep.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      arrivalTime: arr.toLocaleTimeString("en-GB", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+
+      fromLocation: segment.fromLocation || "",
+      toLocation: segment.toLocation || "",
+      mode: segment.mode || "",
+      notes: segment.notes || "",
+      carrier: segment.carrier || ""
+    };
+  }
+
+  function normalizeSegmentForDetail(segment) {
+    const dep = new Date(segment.startDate);
+    const arr = new Date(segment.endDate);
+
+    return {
+      ...segment,
+
+      // Preserve canonical UTC timestamps
+      startDateUtc: segment.startDate,
+      endDateUtc: segment.endDate,
+
+      // Local display fields
+      startDate: dep.toLocaleDateString("en-US"), // MM/DD/YYYY
+      endDate: arr.toLocaleDateString("en-US"),
+
+      departureTime: dep.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      arrivalTime: arr.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+
+      // Ensure all fields exist
+      fromLocation: segment.fromLocation || "",
+      toLocation: segment.toLocation || "",
+      mode: segment.mode || "",
+      notes: segment.notes || "",
+      carrier: segment.carrier || ""
+    };
+  }
+
+  // ------------------------------------------------------------
+  // Tour helpers
+  // ------------------------------------------------------------
+  function normalizeTourForEditor(tour) {
+    const start = new Date(tour.startDate);
+    const end = new Date(tour.endDate);
+
+    return {
+      ...tour,
+      startDate: start.toLocaleDateString("en-CA"),   // YYYY-MM-DD
+      startTime: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+      endDate: end.toLocaleDateString("en-CA"),
+      endTime: end.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })
+    };
+  }
+
+  function normalizeTourForDetail(tour) {
+    const start = new Date(tour.startDate);
+    const end = new Date(tour.endDate);
+
+    return {
+      ...tour,
+
+      startDateUtc: tour.startDate,
+      endDateUtc: tour.endDate,
+
+      startDate: start.toLocaleDateString("en-US"),
+      endDate: end.toLocaleDateString("en-US"),
+
+      startTime: start.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+      endTime: end.toLocaleTimeString("en-US", {
+        hour: "2-digit",
+        minute: "2-digit"
+      }),
+
+      name: tour.name || "",
+      notes: tour.notes || ""
+    };
+  }
+  // ------------------------------------------------------------
+  // Note helpers
+  // ------------------------------------------------------------
+  function normalizeNoteForEditor(note) {
+    const d = new Date(note.dateTime);
+
+    // Convert UTC → local "YYYY-MM-DDTHH:mm"
+    const local = d
+      .toLocaleString("sv-SE")  // YYYY-MM-DD HH:mm:ss (local)
+      .replace(" ", "T")
+      .slice(0, 16);
+
+    return {
+      ...note,
+      dateTime: local,      // <-- what your editor expects
+      note: note.note || "" // ensure defined
+    };
+  }
+
+  function normalizeNoteForDetail(note) {
+    const d = new Date(note.dateTime);
+
+    const local = d
+      .toLocaleString("sv-SE")  // YYYY-MM-DD HH:mm:ss
+      .replace(" ", "T")
+      .slice(0, 16);            // YYYY-MM-DDTHH:mm
+
+    return {
+      ...note,
+
+      dateTimeUtc: note.dateTime,
+      dateTime: local,
+
+      note: note.note || ""
+    };
+  }
+  // ------------------------------------------------------------
+  // Unified helpers
+  // ------------------------------------------------------------
+  function normalizeItemForEditor(item) {
+    if (item.kind === "tour") {
+      return normalizeTourForEditor(item);
+    }
+    if (item.kind === "segment") {
+      return normalizeSegmentForEditor(item);
+    }
+    if (item.kind === "note") {
+      return normalizeNoteForEditor(item);
+    }
+    return item;
+  }
+
+  function normalizeItemForDetail(item) {
+    switch (item.kind) {
+      case "segment":
+        return normalizeSegmentForDetail(item);
+      case "tour":
+        return normalizeTourForDetail(item);
+      case "note":
+        return normalizeNoteForDetail(item);
+      case "trip":
+        return item; // trips don't use activeItem
+      default:
+        return item;
+    }
+  }
+  // Used for segments and tours
+  function createNewTimedItemDefaults(item) {
+    const today = new Date();
+    const defaultDate = today.toLocaleDateString("en-CA");
+
+    return {
+      ...item,
+      name: "(untitled)",
+      startDate: defaultDate,
+      startTime: "",
+      endDate: defaultDate,
+      endTime: ""
+    };
+  }
+  // ------------------------------------------------------------
+  // Unified Navigation: Detail
+  // ------------------------------------------------------------
+  async function openItemDetail(item) {
+    console.log("App openItemDetail item:", item);
+    const hydrated = hydrateItem(item);
+    if (!hydrated) return;
+
+    const full = await fetchItemById(
+      item.kind,
+      item.id,
+      item.tripId || activeTrip.id);
+
+    const hydratedFull = hydrateItem(full);
+    const normalized = normalizeItemForDetail(hydratedFull);
+
+    console.log("Opening normalized detail for hydrated:", normalized);
+
+    setSelectedTripId(normalized.tripId);
+
+    if (hydrated.kind === "segment") {
+      setActiveItem(normalized);
+      setActiveScreen("segmentDetail");
+    } else if (hydrated.kind === "tour") {
+      setActiveItem(normalized);
+      setActiveScreen("tourDetail");
+    } else if (hydrated.kind === "note") {
+      setActiveItem(normalized);
+      setActiveScreen("noteDetail");
+    } else if (hydrated.kind === "trip") {
+      setActiveScreen("tripDetail");
+    }
+
+    console.log("Detail screen activeItem:", normalized);
+  }
+  async function openItemEditor(item) {
     console.log("openItemEditor receives item:", item);
 
     // NEW ITEM → DO NOT HYDRATE
     if (!item.id) {
       setSelectedTripId(item.tripId);
 
-      if (item.kind === "segment") {
-        setActiveItem({ name: "(untitled)", ...item });
-        setActiveScreen("segmentEditor");
-      } else if (item.kind === "tour") {
-        setActiveItem({ name: "(untitled)", ...item });
-        setActiveScreen("tourEditor");
-      } else if (item.kind === "note") {
+      if (item.kind === "tour" || item.kind === "segment") {
+        const newItem = createNewTimedItemDefaults(item);
+        setActiveItem(newItem);
+        setActiveScreen(item.kind === "tour" ? "tourEditor" : "segmentEditor");
+      }
+
+      else if (item.kind === "note") {
         setActiveItem({ name: "(untitled)", ...item });
         setActiveScreen("noteEditor");
-      } else if (item.kind === "trip") {
-        if (item.id == null) {
-          const newTrip = createItem("trip");
-          setActiveItem(newTrip);        // <-- this is the missing piece
-          return;
-        }
-        setSelectedTripId(null);
-        // Trips do NOT use activeItem
-        setActiveScreen("tripEditor");
+      }
+
+      else if (item.kind === "trip") {
+        const newTrip = createItem("trip");
+        setActiveItem(newTrip);
       }
 
       return;
     }
 
     // EXISTING ITEM → HYDRATE
-    const hydrated = hydrateItem(item);
-    if (!hydrated) return;
+    // EXISTING ITEM → FETCH FULL DB RECORD
+    const full = await fetchItemById(item.kind, item.id, item.tripId || activeTrip.id);
+    if (!full) return;
 
-    setSelectedTripId(hydrated.tripId);
+    // Normalize for editor (NOT hydrateItem)
+    const normalized = normalizeItemForEditor(full);
+    console.log("normalizeItemForEditor:", normalized);
 
-    if (hydrated.kind === "segment") {
-      setActiveItem(hydrated);
-      setActiveScreen("segmentEditor");
-    } else if (hydrated.kind === "tour") {
-      setActiveItem(hydrated);
+    setSelectedTripId(normalized.tripId);
+    setActiveItem(normalized);
+
+    if (normalized.kind === "tour") {
       setActiveScreen("tourEditor");
-    } else if (hydrated.kind === "note") {
-      setActiveItem(hydrated);
+    } else if (normalized.kind === "segment") {
+      setActiveScreen("segmentEditor");
+    } else if (normalized.kind === "note") {
       setActiveScreen("noteEditor");
-    } else if (hydrated.kind === "trip") {
-      // EXISTING TRIP
+    } else if (normalized.kind === "trip") {
       setActiveItem(null);
-      setSelectedTripId(item.id);
+      setSelectedTripId(full.id);
       setActiveScreen("tripEditor");
-      return;
     }
   }
 
@@ -397,7 +465,6 @@ export default function App() {
       openEditor(existingSegment);
       openEditor(existingTour);
       openEditor(existingNote);
-  */
   function openEditor(item) {
     const hydrated = hydrateItem(item);
     setActiveItem(hydrated);
@@ -433,7 +500,8 @@ export default function App() {
     setSelectedTripId(item.tripId ?? item.id);
     setActiveScreen(item.kind + "Detail");
   }
-  // ------------------------------------------------------------
+   */
+ // ------------------------------------------------------------
   // Close overlay
   // ------------------------------------------------------------
   function closeOverlay() {
@@ -563,8 +631,8 @@ export default function App() {
         {activeScreen === "segmentDetail" && activeItem && (
           <SegmentDetailScreen
             segment={activeItem}
-            onEdit={() => {
-              openItemEditor(activeItem);
+            onEdit={(segment) => {
+              openItemEditor(segment);
             }}
             onClose={async (tripId) => {
               setActiveScreen("tripDetail")

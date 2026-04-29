@@ -59,8 +59,10 @@ export default function TourDetailScreen({
       </div>
 
       <div className="data">
-        <div><strong>Company:</strong> {tour.company}</div>
-        <div><strong>Date:</strong> {formatDate(tour.startDate) + (tour.startTime ? " " + formatTime(tour.startTime) : "")}</div>
+        <div><strong>Company:</strong> {tour.company || "No company"}</div>
+        <div><strong>Date:</strong> {tour.startDate} {tour.startTime}
+         {tour.endDate ? " → " + tour.endDate + " " + tour.endTime : ""} 
+        </div>
         <div><strong>Location:</strong> {tour.location}</div>
         <div>
           <strong>Category:</strong>

@@ -58,17 +58,32 @@
 .timeline-icon,
 .timeline-row-icon {
   font-size: var(--font-size-icon);
+  width: 80px;
+  line-height: 1.2;
   /*
-  width: 28px;
+  padding: 0;
+  margin: 0;
   text-align: left;
   width: 32px;
   height: 28px;
-  */
+  justify-content: center;
   display: flex;
   align-items: center;
-  justify-content: center;
   opacity: 0.8;
+  */
+  text-align: center;
   flex-shrink: 0;
+}
+.timeline-row-category{
+  font-size: var(--font-size-medium);
+  font-style: italic;
+  text-transform: capitalize;
+  line-height: 0.5;
+}
+
+
+.timeline-row-date {
+  font-weight: bold;
 }
 
 /* Content */
@@ -149,8 +164,9 @@
 }
 
 .timeline-row-subtitle {
-  font-size: 16px;
-  font-weight: bold;
+  font-size: var(--font-size-large);
+  font-style: italic;
+  font-weight: normal;
   color: #555;
   word-wrap: normal;
   text-transform: capitalize;
@@ -177,8 +193,8 @@
 .timeline-row-date {
   width: 260px;
 }
+
 .timeline-row-title,
-.timeline-row-subtitle,
 .timeline-row-location,
 .timeline-row-company {
   font-weight: bold;

@@ -35,6 +35,60 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
   //
   // Shared duration + offset helpers
   //
+export function hydrateItemForTimeline(item) {
+  // Trips are date-only, no time
+  if (item.kind === "trip") {
+    return {
+      ...item,
+      date: item.startDate,                 // already YYYY-MM-DD
+      startLabel: null,
+      endLabel: null,
+      timelineSortKey: item.startDate
+    };
+  }
+
+  // Notes have a single timestamp (startDate)
+  if (item.kind === "note") {
+    const start = new Date(item.startDate);
+
+    return {
+      ...item,
+      date: start.toLocaleDateString("en-CA"),
+      startLabel: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+      endLabel: null,
+      timelineSortKey: start.toISOString()
+    };
+  }
+
+  // Tours + Segments both use startDate + endDate as UTC timestamps
+  if (item.kind === "tour" || item.kind === "segment") {
+    const start = new Date(item.startDate);
+    const end = new Date(item.endDate);
+
+    return {
+      ...item,
+
+      // Local date for grouping
+      date: start.toLocaleDateString("en-CA"),
+
+      // Local time labels
+      startLabel: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+      endLabel: end.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+
+      // Sorting key (UTC ISO)
+      timelineSortKey: start.toISOString(),
+
+      // Duration (segments only)
+      durationMinutes: item.kind === "segment"
+        ? Math.round((end - start) / 60000)
+        : null
+    };
+  }
+
+  // Fallback (should never hit)
+  return item;
+}
+
   function computeDuration(start, end) {
     const minutes = Math.floor((end - start) / 60000);
     if (minutes <= 0) return "";
@@ -56,21 +110,19 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
   // TOURS
   //
   tours.forEach(tour => {
-    const start = parseYMD(tour.startDate);
-    const end = parseYMD(tour.endDate || tour.startDate);
-    if (!start || !end) return;
+    // The real datetime is stored in startDate (UTC ISO)
+    const d = normalizeToLocal(tour.startDate);
 
-    // Normalize using UTC → local
-    const d = normalizeToLocal(tour.dateTime || tour.startDate);
+    const start = new Date(tour.startDate);
+    const end = new Date(tour.endDate || tour.startDate);
 
     items.push({
       id: tour.id,
       kind: "tour",
       tripId: tour.tripId,
 
-      rawDate: tour.dateTime || tour.startDate,
+      rawDate: tour.startDate,
 
-      // Grouping fields — ALL derived from the same normalized Date
       date: d.toLocaleDateString(),
       weekday: d.toLocaleString("default", { weekday: "short" }),
       monthLabel: d.toLocaleString("default", { month: "long", year: "numeric" }),
@@ -84,7 +136,7 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
       endDate: tour.endDate,
       startTime: tour.startTime,
       endTime: tour.endTime,
-      finishDate: end.toLocaleDateString(),
+      finishDate: end?.toLocaleDateString() || "",
 
       durationLabel: computeDuration(start, end),
       arrivalOffset: computeArrivalOffset(start, end),
