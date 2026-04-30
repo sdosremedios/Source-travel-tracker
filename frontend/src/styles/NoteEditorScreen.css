@@ -1,7 +1,12 @@
 /* ============================
    Note Editor Screen
    ============================ */
-
+.note-editor-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;      /* critical */
+  min-height: 0;     /* critical */
+}
 .note-editor-screen {
   display: flex;
   flex-direction: column;

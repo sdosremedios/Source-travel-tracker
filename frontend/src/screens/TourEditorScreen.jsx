@@ -155,7 +155,7 @@ export default function TourEditorScreen({
       </div>
 
       {/* NOTES */}
-      <div className="editor-row">
+      <div className="editor-row-markdown">
         <label className="editor-label">Notes</label>
 
         <div className="template-buttons">
@@ -169,7 +169,6 @@ export default function TourEditorScreen({
             </button>
           ))}
         </div>
-
         <textarea
           className="markdown-edit"
           value={text}

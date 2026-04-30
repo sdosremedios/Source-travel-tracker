@@ -1,4 +1,13 @@
 /* Root container */
+.segment-editor-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* critical */
+  min-height: 0;
+  /* critical */
+}
+
 .se-pane {
   padding: 24px;
   gap: 20px;

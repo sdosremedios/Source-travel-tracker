@@ -1,4 +1,9 @@
-.sd-pane {
+.segment-detail-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;      /* critical */
+  min-height: 0;     /* critical */
+}.sd-pane {
   padding: 20px 24px;
   overflow-y: auto;
 }

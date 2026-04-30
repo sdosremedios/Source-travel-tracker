@@ -1,6 +1,14 @@
 /* ---------------------------------------------
    TOUR EDITOR — CALM, DESKTOP‑NATIVE LAYOUT
    --------------------------------------------- */
+.tour-editor-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  /* critical */
+  min-height: 0;
+  /* critical */
+}
 
 .editor {
   display: flex;
@@ -92,7 +100,7 @@
 
 .editor-buttons {
   display: flex;
-  justify-content:flex-start;
+  justify-content: flex-start;
   gap: 10px;
   margin-top: 10px;
 }
@@ -105,6 +113,7 @@
   cursor: pointer;
   border: none;
 }
+
 /*
 .editor-save {
   background: #0078d4;

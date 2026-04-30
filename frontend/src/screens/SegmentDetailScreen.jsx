@@ -59,7 +59,7 @@ export default function SegmentDetailScreen({
 
       {/* Notes --------------------------------------------------------------- */}
       {segment.notes && (
-        <div className="notes">
+        <div className="text-row-markdown">
           <h3>Notes</h3>
           <div className="markdown-text">
             <Markdown>{segment.notes}</Markdown>

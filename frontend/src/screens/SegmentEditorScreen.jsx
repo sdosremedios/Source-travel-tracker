@@ -43,7 +43,7 @@ export default function SegmentEditorScreen({
   }
 
   return (
-    <div className="se-pane">
+    <div className="segment-editor-screen">
       <div className="header">
         <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
         <div className="buttons">
@@ -135,7 +135,7 @@ export default function SegmentEditorScreen({
         </div>
       </div>
 
-      <div className="se-field">
+      <div className="editor-row-markdown">
         <label>Notes</label>
 
         <div className="template-buttons">
@@ -149,7 +149,6 @@ export default function SegmentEditorScreen({
             </button>
           ))}
         </div>
-
         <textarea
           className="markdown-edit"
           value={text}

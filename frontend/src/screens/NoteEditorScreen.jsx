@@ -89,12 +89,12 @@ export default function NoteEditorScreen({
           </button>
         ))}
       </div>
-
-      <textarea
-        className="markdown-edit"
-        value={text}
-        onChange={e => setText(e.target.value)}
-      />
-    </div>
+      <div className="editor-row-markdown">
+        <textarea
+          className="markdown-edit"
+          value={text}
+          onChange={e => setText(e.target.value)}
+        />
+      </div></div>
   );
 }

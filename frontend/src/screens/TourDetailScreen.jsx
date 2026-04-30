@@ -73,7 +73,7 @@ export default function TourDetailScreen({
       </div>
 
       {tour.notes && (
-        <div className="tds-notes">
+        <div className="text-row-markdown">
           <h3>Notes</h3>
           <div className="markdown-text">
             <Markdown>{tour.notes}</Markdown>

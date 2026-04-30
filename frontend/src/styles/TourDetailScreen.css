@@ -1,4 +1,9 @@
-.tds-container {
+.tour-detail-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;      /* critical */
+  min-height: 0;     /* critical */
+}.tds-container {
   padding: 20px 24px;
 }
 
