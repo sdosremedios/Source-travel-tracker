@@ -398,9 +398,11 @@ export default function App() {
     } else if (normalized.kind === "note") {
       setActiveScreen("noteEditor");
     } else if (normalized.kind === "trip") {
-      setActiveItem(null);
-      setSelectedTripId(full.id);
+      // 1. Set the item
+      setActiveItem(normalized);
+      setSelectedTripId(normalized.id);
       setActiveScreen("tripEditor");
+      return;
     }
   }
 
@@ -501,7 +503,7 @@ export default function App() {
     setActiveScreen(item.kind + "Detail");
   }
    */
- // ------------------------------------------------------------
+  // ------------------------------------------------------------
   // Close overlay
   // ------------------------------------------------------------
   function closeOverlay() {
@@ -600,11 +602,13 @@ export default function App() {
 
         {activeScreen === "tripEditor" && (
           <TripEditorScreen
-            trip={
+            activeItem={
               selectedTripId
-                ? trips.find(t => t.id === selectedTripId)   // existing trip
-                : activeItem                                  // new trip
-            } onCancel={() => {
+                ? trips.find(t => t.id === selectedTripId)
+                : activeItem
+            }
+            setActiveItem={setActiveItem}
+            onCancel={() => {
               if (selectedTripId) {
                 setActiveScreen("tripDetail");
               } else {
@@ -626,6 +630,7 @@ export default function App() {
                 setActiveScreen
               });
             }}
+            allTemplates={allTemplates}
           />
         )}
         {activeScreen === "segmentDetail" && activeItem && (

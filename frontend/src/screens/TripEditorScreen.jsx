@@ -1,152 +1,112 @@
 import React, { useState, useEffect } from "react";
-import { postTrip, patchTrip, fetchTemplates } from "../api/index";
-import { buildTripPayload } from "../api/createItem";
 import "../styles/TripEditorScreen.css";
-
-const TRIP_TYPE_ICONS = {
-  travel: "✈️",
-  tour: "🧭",
-  experience: "🎨",
-  work: "💼",
-  personal: "❤️",
-  other: "🌀"
-};
+import { patchTrip, postTrip } from "../api/index";
+import { buildTripPayload } from "../api/createItem";
 
 export default function TripEditorScreen({
-  trip,          // <-- pass the trip directly, NOT activeItem
+  activeItem,
+  setActiveItem,
   onCancel,
-  onRefresh
+  onRefresh,
+  allTemplates
 }) {
+  if (!activeItem) {
+    return <div className="trip-editor-screen loading">Loading…</div>;
+  }
 
-  const isEditing = Boolean(trip?.id);
-
-  // LOCAL STATE ONLY — trips never use activeItem
-  const [local, setLocal] = useState({
-    name: trip?.name || "",
-    startDate: trip?.startDate || "",
-    endDate: trip?.endDate || "",
-    tripNotes: trip?.tripNotes || "",
-    type: trip?.type || "travel"
-  });
+  const templates = allTemplates?.filter(t => t.types.includes("trip"));
+  const [text, setText] = useState("");
 
   useEffect(() => {
-    if (trip) {
-      setLocal({
-        name: trip.name || "",
-        startDate: trip.startDate || "",
-        endDate: trip.endDate || "",
-        tripNotes: trip.tripNotes || "",
-        type: trip.type || "travel"
-      });
-    }
-  }, [trip]);
-  
-  const [templates, setTemplates] = useState([]);
+    setText(activeItem?.tripNotes || "");
+  }, [activeItem?.id]);
 
-  useEffect(() => {
-    fetchTemplates("trip").then(setTemplates).catch(console.error);
-  }, []);
+  function update(field, value) {
+    setActiveItem(prev => ({ ...prev, [field]: value }));
+  }
+
+  const isEditing = !!activeItem?.id;
 
   async function handleSave() {
-    const payload = buildTripPayload(local);
+    // Sync textarea into payload
+    const payload = buildTripPayload({
+      ...activeItem,
+      tripNotes: text
+    });
 
     const updated = isEditing
-      ? await patchTrip(trip.id, payload)
+      ? await patchTrip(activeItem.id, payload)
       : await postTrip(payload);
 
-    console.log("TripEditorScreen onRefresh trip updatedItem = ", updated);
     onRefresh(updated);
-    onClose();
+    onCancel();
   }
 
   return (
     <div className="trip-editor-screen">
       <div className="header">
-        <h1 className="te-title">
-          {isEditing ? "Edit Trip" : "New Trip"}
-        </h1>
-
+        <h2>{isEditing ? "Edit Trip" : "Add Trip"}</h2>
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
           <button className="cancel" onClick={onCancel}>Cancel</button>
         </div>
       </div>
 
-      {/* Trip Type */}
-      <div className="te-type-row">
-        <label className="te-label">
-          <span className="icon">{TRIP_TYPE_ICONS[local.type]}</span>
-          Trip Type
-        </label>
-
-        <select
-          className="te-input te-type-select"
-          value={local.type}
-          onChange={e => setLocal(prev => ({ ...prev, type: e.target.value }))}
-        >
-          <option value="travel">✈️ Travel</option>
-          <option value="tour">🧭 Tour</option>
-          <option value="experience">🎨 Experience</option>
-          <option value="work">💼 Work</option>
-          <option value="personal">❤️ Personal</option>
-          <option value="other">🌀 Other</option>
-        </select>
+      {/* NAME */}
+      <div className="editor-row">
+        <label className="editor-label">Name</label>
+        <input
+          className="editor-input"
+          type="text"
+          value={activeItem?.name}
+          onChange={e => update("name", e.target.value)}
+        />
       </div>
 
-      {/* Name */}
-      <label className="te-label">Name</label>
-      <input
-        className="te-input"
-        type="text"
-        value={local.name}
-        onChange={e => setLocal(prev => ({ ...prev, name: e.target.value }))}
-      />
-
-      {/* Start Date */}
-      <label className="te-label">Start Date</label>
-      <input
-        className="te-input"
-        type="date"
-        value={local.startDate}
-        onChange={e => setLocal(prev => ({ ...prev, startDate: e.target.value }))}
-      />
-
-      {/* End Date */}
-      <label className="te-label">End Date</label>
-      <input
-        className="te-input"
-        type="date"
-        value={local.endDate}
-        onChange={e => setLocal(prev => ({ ...prev, endDate: e.target.value }))}
-      />
-
-      {/* Notes */}
-      <label className="te-label">Notes</label>
-
-      <div className="template-buttons">
-        {templates.map(t => (
-          <button
-            key={t.id}
-            className="template-button"
-            onClick={() =>
-              setLocal(prev => ({
-                ...prev,
-                tripNotes: (prev.tripNotes || "") + "\n" + t.template
-              }))
-            }
-          >
-            {t.icon} {t.name}
-          </button>
-        ))}
+      {/* START DATE */}
+      <div className="editor-row">
+        <label className="editor-label">Start Date</label>
+        <input
+          className="editor-input"
+          type="date"
+          value={activeItem?.startDate}
+          onChange={e => update("startDate", e.target.value)}
+        />
       </div>
 
-      <textarea
-        className="markdown-edit"
-        value={local.tripNotes}
-        onChange={e =>
-          setLocal(prev => ({ ...prev, tripNotes: e.target.value.trim }))
-        }
-      />
+      {/* END DATE */}
+      <div className="editor-row">
+        <label className="editor-label">End Date</label>
+        <input
+          className="editor-input"
+          type="date"
+          value={activeItem?.endDate}
+          onChange={e => update("endDate", e.target.value)}
+        />
+      </div>
+
+      {/* NOTES */}
+      <div className="editor-row notes">
+        <label className="editor-label">Notes</label>
+
+        <div className="template-buttons">
+          {templates.map(t => (
+            <button
+              key={t.id}
+              className="template-button"
+              onClick={() => setText(prev => prev + "\n" + t.template)}
+            >
+              {t.icon} {t.name}
+            </button>
+          ))}
+        </div>
+
+        <textarea
+          className="markdown-edit"
+          value={text}
+          onChange={e => setText(e.target.value)}
+        />
+      </div>
     </div>
   );
 }

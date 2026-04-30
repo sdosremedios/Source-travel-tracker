@@ -41,23 +41,26 @@
   display: flex;
   gap: 12px;
 }
-
 /*
-.te-btn {
-  padding: 8px 14px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  background: #f7f9fb;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.te-btn.save {
-  background: #e6f1fb;
-  border-color: #b5d4f5;
-}
-
-.te-btn.cancel:hover {
-  background: #f0f0f0;
+.trip-editor-screen {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
 }
 */
+.editor-row.notes {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.markdown-edit {
+  flex: 1;
+  width: 100%;
+  min-height: 0;
+  resize: none;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
