@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import Markdown from "../components/Markdown";
+import "../styles/markdownSplitScreen.css";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";
@@ -135,8 +137,9 @@ export default function SegmentEditorScreen({
         </div>
       </div>
 
-      <div className="editor-row-markdown">
-        <label>Notes</label>
+      {/* NOTES */}
+      <div className="editor-row notes">
+        <label className="editor-label">Notes</label>
 
         <div className="template-buttons">
           {templates.map(t => (
@@ -149,11 +152,20 @@ export default function SegmentEditorScreen({
             </button>
           ))}
         </div>
-        <textarea
-          className="markdown-edit"
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
+
+        <div className="notes-container">
+          <div className="notes-editor">
+            <textarea
+              className="markdown-edit"
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+          </div>
+
+          <div className="notes-preview markdown-text">
+            <Markdown>{text}</Markdown>
+          </div>
+        </div>
       </div>
     </div>
   );

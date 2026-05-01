@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import "../styles/TripEditorScreen.css";
 import { patchTrip, postTrip } from "../api/index";
 import { buildTripPayload } from "../api/createItem";
+import Markdown from "../components/Markdown";
+import "../styles/markdownSplitScreen.css";
+import "../styles/TripEditorScreen.css";
 
 export default function TripEditorScreen({
   activeItem,
@@ -39,7 +41,6 @@ export default function TripEditorScreen({
       : await postTrip(payload);
 
     onRefresh(updated);
-    onCancel();
   }
 
   return (
@@ -101,11 +102,19 @@ export default function TripEditorScreen({
           ))}
         </div>
 
-        <textarea
-          className="markdown-edit"
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
+        <div className="notes-container">
+          <div className="notes-editor">
+            <textarea
+              className="markdown-edit"
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+          </div>
+
+          <div className="notes-preview markdown-text">
+            <Markdown>{text}</Markdown>
+          </div>
+        </div>
       </div>
     </div>
   );

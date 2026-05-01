@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { postNote, patchNote } from "../api/index";
 import { buildNotePayload } from "../api/createItem";
+import Markdown from "../components/Markdown";
 import "../styles/NoteEditorScreen.css";
+import "../styles/markdownSplitScreen.css";
 
 export default function NoteEditorScreen({
   activeItem,
@@ -76,25 +78,36 @@ export default function NoteEditorScreen({
         onChange={e => setDateTime(e.target.value)}
       />
 
-      <label>Note</label>
+      <div className="editor-row notes">
+        <label className="editor-label">Notes</label>
 
-      <div className="template-buttons">
-        {templates.map(t => (
-          <button
-            key={t.id}
-            className="template-button"
-            onClick={() => setText(prev => prev + "\n" + t.template)}
-          >
-            {t.icon} {t.name}
-          </button>
-        ))}
+        <div className="template-buttons">
+          {templates.map(t => (
+            <button
+              key={t.id}
+              className="template-button"
+              onClick={() => setText(prev => prev + "\n" + t.template)}
+            >
+              {t.icon} {t.name}
+            </button>
+          ))}
+        </div>
+
+        <div className="notes-container">
+          <div className="notes-editor">
+            <textarea
+              className="markdown-edit"
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+          </div>
+
+          <div className="notes-preview markdown-text">
+            <Markdown>{text}</Markdown>
+          </div>
+        </div>
       </div>
-      <div className="editor-row-markdown">
-        <textarea
-          className="markdown-edit"
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
-      </div></div>
+
+    </div>
   );
 }

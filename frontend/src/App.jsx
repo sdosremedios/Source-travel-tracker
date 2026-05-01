@@ -40,7 +40,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.4.2";
+  const appVersion = "0.4.3";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -629,6 +629,7 @@ export default function App() {
                 setNotes,
                 setActiveScreen
               });
+
             }}
             allTemplates={allTemplates}
           />

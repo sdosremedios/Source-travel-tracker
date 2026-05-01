@@ -132,16 +132,16 @@ export default function TripDetailScreen({
           </>
         )}
       </div>
-        {timelineItems.length > 0 && (
-          <div className="td-lower-section">
-            <UnifiedTimeline
-              items={timelineItems}
-              onSelectItem={handleSelectItem}
-              onContextMenu={onContextMenu}
-              onInlineEdit={onInlineEdit}
-            />
-          </div>
-        )}
-      </div>
+      {timelineItems.length > 0 && (
+        <div className="td-lower-section">
+          <UnifiedTimeline
+            items={timelineItems}
+            onSelectItem={handleSelectItem}
+            onContextMenu={onContextMenu}
+            onInlineEdit={onInlineEdit}
+          />
+        </div>
+      )}
+    </div>
   );
 }

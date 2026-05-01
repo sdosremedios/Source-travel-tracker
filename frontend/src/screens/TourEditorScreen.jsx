@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Markdown from "../components/Markdown";
+import "../styles/markdownSplitScreen.css";
 import "../styles/TourEditorScreen.css";
 import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
@@ -155,7 +157,7 @@ export default function TourEditorScreen({
       </div>
 
       {/* NOTES */}
-      <div className="editor-row-markdown">
+      <div className="editor-row notes">
         <label className="editor-label">Notes</label>
 
         <div className="template-buttons">
@@ -169,11 +171,20 @@ export default function TourEditorScreen({
             </button>
           ))}
         </div>
-        <textarea
-          className="markdown-edit"
-          value={text}
-          onChange={e => setText(e.target.value)}
-        />
+
+        <div className="notes-container">
+          <div className="notes-editor">
+            <textarea
+              className="markdown-edit"
+              value={text}
+              onChange={e => setText(e.target.value)}
+            />
+          </div>
+
+          <div className="notes-preview markdown-text">
+            <Markdown>{text}</Markdown>
+          </div>
+        </div>
       </div>
     </div>
   );
