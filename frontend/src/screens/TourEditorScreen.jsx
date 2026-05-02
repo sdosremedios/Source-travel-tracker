@@ -6,6 +6,7 @@ import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 import { patchTour, postTour } from "../api/index";
 import { buildTourPayload } from "../api/createItem";
+import { applyNoteTokens } from "../utils/tokenHelpers";
 
 export default function TourEditorScreen({
   activeItem,
@@ -30,6 +31,12 @@ export default function TourEditorScreen({
   }
 
   async function handleSave() {
+    const start = new Date();
+    const finalNotes = applyNoteTokens(text, {
+      dateObj: start,
+      tour: activeItem,
+      trip: activeTrip
+    });
     const { startDate, startTime, endDate, endTime } = activeItem;
 
     const hasStart = startDate && startTime;
@@ -53,7 +60,7 @@ export default function TourEditorScreen({
     // Sync textarea into payload
     const payload = buildTourPayload({
       ...activeItem,
-      notes: text
+      notes: finalNotes
     });
 
     const isEditing = !!activeItem?.id;

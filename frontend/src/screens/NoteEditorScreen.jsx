@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { postNote, patchNote } from "../api/index";
 import { buildNotePayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
+import { applyNoteTokens } from "../utils/tokenHelpers";
 import "../styles/NoteEditorScreen.css";
 import "../styles/markdownSplitScreen.css";
 
@@ -46,10 +47,27 @@ export default function NoteEditorScreen({
   // --- Save handler ---
   async function handleSave() {
     // Push local state back into activeItem
+    const dateObj = new Date();
+    const date = dateObj.toLocaleDateString("en-US", {
+      month: "2-digit",
+      day: "2-digit",
+      year: "numeric"
+    });
+    const time = dateObj.toLocaleTimeString("en-US", {
+      hour: "numeric",
+      minute: "2-digit",
+      hour12: true
+    });
+    const finalText = applyNoteTokens(text, {
+      dateObj,
+      trip: activeTrip,
+      segment: activeItem.kind === "segment" ? activeItem : null,
+      tour: activeItem.kind === "tour" ? activeItem : null,
+      note: activeItem.kind === "note" ? activeItem : null
+    });
     const updatedItem = {
       ...activeItem,
-      note: text,
-      dateTime
+      note: finalText
     };
 
     const payload = buildNotePayload(updatedItem);

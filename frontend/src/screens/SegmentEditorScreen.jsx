@@ -4,6 +4,7 @@ import "../styles/markdownSplitScreen.css";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";
+import { applyNoteTokens } from "../utils/tokenHelpers";
 
 export default function SegmentEditorScreen({
   activeItem,
@@ -30,18 +31,23 @@ export default function SegmentEditorScreen({
   const isEditing = activeItem?.id != null;
 
   async function handleSave() {
-    // Sync textarea into activeItem before building payload
-    const payload = buildSegmentPayload({
-      ...activeItem,
-      notes: text
+    // Current local time
+    const start = new Date();
+    const finalNotes = applyNoteTokens(text, {
+      dateObj: start,
+      segment: activeItem,
+      trip: activeTrip
     });
+    const payload = {
+      ...activeItem,
+      notes: finalNotes
+    };
 
-    const updated = isEditing
+    const saved = isEditing
       ? await patchSegment(activeTrip.id, activeItem.id, payload)
       : await postSegment(activeTrip.id, payload);
 
-    onRefresh(updated);
-    onCancel();
+    onRefresh(saved);
   }
 
   return (

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { patchTrip, postTrip } from "../api/index";
 import { buildTripPayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
+import { applyNoteTokens } from "../utils/tokenHelpers";
 import "../styles/markdownSplitScreen.css";
 import "../styles/TripEditorScreen.css";
 
@@ -30,10 +31,15 @@ export default function TripEditorScreen({
   const isEditing = !!activeItem?.id;
 
   async function handleSave() {
+    const start = new Date();
+    const finalNotes = applyNoteTokens(text, {
+      dateObj: start,
+      trip: activeItem
+    });  
     // Sync textarea into payload
     const payload = buildTripPayload({
       ...activeItem,
-      tripNotes: text
+      tripNotes: finalNotes
     });
 
     const updated = isEditing

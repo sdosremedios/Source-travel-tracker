@@ -141,3 +141,20 @@ export function formatWeekday(date, { short = false } = {}) {
 export function isoDateTime(dateStr) {
   return new Date(dateStr ? dateStr : null).toISOString;
 }
+export function formatLocalDateTime(dateObj) {
+  if (!(dateObj instanceof Date)) return "";
+
+  const date = dateObj.toLocaleDateString("en-US", {
+    month: "2-digit",
+    day: "2-digit",
+    year: "numeric"
+  });
+
+  const time = dateObj.toLocaleTimeString("en-US", {
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true
+  });
+
+  return `${date} ${time}`;
+}
