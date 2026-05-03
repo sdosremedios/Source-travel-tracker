@@ -1,10 +1,12 @@
 :root {
     /* flags */
     --display-search: block;
+    --display-import: none;
 
     /* Neutral palette */
     --color-bg: #e8f2ff;
     --color-bg-light: #e4e4ff;
+    --color-bg-pale: #f8f8ff;
     --color-panel: #ffffff;
     --color-border: #ddd;
     --color-text: #222;
@@ -24,11 +26,12 @@
     --color-pale-blue: rgb(230, 240, 255);
 
     --color-pale-yellow: #ffffee;
+    --color-pale-green: #eefff2;
 
     --color-dark-gray: #555;
     --color-gray: #888;
     --color-light-gray: #dadada;
-    --color-pale-gray: #eaeaea;
+    --color-pale-gray: rgb(250, 250, 250);
 
     --color-transparent: transparent;
 
@@ -49,15 +52,20 @@
     --color-row-subhead: var(--color-pale-gray);
     --color-row-bg: #f9f9f9;
 
+    /* Labels */
+    --font-weight-label: bold;
+    --font-size-label: var(--font-size-medium);
+    --font-style-label: italic;
+
     /* Badge */
     --color-badge-bg: var(--color-pale-gray);
     --color-badge-text: var(--color-dark-text);
-    --color-badge-border:var(--color-dark-gray);
+    --color-badge-border: var(--color-dark-gray);
     --font-size-badge: var(--font-size-medium);
 
     /* Buttons */
-    --color-btn-bg: #ddd;
-    --color-btn-border: #666;
+    --color-btn-bg: #f9f9f9;
+    --color-btn-border: var(--color-light-gray);
     --color-btn-text: var(--color-dark-text);
 
     --color-btn-hover-bg: #bbb;
@@ -91,11 +99,15 @@
     --color-btn-save-hover-bg: #006cbe;
     --color-btn-save-hover-text: var(--color-primary-text);
     --font-size-button: var(--font-size-small);
+    --margin-btn: 1em;
 
     /* fonts */
-    --font-size-small: 12px;
+    --font-size-small: 0.8em;
+    --line-height-small: 1em;
     --font-size-medium: 16px;
-    --font-size-large: 18px;
+    --line-height-medium: 1.3em;
+    --font-size-large: 1.3em;
+    --line-height-large: 1.5em;
 
     /* Icons */
     --font-size-icon: 36px;
@@ -105,8 +117,10 @@
 
     /* Markdown */
     --color-markdown-bg: var(--color-pale-yellow);
+    --color-markdown-preview-bg: var(--color-pale-gray);
     --color-markdown-text: var(--color-dark-text);
     --font-size-markdown: var(--font-size-medium);
+    --line-height-markdown: 1.3em;
 
     /* Triplist */
     --color-triplist-accent: var(--color-lt-blue);

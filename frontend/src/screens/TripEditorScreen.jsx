@@ -35,7 +35,7 @@ export default function TripEditorScreen({
     const finalNotes = applyNoteTokens(text, {
       dateObj: start,
       trip: activeItem
-    });  
+    });
     // Sync textarea into payload
     const payload = buildTripPayload({
       ...activeItem,
@@ -59,15 +59,34 @@ export default function TripEditorScreen({
         </div>
       </div>
 
-      {/* NAME */}
+      {/* TYPE */}
       <div className="editor-row">
-        <label className="editor-label">Name</label>
-        <input
-          className="editor-input"
-          type="text"
-          value={activeItem?.name}
-          onChange={e => update("name", e.target.value)}
-        />
+        <div className="editor-label">
+          <label>Type </label>
+          <select className="pick-list"
+            value={activeItem.type}
+            onChange={e => update("type", e.target.value)}
+          >
+            <option value="travel">✈️ Plane</option>
+            <option value="work">💼 Work</option>
+            <option value="personal">❤️ Personal</option>
+            <option value="tour">🧭 Tour</option>
+            <option value="experience">🎨 Experience</option>
+            <option value="nature">🌿 Nature</option>
+            <option value="other">🧳 Other</option>
+          </select>
+        </div>
+
+        {/* NAME */}
+        <div className="editor-label">
+          <label className="editor-label">Name</label>
+          <input
+            className="editor-input"
+            type="text"
+            value={activeItem?.name}
+            onChange={e => update("name", e.target.value)}
+          />
+        </div>
       </div>
 
       {/* START DATE */}
@@ -122,6 +141,6 @@ export default function TripEditorScreen({
           </div>
         </div>
       </div>
-    </div>
+    </div >
   );
 }

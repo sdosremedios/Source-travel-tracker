@@ -3,7 +3,7 @@ import { formatLocalDateTime } from "./dateHelpers";
 export function applyNoteTokens(text, context = {}) {
   if (!text) return text;
 
-  const { dateObj, segment, tour, trip } = context;
+  const { dateObj, segment, tour, note, trip } = context;
 
   const formatted = dateObj ? formatLocalDateTime(dateObj) : "";
   const [datePart, ...timeParts] = formatted.split(" ");

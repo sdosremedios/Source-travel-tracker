@@ -40,7 +40,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.4.4";
+  const appVersion = "0.4.10";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -134,6 +134,21 @@ export default function App() {
   // ------------------------------------------------------------
   // Segment helpers
   // ------------------------------------------------------------
+  function normalizeTripForEditor(trip) {
+    const dep = new Date(trip.startDate);
+    const arr = new Date(trip.endDate);
+
+    return {
+      ...trip,
+
+      // Local date fields for <input type="date">
+      startDate: dep.toLocaleDateString("en-CA"), // YYYY-MM-DD
+      endDate: arr.toLocaleDateString("en-CA"),
+
+      type: trip.type || "",
+      tripNotes: trip.tripNotes || "",
+    };
+  }
   function normalizeSegmentForEditor(segment) {
     const dep = new Date(segment.startDate);
     const arr = new Date(segment.endDate);
@@ -286,6 +301,9 @@ export default function App() {
     }
     if (item.kind === "note") {
       return normalizeNoteForEditor(item);
+    }
+    if (item.kind === "trip") {
+      return normalizeTripForEditor(item);
     }
     return item;
   }
@@ -602,11 +620,7 @@ export default function App() {
 
         {activeScreen === "tripEditor" && (
           <TripEditorScreen
-            activeItem={
-              selectedTripId
-                ? trips.find(t => t.id === selectedTripId)
-                : activeItem
-            }
+            activeItem={activeItem}
             setActiveItem={setActiveItem}
             onCancel={() => {
               if (selectedTripId) {
@@ -629,7 +643,6 @@ export default function App() {
                 setNotes,
                 setActiveScreen
               });
-
             }}
             allTemplates={allTemplates}
           />

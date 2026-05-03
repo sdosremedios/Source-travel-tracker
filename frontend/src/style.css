@@ -1,6 +1,8 @@
 @import "styles/variables.css";
 
-/* --- Reset -------------------------------------------------------------- */
+/* ============================================================
+   RESET
+   ============================================================ */
 * {
   margin: 0;
   padding: 0;
@@ -12,22 +14,20 @@ body,
 #root {
   height: 100%;
   width: 100%;
-  margin: 0;
-  padding: 0;
   overflow: hidden;
-  /* Prevent global scroll */
 }
 
-/* --- Typography --------------------------------------------------------- */
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
 body {
   font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
   font-size: var(--font-size-medium);
+  line-height: var(--line-height-medium);
   color: var(--color-text);
   background: var(--color-bg);
-  line-height: 1.45;
 }
 
-/* --- Inputs ------------------------------------------------------------- */
 input,
 textarea,
 button {
@@ -35,7 +35,9 @@ button {
   font-size: inherit;
 }
 
-/* --- Scrollbars --------------------------------------------------------- */
+/* ============================================================
+   SCROLLBARS
+   ============================================================ */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -49,56 +51,47 @@ button {
   background: #bbb;
 }
 
-/* Bulletproof split-pane layout */
-
+/* ============================================================
+   APP SHELL (CSS isolation)
+   ============================================================ */
 .app-shell {
   all: initial;
-  /* Reset EVERYTHING inside this container */
   font-family: system-ui;
-  /* Restore typography */
-  display: block;
 }
 
 .app-shell * {
   all: unset;
-  /* Prevent global CSS from leaking in */
   box-sizing: border-box;
   font-family: inherit;
 }
 
-/* Re-enable normal HTML behavior inside the shell */
 .app-shell div,
 .app-shell button,
 .app-shell input,
 .app-shell textarea,
 .app-shell select {
-  display: block;
   all: revert;
-  /* Bring back normal browser defaults */
   box-sizing: border-box;
   font-family: inherit;
 }
 
-/* Now apply your layout */
+/* ============================================================
+   LAYOUT
+   ============================================================ */
 .app-root {
   display: flex;
   flex-direction: row;
   height: 100%;
   width: 100%;
   min-height: 0;
-  /* critical */
   min-width: 0;
-  /* critical */
   overflow: hidden;
 }
 
 .app-left {
   width: 280px;
-  flex-shrink: 0;
   min-width: 240px;
-  height: 100%;
-  min-height: 0;
-  overflow-x: hidden;
+  flex-shrink: 0;
   overflow-y: auto;
   border-right: 1px solid #ddd;
   background: var(--color-bg-light);
@@ -109,82 +102,60 @@ button {
 }
 
 .app-right {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  height: 100%;
-  flex: 1;
-  min-height: 0;
   min-width: 600px;
-  /* ⭐ prevents collapsing */
   overflow-y: auto;
-  overflow-x: hidden;
-  background: var(--color-bg);
   padding: 0 10px;
 }
 
-.trip-detail-screen {
+/* ============================================================
+   TRIP / SEGMENT / TOUR / NOTE SCREENS
+   ============================================================ */
+.trip-detail-screen,
+.trip-editor-screen {
   flex: 1;
-  height: 100%;
   min-height: 0;
-  /* critical */
   overflow: auto;
 }
 
 .trip-editor-screen {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
-  overflow: hidden;
 }
 
 .trip-editor-screen textarea {
   flex: 1;
   min-height: 0;
-  overflow-y: auto;
 }
 
-.timeline-container {
-  overflow-y: auto;
-  overflow-x: hidden;
-  height: 100%;
-  /*  flex: 1;
-  min-height: 0; /* critical */
-}
-
-.app-root.note-editor-screen .app-left,
-.app-root.segment-editor-screen .app-left,
-.app-root.tour-editor-screen .app-left {
-  display: none;
-}
-
-/* Search */
+/* ============================================================
+   SEARCH
+   ============================================================ */
 .search {
   display: var(--display-search);
   padding: 12px;
   border-bottom: 1px solid #ddd;
-  width: 100%;
 }
 
 .search input {
   width: 100%;
   padding: 8px 10px;
-  font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 6px;
 }
 
-
-/* Action bar */
-.actions {
-  display: flex;
-  gap: 8px;
-  margin: 24px 8px 24px 0;
-  flex-direction: row;
-  margin-left: auto;
+/* ============================================================
+   IMPORT
+   ============================================================ */
+.import-button {
+  display: var(--display-import);
 }
 
-/* header items */
+/* ============================================================
+   HEADER + BUTTONS
+   ============================================================ */
 .header {
   display: flex;
   align-items: center;
@@ -192,398 +163,145 @@ button {
   margin-bottom: 16px;
 }
 
-.data {
-  font-size: var(--font-size-data);
-}
-
-div.icon {
-  font-size: var(--font-size-icon);
-}
-
-span.badge {
-  display: inline-block;
-  background: var(--color-badge-bg);
-  background-clip: padding-box;
-  font-size: var(--font-size-badge);
-  color: var(--color-badge-text);
-  padding: 2px 8px;
-  border-width: 1px;
-  border-color: var(--color-badge-border);
-  border-radius: 6px;
-  margin-right: 6px;
-  text-transform: capitalize;
-  vertical-align: middle;
-}
-
-/* button container */
-div.buttons {
-  display: flex;
-  flex-direction: row;
+.buttons {
   margin-left: auto;
-  padding: var(--padding-large);
-  vertical-align: center;
+  display: flex;
+  gap: 8px;
 }
 
 button {
-  background-color: var(--color-button-bg);
+  background: var(--color-btn-bg);
   color: var(--button-text);
-  border: none;
+  border: 1px solid var(--color-btn-border);
   padding: 8px 14px;
   border-radius: 6px;
-  font-size: 14px;
   cursor: pointer;
   transition: background 0.15s ease;
-  margin: 0 5px;
-}
-
-button:hover {
-  background-color: var(--color-btn-hover-bg);
-  color: var(--color-btn-hover-text)
-}
-
-button.icon {
-  background-color: var(--color-primary-light);
-  color: var(--color-dark-text);
-  font-size: var(--font-size-small);
-}
-
-button.icon:hover {
-  background-color: var(--color-primary-hover);
-  color: var(--color-light-text);
-}
-
-button:active {
-  background: var(--color-btn-active-bg);
-  color: var(--color-btn-active-text);
-}
-
-button:active:hover {
-  background-color: var(--color-primary-hover);
-  color: var(--color-light-text);
-}
-
-button.edit {
-  background-color: var(--color-btn-edit-bg);
-  color: var(--color-btn-edit-text);
-}
-
-button.edit:hover {
-  background-color: var(--color-btn-hover-bg);
-  color: var(--color-btn-hover-text)
+  margin: 0 var(--margin-btn) 0 0;
 }
 
 button.save {
-  background-color: var(--color-primary);
+  background: var(--color-primary);
   color: var(--color-primary-text);
 }
 
-button.save:hover {
-  background-color: var(--color-primary-hover);
-  color: var(--color-primary-text)
-}
-
-button.danger {
-  background-color: var(--color-btn-danger-bg);
-  color: var(--color-btn-danger-text);
-}
-
-button.danger:hover {
-  background-color: var(--color-btn-hover-bg);
-  color: var(--color-btn-hover-text)
-}
-
 button.cancel {
-  background-color: var(--color-btn-bg);
+  background: var(--color-btn-bg);
   color: var(--color-btn-text);
 }
 
-button.cancel:hover {
-  background-color: var(--color-btn-hover-bg);
-  color: var(--color-btn-hover-text)
-}
-
-button.close {
-  background-color: var(--color-btn-bg);
-  color: var(--color-btn-text);
-}
-
-button.close:hover {
-  background-color: var(--color-btn-hover-bg);
-  color: var(--color-btn-hover-text)
-}
-
-/* Markdown container */
-.markdown-text,
-.markdown-edit {
+/* ============================================================
+   MARKDOWN EDITOR + PREVIEW
+   ============================================================ */
+.markdown-edit,
+.markdown-text {
   flex: 1;
   width: 100%;
-  resize: vertical;
   min-height: 0;
-  box-sizing: border-box;
   overflow-y: auto;
-
-  font-size: var(--font-size-markdown);
-  color: #444;
   background: var(--color-markdown-bg);
-  border: 1px solid #e0e0e0;
-  border-radius: 6px;
-  padding: 4px 8px 16px 8px;
+  font-size: var(--font-size-markdown);
   white-space: pre-wrap;
-  line-height: 1.2;
-  margin: 8px 0;
+  line-height: var(--line-height-markdown)
 }
 
 .markdown-text.preview {
-  min-height: 0;
   max-height: 48px;
-  overflow: hidden;
-  vertical-align: top;
 }
 
 .markdown-text ol,
 .markdown-text ul {
   column-count: 2;
-  line-height: 2;
-}
-
-.markdown-text li {
-  line-height: 1.2;
-}
-
-/* Notes field should expand */
-.text-row-markdown,
-.editor-row-markdown {
-  flex: 1;
-  /* take remaining space */
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  /* allow textarea to shrink/grow */
-}
-
-/* Textarea fills its container
-.markdown-edit {
-  flex: 1;
-  width: 100%;
-  resize: none;      
-  min-height: 0;
-  box-sizing: border-box;
-  overflow-y: auto;
-}
-textarea.markdown-edit {
-  box-sizing: border-box;
-}
- */
-/*
-.td-upper-section .markdown-text {
-  height: auto;
-  min-height: 240px;
-}
-
-  */
-
-/*
-.markdown-text textarea {
-  background-color: transparent;
-  width: 100%;
-  height: 100%;
-  box-sizing: border-box;
-  border: none;
-  padding: 8px;
-  resize: vertical;
-}
-*/
-.template-buttons {
-  padding: 8px 0
-}
-
-.markdown-text textarea:active {
-  border: none;
-}
-
-.markdown-text ol,
-.markdown-text ul {
   padding-left: 24px;
-  line-height: 12px;
 }
 
 .markdown-text ol li,
 .markdown-text ul li {
-  vertical-align: middle;
+  line-height: var(--line-height-markdown);
 }
 
-.markdown-text pre {
-  background-color: var(--color-markdown-bg);
-  padding: 10px;
+.markdown-text code {
+  background-color: var(--color-pale-blue);
+  padding: 0.1em 0.4em;
+  border-radius: 0.4em;
+  border: 1px solid var(--color-light-gray);
 }
 
+.notes-container {
+  display: flex;
+  gap: 12px;
+  min-height: 0;
+}
+
+.notes-editor,
+.notes-preview {
+  flex: 1;
+  min-height: 0;
+  border-radius: 6px;
+  margin: 8px 0;
+  border: 1px solid var(--color-light-gray);
+}
+
+.notes-editor {
+  padding: 8px;
+  background: var(--color-markdown-bg);
+}
+
+.notes-preview {
+  background: var(--color-markdown-preview-bg);
+}
+
+textarea.markdown-edit {
+  border: none;
+}
+
+/* ============================================================
+   MOBILE (≤ 720px)
+   ============================================================ */
 @media (max-width: 720px) {
-  .app.left {
-    display: none;
+
+  html {
+    font-size: 12px;
   }
 
-  .app-right {
-    min-width: 100%;
-    width: 100%;
+  .app-root {
+    flex-direction: column;
   }
-}
 
-.empty-state {
-  text-align: center;
-  color: #4d4d4d;
-  margin-top: 50px;
-}
-
-.strong {
-  font-weight: bold;
-}
-
-.emphasis {
-  font-style: italic;
-}
-
-.left {
-  align-items: left;
-}
-
-.right {
-  align-items: right;
-}
-
-/*
-@media (max-width: 720px) {
   .app-left {
     display: none;
+    width: 100%;
+    min-width: 0;
   }
 
   .app-right {
-    min-width: 100%;
     width: 100%;
-  }
-}
-
-@media (min-width: 720px) {
-  .app-root {
-    min-width: 0 !important;
-    width: 100% !important;
-  }
-}
-*/
-@media (max-width: 720px) {
-  html {
-    font-size: 13px;
+    min-width: 0;
   }
 
-  /* Reset desktop constraints */
-  @media (max-width: 720px) {
-    .app-root {
-      flex-direction: column;
-    }
-
-    .app-left,
-    .app-right {
-      min-width: 0 !important;
-      flex-shrink: 1 !important;
-    }
-
-    .app-left {
-      width: 100%;
-      flex-shrink: 1;
-      min-width: 0;
-      min-height: 0;
-    }
-
-    .app-right {
-      width: 100%;
-      flex-shrink: 1;
-      min-width: 0;
-      min-height: 0;
-    }
-  }
-
-  /* TripListScreen visible → left pane full width, right pane hidden */
-  .app-root.tripList .app-left,
-  .app-root.empty .app-left {
+  /* TripListScreen → left pane full width */
+  .app-root.tripList .app-left {
     display: block;
-    width: 100%;
-    min-width: 0 !important;
   }
 
-  .app-root.tripList .app-right,
-  .app-root.empty .app-right {
+  .app-root.tripList .app-right {
     display: none;
   }
 
-  /* Hide left pane for all detail/editor screens */
-  .app-root.tripDetail .app-left,
-  .app-root.tripEditor .app-left,
-  .app-root.segmentDetail .app-left,
-  .app-root.segmentEditor .app-left,
-  .app-root.tourDetail .app-left,
-  .app-root.tourEditor .app-left,
-  .app-root.noteDetail .app-left,
-  .app-root.noteEditor .app-left {
-    display: none;
-  }
-
-  /* Expand right pane when left is hidden */
+  /* Editor/detail screens → right pane full width */
   .app-root.tripDetail .app-right,
   .app-root.tripEditor .app-right,
   .app-root.segmentDetail .app-right,
   .app-root.segmentEditor .app-right,
   .app-root.tourDetail .app-right,
-  .app-root.tourEditor .app-right {
+  .app-root.tourEditor .app-right,
+  .app-root.noteDetail .app-right,
+  .app-root.noteEditor .app-right {
     display: block;
     width: 100%;
-    min-width: 0 !important;
   }
 
-  /* Prevent children from forcing overflow */
-  .app-left *,
-  .app-right * {
-    min-width: 0 !important;
-  }
-}
-
-/* ============================================================
-   GLOBAL BASELINE
-   ============================================================ */
-
-html {
-  font-size: 16px;
-  /* desktop baseline */
-}
-
-body {
-  font-family: system-ui, sans-serif;
-  line-height: 1.4;
-}
-
-/* ============================================================
-   RESPONSIVE: ≤ 720px
-   ============================================================ */
-
-@media (max-width: 720px) {
-
-  /* GLOBAL FONT SCALING */
-  html {
-    font-size: 12px;
-    /* shrink everything proportionally */
-  }
-
-  body,
-  input,
-  textarea,
-  button,
-  select,
-  label {
-    font-size: 0.9rem;
-  }
-
-  /* ============================================================
-     EDITOR PANES (trip, segment, tour, note)
-     ============================================================ */
-
+  /* Form scaling */
   .trip-editor-screen,
   .se-pane,
   .tour-editor-screen,
@@ -592,74 +310,25 @@ body {
     gap: 0.75rem;
   }
 
-  .header h2 {
-    font-size: 1.1rem;
-  }
-
-  .header .buttons button {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.85rem;
-  }
-
-  /* ============================================================
-     FORM ROWS
-     ============================================================ */
-
   .editor-row,
   .se-row {
     gap: 0.5rem;
     margin-bottom: 0.75rem;
   }
 
-  .editor-label,
-  .se-field label {
-    font-size: 0.85rem;
-  }
-
-  .editor-input,
-  .se-field input,
-  .se-field select {
-    padding: 0.4rem 0.5rem;
-    font-size: 0.9rem;
-  }
-
-  /* Inline date/time rows */
-  .editor-inline,
-  .se-inline {
-    gap: 0.5rem;
-  }
-
-  /* ============================================================
-     TEMPLATE BUTTONS
-     ============================================================ */
-
-  .template-buttons {
-    gap: 0.4rem;
-    flex-wrap: wrap;
-  }
-
-  .template-button {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.8rem;
-  }
-
-  /* ============================================================
-     TEXTAREA + MARKDOWN PREVIEW
-     ============================================================ */
-
-  .markdown-edit {
-    font-size: 0.9rem;
-    padding: 0.5rem;
-  }
-
+  /* Markdown stacking */
   .notes-container {
     flex-direction: column;
-    /* stack editor + preview vertically on small screens */
   }
 
   .notes-preview {
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     padding: 0.5rem;
-    font-size: 0.9rem;
+    background: var(--color-pale-blue);
+  }
+
+  .notes-editor,
+  .notes-preview {
+    min-height: 320px;
   }
 }

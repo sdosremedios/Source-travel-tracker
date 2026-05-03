@@ -1,6 +1,7 @@
 // src/components/TimelineRow.jsx
 import React from "react";
-import { modeIcon, tourIcon, actionIcon, kindIcon } from "../utils/icons";
+import { tourIcon } from "../models/categories";
+import { modeIcon, actionIcon, kindIcon } from "../utils/icons";
 import { formatTime } from "../utils/dateHelpers";
 import "../styles/TimelineRow.css";
 import Markdown from "./Markdown";
