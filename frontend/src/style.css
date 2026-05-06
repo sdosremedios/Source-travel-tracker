@@ -529,12 +529,14 @@ button:active {
 }
 
 .markdown-text {
-  background-color: var(--markdown-text-preview)
+  background-color: var(--markdown-text-preview);
+  border: 1px solid var(--markdown-border);
 }
 
 .notes-editor,
 .markdown-edit {
-  background-color: var(--markdown-editor)
+  background-color: var(--markdown-editor);
+  border: 1px solid var(--markdown-border);
 }
 
 div.TripListScreen.tls-root .search {
@@ -554,8 +556,7 @@ div.TripListScreen.tls-root .search {
 }
 
 .tls-list.tls-item:hover,
-.tls-list.tls-item:active,
-.tls-list.tls-item:selected {
+.tls-list.tls-item:active {
   background-color: var(--tls-item-hover)
 }
 
@@ -569,6 +570,8 @@ div.TripListScreen.tls-root .search {
 
 .timeline-row {
   background-color: var(--timeline-row)
-}.timeline-row:hover {
+}
+
+.timeline-row:hover {
   background-color: var(--timeline-row-hover)
 }

@@ -22,6 +22,7 @@
 
     --markdown-text-preview: var(--light-beige);
     --markdown-editor: #eeeee8;
+    --markdown-border: var(--beige);
 
     --tls-list-bg: var(--pale-beige);
     --tls-item-bg: var(--light-beige);
