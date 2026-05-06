@@ -3,6 +3,58 @@
     --display-search: block;
     --display-import: none;
 
+    /* Page Colors */
+    --body-bg: var(--pale-beige);
+    --body-text: var(--body-text);
+
+    --button-bg: var(--pale-blue);
+    --button-hover-bg: var(--light-blue);
+    --button-hover-text: var(--body-text);
+    --button-edit-bg: var(--blue);
+    --button-save-bg: var(--blue);
+    --button-close-bg: var(--pale-blue);
+    --button-cancel-bg: var(--pale-blue);
+    --button-delete-bg: var(--red);
+
+    --table-bg: var(--pale-blue);
+    --table-header: var(--light-blue);
+    
+
+    --markdown-text-preview: var(--light-beige);
+    --markdown-editor: #eeeee8;
+
+    --tls-list-bg: var(--pale-beige);
+    --tls-item-bg: var(--light-beige);
+    --tls-item-hover: var(--pale-blue);
+    --tls-item-active: var(--pale-blue);
+    --tls-new-bg: var(--beige);
+
+    --timeline-month-header: var(--dark-beige);
+    --timeline-day-divider: var(--beige);
+    --timeline-row: var(--pale-beige);
+    --timeline-row-hover: var(--light-beige);
+
+    /* THEME */
+    --body-text: rgb(64, 64, 96);
+
+    /* Blues */
+    --blue: #8DBCC7;
+    --light-blue: #A4CCD9;
+    --pale-blue: #C4E1E6;
+
+    /* Reds */
+    --red: #FD7979;
+    --light-red: #FDACAC;
+    --pale-red: #FFCDC9;
+
+    /* Beiges */
+    --dark-beige: #C9B59C;
+    --beige: #D9CFC7;
+    --light-beige: #EFE9E3;
+    --pale-beige: #ececea;
+
+    /* END THEME */
+
     /* Neutrals */
     --bg-main: #F4F7F6;
     --bg-section: #E9EEF2;
@@ -38,7 +90,7 @@
     --color-dark-text: var(--color-text);
     --color-light-text: #eee;
     --color-muted-text: #666;
-    --color-danger: #ff5050;
+    --color-danger: var(--red);
 
     /* Color Palette */
     --color-blue: rgb(92, 92, 255);
