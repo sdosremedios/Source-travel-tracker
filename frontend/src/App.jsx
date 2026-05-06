@@ -40,7 +40,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.4.10";
+  const appVersion = "0.4.15";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -411,11 +411,15 @@ export default function App() {
 
     if (normalized.kind === "tour") {
       setActiveScreen("tourEditor");
-    } else if (normalized.kind === "segment") {
+    }
+    else if (normalized.kind === "segment") {
       setActiveScreen("segmentEditor");
-    } else if (normalized.kind === "note") {
+    }
+    else if (normalized.kind === "note") {
+      setSelectedTripId(normalized.tripId);
       setActiveScreen("noteEditor");
-    } else if (normalized.kind === "trip") {
+    }
+    else if (normalized.kind === "trip") {
       // 1. Set the item
       setActiveItem(normalized);
       setSelectedTripId(normalized.id);
@@ -722,6 +726,7 @@ export default function App() {
         {activeScreen === "noteDetail" && activeItem && (
           <NoteDetailScreen
             note={activeItem}
+            activeTrip={activeTrip}
             onEdit={() => openItemEditor(activeItem)}
             onSelectSegment={openItemDetail}
             onClose={closeOverlay}

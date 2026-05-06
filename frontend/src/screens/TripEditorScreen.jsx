@@ -42,6 +42,9 @@ export default function TripEditorScreen({
       tripNotes: finalNotes
     });
 
+    console.log("TEXT LENGTH:", text.length);
+    console.log("PAYLOAD LENGTH:", JSON.stringify(payload).length);
+    
     const updated = isEditing
       ? await patchTrip(activeItem.id, payload)
       : await postTrip(payload);

@@ -1,19 +1,23 @@
+/* @import "../styles/variables.css"; */
 div.app-header {
   padding: 1rem;
-  background-color: #f0f0f0;
+  background-color: var(--color-pale-gray);
   border-bottom: 1px solid #ccc;
 }
+
 .tls-app-icon {
   width: 42px;
   height: 42px;
   margin-right: 12px;
   vertical-align: middle;
 }
+
 .tls-root {
   display: flex;
   flex-direction: column;
   height: 100%;
   outline: none;
+  min-height: 0;
 }
 
 .tls-search {
@@ -33,6 +37,8 @@ div.app-header {
 .tls-list {
   flex: 1;
   overflow-y: auto;
+  background-color: white;
+  background-color: var(--color-light-blue);
 }
 
 .tls-item {
@@ -42,10 +48,11 @@ div.app-header {
   padding: 10px 14px;
   border-bottom: 1px solid #f0f0f0;
   cursor: pointer;
+  background-color: transparent;
 }
 
 .tls-item:hover {
-  background: #f5f8fc;
+  background: var(--color-triplist-highlight)
 }
 
 .tls-item.selected {
@@ -80,9 +87,10 @@ div.app-header {
 }
 
 /* New Trip row */
-.tls-new {
+.tls-item.tls-new {
   font-weight: 600;
   background: #f8fbff;
+  background-color: var(--color-pale-green);
 }
 
 /* Empty state */
@@ -134,9 +142,12 @@ div.app-header {
 .file-input-hidden {
   display: none;
 }
+
 .past {
   font-weight: bold;
 }
-.upcoming .tls-name, .upcoming .tls-dates {
+
+.upcoming .tls-name,
+.upcoming .tls-dates {
   font-weight: normal;
 }

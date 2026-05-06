@@ -26,7 +26,7 @@ export default function TimelineRow({
       >
         <div className="timeline-icon">
           {kindIcon("note")}
-          <span className="timeline-row-category"><br />Note</span>
+          <span className="timeline-category"><br />Note</span>
         </div>
         <div className="timeline-row-content">
           <div className="timeline-note-time">{formatTime(item.dateTime)}</div>
@@ -46,11 +46,11 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="timeline-row-icon">
+        <div className="timeline-icon">
           {item.mode ?
             modeIcon(item.mode)
             : item.kindIcon(item.kind)}
-          <span className="timeline-row-category"><br />{item.mode}</span>
+          <span className="timeline-category"><br />{item.mode} Travel</span>
         </div>
 
         <div className="timeline-row-content">
@@ -63,15 +63,15 @@ export default function TimelineRow({
           </div>
 
           <div className="timeline-row-subtitle">
-            {item.mode} — {item.carrier || "No carrier"}
+            {item.carrier || "No carrier"}
           </div>
 
-          {item.notes && (
-            <div className="markdown-text preview">
-              <Markdown>{item.notes}</Markdown>
-            </div>
-          )}
         </div>
+        {item.notes && (
+          <div className="markdown-text preview">
+            <Markdown>{item.notes}</Markdown>
+          </div>
+        )}
       </div>
     );
   }
@@ -84,11 +84,11 @@ export default function TimelineRow({
         onClick={() => onClick(item)}
         onContextMenu={(e) => onContextMenu?.(e, item)}
       >
-        <div className="timeline-row-icon">{item.kind === "tour"
+        <div className="timeline-icon">{item.kind === "tour"
           ? tourIcon(item.category)
           : kindIcon(item.kind)}
           <br />
-          <span className="timeline-row-category">{item.category}</span>
+          <span className="timeline-category">{item.category} Tour</span>
         </div>
         <div className="timeline-row-content">
           <div className="timeline-row-date">

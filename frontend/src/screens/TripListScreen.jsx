@@ -115,7 +115,7 @@ export default function TripListScreen({
   }
 
   return (
-    <div className="tls-root" onKeyDown={handleKey} tabIndex={0}>
+    <div className="TripListScreen tls-root" onKeyDown={handleKey} tabIndex={0}>
 
       {/* Search */}
       <div className="search">

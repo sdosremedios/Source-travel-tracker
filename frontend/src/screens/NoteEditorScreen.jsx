@@ -79,10 +79,12 @@ export default function NoteEditorScreen({
     onRefresh(saved);
   }
 
+  const pageTitle = isEditing ? activeTrip.name + ": Note" : "New Note";
+
   return (
     <div className="note-editor-screen">
       <div className="header">
-        <h2>{isEditing ? "Edit Note" : "New Note"}</h2>
+        <h2>{pageTitle}</h2>
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
           <button className="cancel" onClick={onCancel}>Cancel</button>

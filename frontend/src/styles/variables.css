@@ -3,13 +3,33 @@
     --display-search: block;
     --display-import: none;
 
+    /* Neutrals */
+    --bg-main: #F4F7F6;
+    --bg-section: #E9EEF2;
+    --border-soft: #D1D9E0;
+
+    /* Text */
+    --text-primary: #1B263B;
+    --text-secondary: #778DA9;
+
+    /* Action Colors */
+    --color-save: #84A98C;
+    --color-save-hover: #6B8E73;
+    --color-edit: #5D8AA8;
+    --color-edit-hover: #4A6E86;
+    --color-delete: #C97C7C;
+    --color-delete-active: #A65D5D;
+    --color-warn: #E9C46A;
+
+
     /* Neutral palette */
     --color-bg: #e8f2ff;
+    --color-bg: var(--bg-main);
     --color-bg-light: #e4e4ff;
     --color-bg-pale: #f8f8ff;
     --color-panel: #ffffff;
     --color-border: #ddd;
-    --color-text: #222;
+    --color-text: var(--text-primary);
 
     /* Calm accents */
     --color-accent: #e8f0ff;
@@ -21,17 +41,19 @@
     --color-danger: #ff5050;
 
     /* Color Palette */
-    --color-blue: #0078d4;
-    --color-lt-blue: rgb(220, 235, 255);
-    --color-pale-blue: rgb(230, 240, 255);
+    --color-blue: rgb(92, 92, 255);
+    --color-light-blue: rgb(230, 230, 255);
+    --color-pale-blue: rgb(240, 240, 255);
 
-    --color-pale-yellow: #ffffee;
-    --color-pale-green: #eefff2;
+    --color-pale-yellow: rgb(255, 255, 240);
+    --color-green: rgb(0, 128, 0);
+    --color-light-green: rgb(166, 232, 166);
+    --color-pale-green: rgb(232, 255, 232);
 
     --color-dark-gray: #555;
-    --color-gray: #888;
-    --color-light-gray: #dadada;
-    --color-pale-gray: rgb(250, 250, 250);
+    --color-gray: rgb(200, 200, 200);
+    --color-light-gray: rgb(225, 225, 225);
+    --color-pale-gray: rgb(248, 248, 248);
 
     --color-transparent: transparent;
 
@@ -48,9 +70,9 @@
     --color-primary-light-text: #222;
     --color-primary-light-border: #444;
 
-    --color-row-head: var(--color-light-gray);
-    --color-row-subhead: var(--color-pale-gray);
-    --color-row-bg: #f9f9f9;
+    --color-row-head: var(--color-pale-gray);
+    --color-row-subhead: var(--color-light-gray);
+    --color-row-bg: var(--color-light-blue);
 
     /* Labels */
     --font-weight-label: bold;
@@ -64,6 +86,8 @@
     --font-size-badge: var(--font-size-medium);
 
     /* Buttons */
+    --margin-btn: 0.5em;
+
     --color-btn-bg: #f9f9f9;
     --color-btn-border: var(--color-light-gray);
     --color-btn-text: var(--color-dark-text);
@@ -99,17 +123,22 @@
     --color-btn-save-hover-bg: #006cbe;
     --color-btn-save-hover-text: var(--color-primary-text);
     --font-size-button: var(--font-size-small);
-    --margin-btn: 1em;
 
     /* fonts */
-    --font-size-small: 0.8em;
-    --line-height-small: 1em;
-    --font-size-medium: 16px;
-    --line-height-medium: 1.3em;
-    --font-size-large: 1.3em;
-    --line-height-large: 1.5em;
+    --font-size-body: 14px;
+    --font-size-tiny: 0.75em;
+    --line-height-tiny: 1em;
+    --font-size-small: 0.875em;
+    --line-height-small: 1.1em;
+    --font-size-medium: var(--font-size-body);
+    --line-height-medium: 1.4em;
+    --font-size-large: 1.125em;
+    --line-height-large: 1.6em;
+    --font-size-xlarge: 2em;
+    --line-height-xlarge: 2.3em;
 
     /* Icons */
+    --font-size-icon: var(--font-size-xlarge);
     --font-size-icon: 36px;
 
     /* Data */
@@ -120,14 +149,15 @@
     --color-markdown-preview-bg: var(--color-pale-gray);
     --color-markdown-text: var(--color-dark-text);
     --font-size-markdown: var(--font-size-medium);
-    --line-height-markdown: 1.3em;
+    --line-height-markdown: normal;
+    --height-markdown-preview: 6em;
 
     /* Triplist */
-    --color-triplist-accent: var(--color-lt-blue);
-    --color-triplist-highlight: var(--color-pale-blue);
+    --color-triplist-accent: var(--color-pale-blue);
+    --color-triplist-highlight: var(--color-pale-gray);
 
     /* Timeline */
-    --color-timeline-bg: var(--color-transparent);
+    --color-timeline-bg: var(--color-pale-blue);
     --color-timeline-text: var(--color-dark-text);
 
     /* margin sizes */

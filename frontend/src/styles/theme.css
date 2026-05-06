@@ -1,0 +1,84 @@
+.btn {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    /* Smooth color transitions */
+}
+
+/* Tactile Click Effect */
+.btn:active {
+    transform: scale(0.96);
+}
+
+/* Save / Add */
+.btn-save {
+    background-color: var(--color-save);
+    color: white;
+}
+
+.btn-save:hover {
+    background-color: var(--color-save-hover);
+}
+
+/* Edit */
+.btn-edit {
+    background-color: var(--color-edit);
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: var(--color-edit-hover);
+}
+
+/* Delete */
+.btn-delete {
+    background-color: var(--bg-section);
+    /* Starts neutral */
+    color: var(--text-primary);
+}
+
+.btn-delete:hover {
+    background-color: var(--color-delete);
+    color: white;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+tr:nth-child(even) {
+    background-color: var(--bg-main);
+    /* Alternating row colors */
+}
+
+td,
+th {
+    padding: 12px;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+/* Menu Items */
+.menu-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 8px 12px;
+    border-left: 3px solid transparent;
+}
+
+.menu-link:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-section);
+}
+
+.menu-link.active {
+    color: var(--text-primary);
+    background-color: var(--bg-section);
+    border-left-color: var(--color-warn);
+    /* Muted Gold indicator */
+}

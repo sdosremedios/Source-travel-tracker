@@ -5,9 +5,9 @@ import { refreshNotes } from "../utils/refreshHelpers";
 
 import "../styles/NoteDetailScreen.css";
 
-
 export default function NoteDetailScreen({
   note,
+  activeTrip,
   onEdit,
   onClose,
   onRefresh
@@ -36,7 +36,7 @@ export default function NoteDetailScreen({
       {/* Header -------------------------------------------------------------- */}
       <div className="header">
         <div className="icon">📝</div>
-        <h1 className="title">Note</h1>
+        <h1 className="title">Note: {activeTrip.name}</h1>
 
         {/* Metadata ------------------------------------------------------------ */}
         <div className="data">
@@ -45,31 +45,32 @@ export default function NoteDetailScreen({
           </div>
         </div>
         {/* Buttons ------------------------------------------------------------- */}
-        <div className="buttons">
-          <button
-            className="nd-btn edit"
-            onClick={() =>
-              onEdit({
-                id: note.id,
-                kind: "note",
-                tripId: note.tripId,
-                dateTime: note.dateTime,
-                note: note.note || ""
-              })
-            }
-          >
-            Edit
-          </button>
+      </div>
+      <div className="actions">
 
-          <button className="nd-btn danger" onClick={handleDelete}>
-            Delete
-          </button>
+        <button
+          className="nd-btn edit"
+          onClick={() =>
+            onEdit({
+              id: note.id,
+              kind: "note",
+              tripId: note.tripId,
+              dateTime: note.dateTime,
+              note: note.note || ""
+            })
+          }
+        >
+          Edit
+        </button>
 
-          <button className="nd-btn close" onClick={onClose}>
-            Close
-          </button>
+        <button className="danger" onClick={handleDelete}>
+          Delete
+        </button>
 
-        </div>
+        <button className="nd-btn close" onClick={onClose}>
+          Close
+        </button>
+
       </div>
       {/* Note text ----------------------------------------------------------- */}
       <div className="markdown-text">

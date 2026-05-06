@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Markdown from "../components/Markdown";
 import UnifiedTimeline from "../components/UnifiedTimeline";
-//import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
+import { buildUnifiedTimeline } from "../models/buildUnifiedTimeline";
 import { tripIcon, actionIcon } from "../utils/icons";
 import { deleteTrip } from "../api";
 import { formatDate } from "../utils/dateHelpers";
@@ -64,51 +64,51 @@ export default function TripDetailScreen({
       <div className="td-upper-section">
         <div className="header">
           <h1 className="title">
-            <span className="icon">{tripIcon(trip)}</span>
+            <span className="icon">{tripIcon(trip)} </span>
             {trip.name}
           </h1>
+        </div>
 
-          <div className="actions">
+        <div className="actions">
 
-            <button className="icon" onClick={() => openItemEditor({ kind: "trip", ...trip })}>
-              {actionIcon("edit")} Edit
-            </button>
+          <button className="icon" onClick={() => openItemEditor({ kind: "trip", ...trip })}>
+            {actionIcon("edit")} Edit
+          </button>
 
-            <button className="icon"
-              onClick={() => {
-                const newSeg = createItem("segment", trip);
-                openItemEditor(newSeg);
-              }}
-            >
-              {actionIcon("add")} Segment
-            </button>
+          <button className="icon"
+            onClick={() => {
+              const newSeg = createItem("segment", trip);
+              openItemEditor(newSeg);
+            }}
+          >
+            {actionIcon("add")} Travel
+          </button>
 
-            <button className="icon"
-              onClick={() => {
-                const newTour = createItem("tour", trip);
-                openItemEditor(newTour);
-              }}
-            >
-              {actionIcon("add")} Tour
-            </button>
+          <button className="icon"
+            onClick={() => {
+              const newTour = createItem("tour", trip);
+              openItemEditor(newTour);
+            }}
+          >
+            {actionIcon("add")} Tour
+          </button>
 
-            <button className="icon"
-              onClick={() => {
-                const newNote = createItem("note", trip);
-                openItemEditor(newNote);
-              }}
-            >
-              {actionIcon("add")} Note
-            </button>
+          <button className="icon"
+            onClick={() => {
+              const newNote = createItem("note", trip);
+              openItemEditor(newNote);
+            }}
+          >
+            {actionIcon("add")} Note
+          </button>
 
-            <button className="icon" onClick={() => handleDeleteTrip(trip.id)}>
-              {actionIcon("delete")} Delete
-            </button>
+          <button className="icon" onClick={() => handleDeleteTrip(trip.id)}>
+            {actionIcon("delete")} Delete
+          </button>
 
-            <button className="icon" onClick={onClose}>
-              {actionIcon("close")} Close
-            </button>
-          </div>
+          <button className="icon" onClick={onClose}>
+            {actionIcon("close")} Close
+          </button>
         </div>
 
         <div className="td-dates">

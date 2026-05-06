@@ -1,17 +1,16 @@
 /* Container */
 .timeline-container {
-  padding: 8px 0;
+  padding: 0;
   background-color: var(--color-timeline-bg);
   color: var(--color-timeline-text);
-
 }
 
 /* Sticky Month Header */
 .timeline-month-header {
   position: sticky;
   top: 0;
-  background: var(--pane-bg);
   background: var(--color-row-head);
+  background: var(--color-pale-green);
   padding: 6px 12px;
   font-weight: 600;
   font-size: 0.9rem;
@@ -25,7 +24,6 @@
 .timeline-day-divider {
   background-color: #eee;
   background: var(--color-row-subhead);
-  margin-top: 8px;
   padding: 4px 12px;
   font-size: 0.9rem;
   color: var(--text-muted);
@@ -39,7 +37,7 @@
   gap: 12px;
   padding: 8px 12px;
   margin: 4px 0;
-  background: var(--row-bg);
+  background: var(--color-timeline-bg);
   border-radius: 4px;
   cursor: pointer;
   transition: background 0.15s ease;
@@ -55,30 +53,18 @@
 }
 
 /* Icon */
-.timeline-icon,
-.timeline-row-icon {
+.timeline-icon {
   font-size: var(--font-size-icon);
   width: 80px;
-  line-height: 1.2;
-  /*
-  padding: 0;
-  margin: 0;
-  text-align: left;
-  width: 32px;
-  height: 28px;
-  justify-content: center;
-  display: flex;
-  align-items: center;
-  opacity: 0.8;
-  */
+  line-height: 1em;
   text-align: center;
-  flex-shrink: 0;
 }
-.timeline-row-category{
+
+div.timeline-icon span.timeline-category {
   font-size: var(--font-size-medium);
+  font-weight: bold;
   font-style: italic;
   text-transform: capitalize;
-  line-height: 0.5;
 }
 
 
@@ -116,18 +102,13 @@
 }
 
 .timeline-row:hover {
-  background: #fafafa;
+  background: var(--color-light-blue);
 }
 
-/*
-.timeline-row-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1 1 auto;   
-  width: 25%;
+.timeline-icon {
+  border-right: 4px solid var(--color-gray);
+  padding-right: 0.5em;
 }
-*/
 .timeline-row-title {
   font-size: 14px;
   font-weight: 600;

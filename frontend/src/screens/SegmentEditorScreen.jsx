@@ -53,7 +53,7 @@ export default function SegmentEditorScreen({
   return (
     <div className="segment-editor-screen">
       <div className="header">
-        <h2>{isEditing ? "Edit Segment" : "Add Segment"}</h2>
+        <h2>{isEditing ? "Edit Travel" : "Add Travel"}</h2>
         <div className="buttons">
           <button className="save" onClick={handleSave}>Save</button>
           <button className="cancel" onClick={onCancel}>Cancel</button>

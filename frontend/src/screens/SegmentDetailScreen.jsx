@@ -26,7 +26,7 @@ export default function SegmentDetailScreen({
       <div className="header">
         <div className="icon">{modeIcon(segment.mode)}</div>
         <h1 className="title">
-          {segment.fromLocation} → {segment.toLocation}
+          Travel: {segment.fromLocation} → {segment.toLocation}
         </h1>
 
         <div className="buttons">
@@ -38,7 +38,7 @@ export default function SegmentDetailScreen({
 
       {/* Metadata ------------------------------------------------------------ */}
       <div className="data">
-        <div>
+        <div className="">
           <strong>Date:</strong>{" "}
           {segment.startDate} {segment.departureTime}
           {" — "}

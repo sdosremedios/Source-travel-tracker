@@ -43,32 +43,30 @@ export default function TourDetailScreen({
     <div className="tour-detail-screen">
       <div className="header">
         <div className="icon">{tourIcon(tour.category)}</div>
-        <h1 className="title">{tour.name}</h1>
-        <div className="buttons">
-          <button className="edit" onClick={() => onEdit(tour)}>
-            Edit
-          </button>
-          <button className="danger" onClick={handleDelete}>
-            Delete
-          </button>
-          <button className="close" onClick={onClose}>
-            Close
-          </button>
-        </div>
+        <h1 className="title">Tour: {tour.name}</h1>
 
       </div>
 
+      <div className="buttons">
+        <button className="edit" onClick={() => onEdit(tour)}>
+          Edit
+        </button>
+        <button className="danger" onClick={handleDelete}>
+          Delete
+        </button>
+        <button className="close" onClick={onClose}>
+          Close
+        </button>
+      </div>
       <div className="data">
-        <div><strong>Company:</strong> {tour.company || "No company"}</div>
-        <div><strong>Date:</strong> {tour.startDate} {tour.startTime}
-         {tour.endDate ? " → " + tour.endDate + " " + tour.endTime : ""} 
+        <div><strong>Company: </strong>{tour.company || "No company"}</div>
+        <div><strong>Date: </strong>{tour.startDate} {tour.startTime}
+          {tour.endDate ? " → " + tour.endDate + " " + tour.endTime : ""}
         </div>
-        <div><strong>Location:</strong> {tour.location}</div>
+        <div><strong>Location: </strong>{tour.location}</div>
         <div>
-          <strong>Category:</strong>
-          <span className="tds-category-badge">
-            {tourIcon(tour.category)} {TOUR_CATEGORIES[tour.category]}
-          </span>
+          <strong>Category: </strong>
+          {tourIcon(tour.category)} {TOUR_CATEGORIES[tour.category]}
         </div>
       </div>
 
