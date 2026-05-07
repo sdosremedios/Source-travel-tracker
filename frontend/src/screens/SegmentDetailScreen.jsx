@@ -29,11 +29,11 @@ export default function SegmentDetailScreen({
           Travel: {segment.fromLocation} → {segment.toLocation}
         </h1>
 
-        <div className="buttons">
-          <button className="edit" onClick={() => onEdit(segment)}>Edit</button>
-          <button className="danger" onClick={handleDelete}>Delete</button>
-          <button className="close" onClick={onClose}>Close</button>
-        </div>
+      </div>
+      <div className="buttons">
+        <button className="edit" onClick={() => onEdit(segment)}>Edit</button>
+        <button className="danger" onClick={handleDelete}>Delete</button>
+        <button className="close" onClick={onClose}>Close</button>
       </div>
 
       {/* Metadata ------------------------------------------------------------ */}
