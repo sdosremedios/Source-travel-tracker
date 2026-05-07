@@ -8,7 +8,8 @@
     --body-text: var(--body-text);
 
     --button-bg: var(--pale-blue);
-    --button-hover-bg: var(--light-blue);
+    --button-border: var(--light-blue);
+    --button-hover-bg: var(--beige);
     --button-hover-text: var(--body-text);
     --button-edit-bg: var(--blue);
     --button-save-bg: var(--blue);
@@ -16,11 +17,12 @@
     --button-cancel-bg: var(--pale-blue);
     --button-delete-bg: var(--red);
 
-    --table-bg: var(--pale-blue);
-    --table-header: var(--light-blue);
+    --table-bg: var(--pale-beige);
+    --table-border: var(--beige);
+    --table-header: var(--beige);
     
 
-    --markdown-text-preview: var(--light-beige);
+    --markdown-text-preview: var(--pale-blue);
     --markdown-editor: #eeeee8;
     --markdown-border: var(--beige);
 
@@ -39,9 +41,9 @@
     --body-text: rgb(64, 64, 96);
 
     /* Blues */
-    --blue: #8DBCC7;
-    --light-blue: #A4CCD9;
-    --pale-blue: #C4E1E6;
+    --blue: #2c71fa;
+    --light-blue: #adc2e9;
+    --pale-blue: #e1e1ec;
 
     /* Reds */
     --red: #FD7979;

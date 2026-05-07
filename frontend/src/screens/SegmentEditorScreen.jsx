@@ -30,25 +30,27 @@ export default function SegmentEditorScreen({
 
   const isEditing = activeItem?.id != null;
 
-  async function handleSave() {
-    // Current local time
-    const start = new Date();
-    const finalNotes = applyNoteTokens(text, {
-      dateObj: start,
-      segment: activeItem,
-      trip: activeTrip
-    });
-    const payload = {
-      ...activeItem,
-      notes: finalNotes
-    };
+async function handleSave() {
+  const start = new Date();
 
-    const saved = isEditing
-      ? await patchSegment(activeTrip.id, activeItem.id, payload)
-      : await postSegment(activeTrip.id, payload);
+  const finalNotes = applyNoteTokens(text, {
+    dateObj: start,
+    segment: activeItem,
+    trip: activeTrip
+  });
 
-    onRefresh(saved);
-  }
+  // Build canonical UTC payload
+  const payload = buildSegmentPayload({
+    ...activeItem,
+    notes: finalNotes
+  });
+
+  const saved = isEditing
+    ? await patchSegment(activeTrip.id, activeItem.id, payload)
+    : await postSegment(activeTrip.id, payload);
+
+  onRefresh(saved);
+}
 
   return (
     <div className="segment-editor-screen">

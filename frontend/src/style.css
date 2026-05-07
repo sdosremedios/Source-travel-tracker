@@ -289,12 +289,12 @@ button.icon {
 
 .markdown-text table thead {
   background-color: var(--table-header);
+  border: 1px solid var(--table-border);
 }
 
 .markdown-text table th,
 .markdown-text table td {
   padding: 0.5em;
-  border: 1px solid var(--color-light-gray);
   margin: 0;
 }
 
@@ -498,34 +498,36 @@ body {
 }
 
 button {
-  background-color: var(--button-bg)
+  background-color: var(--button-bg);
+  border: 1px solid var(--button-border);
 }
+
+button.edit {
+  background-color: var(--button-edit-bg)
+}
+
+button.save {
+  background-color: var(--button-save-bg)
+}
+
+button.close {
+  background-color: var(--button-close-bg)
+}
+
+button.cancel {
+  background-color: var(--button-cancel-bg)
+}
+
+button.delete {
+  background-color: var(--button-delete-bg)
+}
+
 
 button:hover,
 button:active {
   scale: 105%;
   background-color: var(--button-hover-bg);
   color: var(--button-hover-text)
-}
-
-.button-edit-bg {
-  background-color: var(--button-edit-bg)
-}
-
-.button-save-bg {
-  background-color: var(--button-save-bg)
-}
-
-.button-close-bg {
-  background-color: var(--button-close-bg)
-}
-
-.button-cancel-bg {
-  background-color: var(--button-cancel-bg)
-}
-
-.button-delete-bg {
-  background-color: var(--button-delete-bg)
 }
 
 .markdown-text {

@@ -43,8 +43,8 @@ export function createTrip() {
 }
 export function buildTripPayload(item) {
   function toUTC(date, time) {
-    if (!date || !time) return null;
-    return new Date(`${date}T${time}`).toISOString();
+    if (!date) return null;
+    return new Date(`${date}T${time || "00:00"}`).toISOString();
   }
   let { startDate, endDate } = item;
 
@@ -117,8 +117,8 @@ export function createSegment(trip) {
 }
 export function buildSegmentPayload(item) {
   function toUTC(date, time) {
-    if (!date || !time) return null;
-    return new Date(`${date}T${time}`).toISOString();
+    if (!date ) return null;
+    return new Date(`${date}T${time || "00:00"}`).toISOString();
   }
 
   return {
@@ -168,8 +168,8 @@ export function createTour(trip) {
 }
 export function buildTourPayload(item) {
   function toUTC(date, time) {
-    if (!date || !time) return null;
-    return new Date(`${date}T${time}`).toISOString();
+    if (!date) return null;
+    return new Date(`${date}T${time || "00:00"}`).toISOString();
   }
 
   return {
