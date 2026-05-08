@@ -38,6 +38,8 @@ export function modeIcon(mode) {
     case "walk":
     case "walking":
       return "🚶";
+    case "boat":
+      return "⛵";
     default:
       return "•";
   }
@@ -62,8 +64,8 @@ export const exportIcon = "📤";
 export const searchIcon = "🔍";
 export const filterIcon = "🔎";
 export const calendarIcon = "📅";
-export const showIcon = "▶";
-export const hideIcon = "▼";
+export const showIcon = "▶️";
+export const hideIcon = "🔽";
 
 // Optional helper for consistency
 export function actionIcon(name) {

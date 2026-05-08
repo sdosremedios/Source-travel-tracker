@@ -31,6 +31,7 @@ export default function TripDetailScreen({
   // const timelineItems = props.timelineItems;
 
   const [showNotes, setTripNotes] = useState(false);
+  console.log("TripDetailScreen trip:", trip);
 
 
   // Unified selection handler for timeline items
@@ -112,7 +113,7 @@ export default function TripDetailScreen({
         </div>
 
         <div className="td-dates">
-          {formatDate(trip.startDate)} → {formatDate(trip.endDate)}
+          {formatDate(trip.startDateLocal)} → {formatDate(trip.endDateLocal)}
         </div>
         {trip.tripNotes.trim() && (
           <>

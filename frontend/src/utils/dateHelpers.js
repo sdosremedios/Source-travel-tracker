@@ -73,10 +73,8 @@ export function weekday(dateStr) {
 export function formatDate(dateStr, includeWeekday = true) {
   if (!dateStr) return "";
 
-  const d = new Date(dateStr);
-  const mm = String(d.getMonth() + 1).padStart(2, "0");
-  const dd = String(d.getDate()).padStart(2, "0");
-  const yyyy = d.getFullYear();
+  // dateStr is already "YYYY-MM-DD"
+  const [yyyy, mm, dd] = dateStr.split("-");
 
   if (includeWeekday) {
     return `${weekday(dateStr)} ${mm}/${dd}/${yyyy}`;
@@ -157,4 +155,9 @@ export function formatLocalDateTime(dateObj) {
   });
 
   return `${date} ${time}`;
+}
+export function localDateFromYYYYMMDD(dateStr) {
+  // Interpret as local date, not UTC
+  const [y, m, d] = dateStr.split("-");
+  return new Date(y, m - 1, d);
 }

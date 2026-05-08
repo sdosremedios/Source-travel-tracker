@@ -11,7 +11,7 @@ import NoteDetailScreen from "./screens/NoteDetailScreen";
 import CommandPalette from "./components/CommandPalette";
 import ContextMenu from "./components/ContextMenu";
 import { createItem } from "./api/createItem";
-import { formatDate, formatTime } from "./utils/dateHelpers";
+import { formatDate, formatTime, localDateFromYYYYMMDD } from "./utils/dateHelpers";
 import hydrateItem from "./api/hydrate"
 import { buildUnifiedTimeline } from "./models/buildUnifiedTimeline";
 import {
@@ -120,15 +120,19 @@ export default function App() {
       }
     });
   }, [activeScreen, activeItem?.id]);
-  useEffect(() => {
-    if (!selectedTripId) {
-      setActiveTrip(null);
-      return;
-    }
 
-    const trip = trips.find(t => t.id === selectedTripId) || null;
-    setActiveTrip(trip);
-  }, [selectedTripId, trips]);
+useEffect(() => {
+  if (!selectedTripId) {
+    setActiveTrip(null);
+    return;
+  }
+
+  const trip = trips.find(t => t.id === selectedTripId);
+
+  if (trip) {
+    setActiveTrip(normalizeTripForDetail(trip));
+  }
+}, [selectedTripId, trips]);
 
   // Load segments + tours when selectedTripId changes
   // ------------------------------------------------------------
@@ -254,6 +258,19 @@ export default function App() {
     };
   }
   // ------------------------------------------------------------
+  // Trip helpers
+  // ------------------------------------------------------------
+  function normalizeTripForDetail(trip) {
+    const start = localDateFromYYYYMMDD(trip.startDate);
+    const end = localDateFromYYYYMMDD(trip.endDate);
+
+    return {
+      ...trip,
+      startDateLocal: start.toLocaleDateString("en-CA"),
+      endDateLocal: end.toLocaleDateString("en-CA")
+    };
+  }
+  // ------------------------------------------------------------
   // Note helpers
   // ------------------------------------------------------------
   function normalizeNoteForEditor(note) {
@@ -317,7 +334,8 @@ export default function App() {
       case "note":
         return normalizeNoteForDetail(item);
       case "trip":
-        return item; // trips don't use activeItem
+        return normalizeTripForDetail(item);
+      //return item; // trips don't use activeItem
       default:
         return item;
     }
@@ -337,7 +355,7 @@ export default function App() {
     };
   }
   // ------------------------------------------------------------
-  // Unified Navigation: Detail
+  // Unified Navigation: Detail 
   // ------------------------------------------------------------
   async function openItemDetail(item) {
     console.log("App openItemDetail item:", item);
@@ -607,7 +625,7 @@ export default function App() {
               const tours = await loadToursForTrip(id);
               const notes = await loadNotesForTrip(id);
 
-              setActiveTrip(trip);   // ⭐ MUST update this
+              setActiveTrip(normalizeTripForDetail(trip));   // ⭐ MUST update this
               setSegments(segments);
               setTours(tours);
               setNotes(notes);
