@@ -173,7 +173,7 @@ button {
 }
 
 .buttons {
-  margin-left: auto;
+  margin: 0 0 1em auto;
   display: flex;
   gap: 8px;
 }
@@ -188,35 +188,6 @@ button {
   transition: background 0.15s ease;
   margin: 0 var(--margin-btn) 0 0;
   font-size: var(--font-size-medium);
-}
-
-button:active {
-  scale: 0.98%;
-}
-
-button.edit {
-  background-color: var(--color-primary);
-  color: var(--color-btn-bg);
-}
-
-button.save {
-  background-color: var(--color-primary);
-  color: var(--color-btn-bg);
-}
-
-button.cancel {
-  background-color: var(--color-btn-bg);
-  color: var(--color-btn-text);
-}
-
-button.danger {
-  background-color: var(--color-btn-danger-bg);
-  color: var(--color-btn-bg);
-}
-
-button.icon {
-  font-size: 14px;
-  font-size: var(--font-size-small);
 }
 
 .header .icon {
@@ -260,10 +231,14 @@ button.icon {
 .markdown-text ul {
   column-count: 2;
   column-gap: 3em;
-  column-rule: 1px solid black;
   margin-left: 24px;
-  list-style: disc;
   line-height: 50%;
+}
+
+.markdown-text p {
+  column-count: 2;
+  column-gap: 3em;
+  line-height: 120%;
 }
 
 .markdown-text ol li,
@@ -273,10 +248,10 @@ button.icon {
 }
 
 .markdown-text code {
-  background-color: var(--color-pale-blue);
+  background-color: var(--pale-gray);
   padding: 0.1em 0.4em;
   border-radius: 0.4em;
-  border: 1px solid var(--color-light-gray);
+  border: 1px solid var(--gray);
 }
 
 .markdown-text table {
@@ -329,7 +304,6 @@ textarea.markdown-edit {
 /* Headings for desktop */
 h1 {
   font-size: 160%;
-  vertical-align: middle;
 }
 
 h2 {
@@ -361,7 +335,9 @@ h6,
 p,
 div,
 li {
+  vertical-align: middle;
   line-height: 120%;
+  padding-bottom: 0.5em;
 }
 
 /* ============================================================
@@ -503,25 +479,37 @@ button {
 }
 
 button.edit {
-  background-color: var(--button-edit-bg)
+  background-color: var(--button-edit-bg);
+  color: var(--pale-text);
 }
 
 button.save {
-  background-color: var(--button-save-bg)
+  background-color: var(--button-save-bg);
+  color: var(--pale-text);
 }
 
 button.close {
-  background-color: var(--button-close-bg)
+  background-color: var(--button-close-bg);
 }
 
 button.cancel {
-  background-color: var(--button-cancel-bg)
+  background-color: var(--button-cancel-bg);
 }
 
 button.delete {
-  background-color: var(--button-delete-bg)
+  background-color: var(--button-delete-bg);
+  color: var(--pale-text);
 }
 
+button.danger {
+  background-color: var(--button-danger-bg);
+  color: var(--pale-text);
+}
+
+button.icon {
+  font-size: 14px;
+  font-size: var(--font-size-small);
+}
 
 button:hover,
 button:active {

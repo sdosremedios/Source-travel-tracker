@@ -16,29 +16,26 @@ Activity
 Activity
 
 ---
-### 📷Photo 📹Video
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
-
-1. 🗺️ Location: **Location**
-🏞️ Subject: **Subject**
+### 📷 Photo - 📹 Video
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
+1. 🗺️ Loc: **Location**
+🏞️ Sub: **Subject**
 
 ---

@@ -6,6 +6,7 @@
     /* Page Colors */
     --body-bg: var(--pale-beige);
     --body-text: var(--body-text);
+    --pale-text: var(--pale-beige);
 
     --button-bg: var(--pale-blue);
     --button-border: var(--light-blue);
@@ -15,12 +16,13 @@
     --button-save-bg: var(--blue);
     --button-close-bg: var(--pale-blue);
     --button-cancel-bg: var(--pale-blue);
+    --button-danger-bg: var(--red);
     --button-delete-bg: var(--red);
 
     --table-bg: var(--pale-beige);
     --table-border: var(--beige);
     --table-header: var(--beige);
-    
+
 
     --markdown-text-preview: var(--pale-blue);
     --markdown-editor: #eeeee8;
@@ -39,6 +41,8 @@
 
     /* THEME */
     --body-text: rgb(64, 64, 96);
+    --color-danger: var(--red);
+    --color-caution: var(--yellow);
 
     /* Blues */
     --blue: #2c71fa;
@@ -50,12 +54,21 @@
     --light-red: #FDACAC;
     --pale-red: #FFCDC9;
 
+    /* Yellows */
+    --yellow: #dddd6c;
+    --light-yellow: #dddda6;
+    --pale-yellow: #ddddce;
+
     /* Beiges */
     --dark-beige: #C9B59C;
     --beige: #D9CFC7;
     --light-beige: #EFE9E3;
     --pale-beige: #ececea;
 
+    --dark-gray: #555;
+    --gray: rgb(200, 200, 200);
+    --light-gray: rgb(225, 225, 225);
+    --pale-gray: rgb(248, 248, 248);
     /* END THEME */
 
     /* Neutrals */

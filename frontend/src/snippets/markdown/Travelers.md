@@ -1,4 +1,4 @@
-## 🧍🧍🏼‍🧍🏻Travelers
+## 👥 Travelers
 1. **Traveler_Name (Pre+Post)**
 1. **Traveler_Name (Pre+Post)**
 1. **Traveler_Name (Pre+Post)**

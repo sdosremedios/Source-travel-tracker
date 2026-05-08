@@ -1,12 +1,19 @@
-## 🛪 Flight Information [[date]] [[time]]
+## ✈ Flight Information
+- Flight: **Flight**
+Locator: **Locator**
 🗺️ Destination: **Destination**
-- ✈️ Aircraft - **Aircraft**
-- ⏱️ Duration - **Duration**
-- ⏱️ Layover - **Layover**
+✈️ Aircraft: **Aircraft**
+🏅 Class: **Business**
+⏱️ Duration: - **00:00**
+⏱️ Layover: **00:00**
+- 💺 Seats:
+**seat** SMdR
+**seat** SSdR
 - Terminals
-	- 🛫 Dep: **Terminal** 🛬 Arr: **Terminal**
+🛫 Dep: **Terminal** 🛬 Arr: **Terminal**
 - Tickets
-	- 🎫 **Ticket** + 🎫 **Ticket**  
-    🎫 **Ticket** + 🎫 **Ticket**
+🎫 **Ticket** SMdR
+🎫 **Ticket**  SSdR
 - Frequent Flier Numbers
-	- 🪪 **FFN** + 🪪 **FFN**
+🪪 **FFN** SMdR
+🪪 **FFN** SSdR

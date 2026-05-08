@@ -1,1 +1,1 @@
-Flight ` *flight number `; Seats ` x `, ` x `; Booking ` x `; see notes for more info.
+🛫 **Airline** **flight_number** Dep: **Departure_time** Gate: **Gate_number**
