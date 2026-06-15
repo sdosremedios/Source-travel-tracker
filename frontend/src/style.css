@@ -335,7 +335,7 @@ h6,
 p,
 div,
 li {
-  vertical-align: middle;
+  vertical-align: bottom;
   line-height: 120%;
   padding-bottom: 0.5em;
 }
@@ -545,10 +545,20 @@ div.TripListScreen.tls-root .search {
   background-color: var(--tls-item-bg);
 }
 
+.tls-item .name {
+  width:60%;
+  text-align: left;
+}
+.tls-item .dates {
+  width:20%;
+  text-align: right;
+}
+
 .tls-list.tls-item:hover,
 .tls-list.tls-item:active {
   background-color: var(--tls-item-hover)
 }
+
 
 .timeline-month-header {
   background-color: var(--timeline-month-header)

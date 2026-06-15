@@ -40,7 +40,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.4.23";
+  const appVersion = "0.4.26";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -121,34 +121,28 @@ export default function App() {
     });
   }, [activeScreen, activeItem?.id]);
 
-useEffect(() => {
-  if (!selectedTripId) {
-    setActiveTrip(null);
-    return;
-  }
+  useEffect(() => {
+    if (!selectedTripId) {
+      setActiveTrip(null);
+      return;
+    }
 
-  const trip = trips.find(t => t.id === selectedTripId);
+    const trip = trips.find(t => t.id === selectedTripId);
 
-  if (trip) {
-    setActiveTrip(normalizeTripForDetail(trip));
-  }
-}, [selectedTripId, trips]);
+    if (trip) {
+      setActiveTrip(normalizeTripForDetail(trip));
+    }
+  }, [selectedTripId, trips]);
 
   // Load segments + tours when selectedTripId changes
   // ------------------------------------------------------------
   // Segment helpers
   // ------------------------------------------------------------
   function normalizeTripForEditor(trip) {
-    const dep = new Date(trip.startDate);
-    const arr = new Date(trip.endDate);
-
     return {
       ...trip,
-
-      // Local date fields for <input type="date">
-      startDate: dep.toLocaleDateString("en-CA"), // YYYY-MM-DD
-      endDate: arr.toLocaleDateString("en-CA"),
-
+      startDate: trip.startDate || "",
+      endDate: trip.endDate || "",
       type: trip.type || "",
       tripNotes: trip.tripNotes || "",
     };
@@ -261,15 +255,13 @@ useEffect(() => {
   // Trip helpers
   // ------------------------------------------------------------
   function normalizeTripForDetail(trip) {
-    const start = localDateFromYYYYMMDD(trip.startDate);
-    const end = localDateFromYYYYMMDD(trip.endDate);
-
     return {
       ...trip,
-      startDateLocal: start.toLocaleDateString("en-CA"),
-      endDateLocal: end.toLocaleDateString("en-CA")
+      startDateLocal: trip.startDate, // already YYYY-MM-DD
+      endDateLocal: trip.endDate
     };
   }
+
   // ------------------------------------------------------------
   // Note helpers
   // ------------------------------------------------------------
@@ -514,20 +506,20 @@ useEffect(() => {
   }
   function closeEditor() {
     const item = activeItem;
-
+  
     // If no activeItem → we were editing a trip
     if (!item) {
       setActiveScreen("tripList");
       return;
     }
-
+  
     // Existing child item (segment/tour/note)
     if (item.id != null) {
       setSelectedTripId(item.tripId);
       setActiveScreen(item.kind + "Detail");
       return;
     }
-
+  
     // New child item
     if (item.tripId) {
       setSelectedTripId(item.tripId);
@@ -536,7 +528,7 @@ useEffect(() => {
       setActiveScreen("tripList");
     }
   }
-
+  
   function openDetail(item) {
     setActiveItem(item);
     setSelectedTripId(item.tripId ?? item.id);

@@ -44,6 +44,9 @@ export default function NoteEditorScreen({
     }
   }, [activeItem?.id]); // only reinitialize when switching notes
 
+  function localToUtc(datetimeLocal) {
+    return new Date(datetimeLocal).toISOString();
+  }
   // --- Save handler ---
   async function handleSave() {
     // Push local state back into activeItem
@@ -67,7 +70,8 @@ export default function NoteEditorScreen({
     });
     const updatedItem = {
       ...activeItem,
-      note: finalText
+      note: finalText,
+      dateTime: localToUtc(activeItem.dateTime)
     };
 
     const payload = buildNotePayload(updatedItem);
@@ -94,8 +98,10 @@ export default function NoteEditorScreen({
       <label>Date & Time</label>
       <input
         type="datetime-local"
-        value={dateTime}
-        onChange={e => setDateTime(e.target.value)}
+        value={activeItem.dateTime}
+        onChange={e =>
+          setActiveItem(prev => ({ ...prev, dateTime: e.target.value }))
+        }
       />
 
       <div className="editor-row notes">
