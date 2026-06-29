@@ -101,3 +101,6 @@ export const kindIcons = {
 export function kindIcon(kind) {
   return kindIcons[kind] || "❓";
 }
+
+export const collapseIcon = "⤴️";   // or "▲" or "▾"
+export const expandIcon = "⤵️";     // or "▼" or "▸"

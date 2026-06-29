@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import TimelineRow from "./TimelineRow";
 import "../styles/UnifiedTimeline.css";
+import { collapseIcon, expandIcon } from "../utils/icons";
 
 export default function UnifiedTimeline({
   items,
@@ -10,18 +11,52 @@ export default function UnifiedTimeline({
   onInlineEdit
 }) {
   const [index, setIndex] = useState(0);
+  const [collapsedDates, setCollapsedDates] = useState({});
 
-  // console.log("UnifiedTimeline props:", { onSelectItem });
-  //
-  // Keyboard navigation
-  //
+  function toggleDate(date) {
+    setCollapsedDates(prev => ({
+      ...prev,
+      [date]: !prev[date]
+    }));
+  }
+
+  function collapseAll() {
+    const map = {};
+    for (const item of items) {
+      map[item.date] = true;
+    }
+    setCollapsedDates(map);
+  }
+
+  function expandAll() {
+    const map = {};
+    for (const item of items) {
+      map[item.date] = false;
+    }
+    setCollapsedDates(map);
+  }
+
+  let lastMonth = null;
+  let lastDate = null;
+
   useEffect(() => {
     function handleKeyDown(e) {
+      if (e.key === "c" || e.key === "C") collapseAll();
+      if (e.key === "e" || e.key === "E") expandAll();
+      if (e.key === "d" || e.key === "D") {
+        const item = items[index];
+        if (item?.date) toggleDate(item.date);
+      }
+
       if (e.key === "ArrowDown") {
         setIndex(i => Math.min(i + 1, items.length - 1));
-      } else if (e.key === "ArrowUp") {
+      }
+
+      if (e.key === "ArrowUp") {
         setIndex(i => Math.max(i - 1, 0));
-      } else if (e.key === "Enter") {
+      }
+
+      if (e.key === "Enter") {
         const item = items[index];
         if (item) onSelectItem?.(item);
       }
@@ -29,49 +64,60 @@ export default function UnifiedTimeline({
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [items, index, onSelectItem]);
+  }, [items, index]);
 
-  //
-  // Render timeline with month + day grouping
-  //
-  let lastMonth = null;
-  let lastDate = null;
-
-  console.log("TimelineRow data: ", items);
   return (
-    <div className="timeline-container">
-      {items.map(item => {
-        const showMonth = item.monthLabel !== lastMonth;
-        const showDate = item.date !== lastDate;
+    <div>
+      <div className="timeline-controls">
+        <span class="icon pointer" title="Collapse All" onClick={collapseAll}>
+          {collapseIcon}
+        </span>
+        <span class="icon pointer" title="Expand All" onClick={expandAll}>
+          {expandIcon}
+        </span>
+      </div>
 
-        lastMonth = item.monthLabel;
-        lastDate = item.date;
+      <div className="timeline-container">
+        {items.map(item => {
+          // ⭐ These depend on lastMonth / lastDate existing
+          const showMonth = item.monthLabel !== lastMonth;
+          const showDate = item.date !== lastDate;
 
-        return (
-          <React.Fragment key={`${item.kind}-${item.id}`}>
-            {showMonth && (
-              <div className="timeline-month-header">
-                {item.monthLabel}
-              </div>
-            )}
+          lastMonth = item.monthLabel;
+          lastDate = item.date;
 
-            {showDate && (
-              <div className="timeline-day-divider">
-                {item.weekday} {item.date}
-              </div>
-            )}
+          return (
+            <React.Fragment key={`${item.kind}-${item.id}`}>
+              {showMonth && (
+                <div className="timeline-month-header">
+                  {item.monthLabel}
+                </div>
+              )}
 
-            <TimelineRow
-              item={item}
-              onClick={onSelectItem}
-              onContextMenu={e => onContextMenu?.(e, item)}
-              onInlineEdit={(field, value) =>
-                onInlineEdit?.(item, field, value)
-              }
-            />
-          </React.Fragment>
-        );
-      })}
+              {showDate && (
+                <div
+                  className="timeline-day-divider"
+                  onClick={() => toggleDate(item.date)}
+                >
+                  {collapsedDates[item.date] ? "►" : "▼"}{" "}
+                  {item.weekday} — {item.date}
+                </div>
+              )}
+
+              {!collapsedDates[item.date] && (
+                <TimelineRow
+                  item={item}
+                  onClick={() => onSelectItem(item)}
+                  onContextMenu={e => onContextMenu?.(e, item)}
+                  onInlineEdit={(field, value) =>
+                    onInlineEdit?.(item, field, value)
+                  }
+                />
+              )}
+            </React.Fragment>
+          );
+        })}
+      </div>
     </div>
   );
 }

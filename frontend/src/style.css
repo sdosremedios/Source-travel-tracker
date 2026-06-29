@@ -511,6 +511,13 @@ button.icon {
   font-size: var(--font-size-small);
 }
 
+.timeline-controls .icon {
+  text-align: center;
+  font-size: 1.5em;
+  cursor: pointer;
+  margin-right: 0.33em;
+}
+
 button:hover,
 button:active {
   scale: 105%;
@@ -546,11 +553,12 @@ div.TripListScreen.tls-root .search {
 }
 
 .tls-item .name {
-  width:60%;
+  width: 60%;
   text-align: left;
 }
+
 .tls-item .dates {
-  width:20%;
+  width: 20%;
   text-align: right;
 }
 
