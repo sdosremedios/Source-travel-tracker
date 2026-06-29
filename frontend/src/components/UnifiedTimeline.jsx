@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import TimelineRow from "./TimelineRow";
 import "../styles/UnifiedTimeline.css";
 import { collapseIcon, expandIcon } from "../utils/icons";
+import { expandDayIcon, collapseDayIcon } from "../utils/icons";
 
 export default function UnifiedTimeline({
   items,
@@ -12,6 +13,14 @@ export default function UnifiedTimeline({
 }) {
   const [index, setIndex] = useState(0);
   const [collapsedDates, setCollapsedDates] = useState({});
+
+  useEffect(() => {
+    const map = {};
+    for (const item of items) {
+      map[item.date] = true;   // default collapsed
+    }
+    setCollapsedDates(map);
+  }, [items]);
 
   function toggleDate(date) {
     setCollapsedDates(prev => ({
@@ -69,11 +78,11 @@ export default function UnifiedTimeline({
   return (
     <div>
       <div className="timeline-controls">
-        <span class="icon pointer" title="Collapse All" onClick={collapseAll}>
-          {collapseIcon}
-        </span>
         <span class="icon pointer" title="Expand All" onClick={expandAll}>
-          {expandIcon}
+          {expandIcon} Expand All
+        </span>
+        <span class="icon pointer" title="Collapse All" onClick={collapseAll}>
+          {collapseIcon} Collapse All
         </span>
       </div>
 
@@ -99,7 +108,7 @@ export default function UnifiedTimeline({
                   className="timeline-day-divider"
                   onClick={() => toggleDate(item.date)}
                 >
-                  {collapsedDates[item.date] ? "►" : "▼"}{" "}
+                  {collapsedDates[item.date] ? collapseDayIcon : expandDayIcon}{" "}
                   {item.weekday} — {item.date}
                 </div>
               )}

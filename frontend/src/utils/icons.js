@@ -104,3 +104,6 @@ export function kindIcon(kind) {
 
 export const collapseIcon = "⤴️";   // or "▲" or "▾"
 export const expandIcon = "⤵️";     // or "▼" or "▸"
+
+export const collapseDayIcon = "⤵️";
+export const expandDayIcon = "⤴️";
