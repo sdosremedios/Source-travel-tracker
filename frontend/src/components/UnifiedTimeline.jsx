@@ -8,7 +8,6 @@ import { expandDayIcon, collapseDayIcon } from "../utils/icons";
 export default function UnifiedTimeline({
   items,
   onSelectItem,
-  onContextMenu,
   onInlineEdit
 }) {
   const [index, setIndex] = useState(0);
@@ -117,7 +116,6 @@ export default function UnifiedTimeline({
                 <TimelineRow
                   item={item}
                   onClick={() => onSelectItem(item)}
-                  onContextMenu={e => onContextMenu?.(e, item)}
                   onInlineEdit={(field, value) =>
                     onInlineEdit?.(item, field, value)
                   }

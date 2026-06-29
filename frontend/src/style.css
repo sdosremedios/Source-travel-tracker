@@ -227,6 +227,10 @@ button {
   padding: 0.5em;
 }
 
+.timeline-row .markdown-text.preview {
+  column-count: 1;
+}
+
 .markdown-text ol,
 .markdown-text ul {
   column-count: 2;

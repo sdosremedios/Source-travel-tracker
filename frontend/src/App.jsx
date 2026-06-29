@@ -9,7 +9,6 @@ import TourEditorScreen from "./screens/TourEditorScreen";
 import NoteEditorScreen from "./screens/NoteEditorScreen";
 import NoteDetailScreen from "./screens/NoteDetailScreen";
 import CommandPalette from "./components/CommandPalette";
-import ContextMenu from "./components/ContextMenu";
 import { createItem } from "./api/createItem";
 import { formatDate, formatTime, localDateFromYYYYMMDD } from "./utils/dateHelpers";
 import hydrateItem from "./api/hydrate"
@@ -40,7 +39,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.5.1";
+  const appVersion = "0.5.2";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -55,7 +54,6 @@ export default function App() {
   const [notes, setNotes] = useState([]);
   // Command palette + context menu
   const [isPaletteOpen, setPaletteOpen] = useState(false);
-  const [contextMenu, setContextMenu] = useState(null);
   const rightPaneRef = useRef(null);
 
   useEffect(() => {
@@ -441,14 +439,6 @@ export default function App() {
   // ------------------------------------------------------------
   // Context Menu
   // ------------------------------------------------------------
-  function openContextMenu(e, item) {
-    e.preventDefault();
-    setContextMenu({
-      x: e.clientX,
-      y: e.clientY,
-      actions: buildActionsFor(item)
-    });
-  }
 
   function buildActionsFor(item) {
     if (!item) return [];
@@ -470,9 +460,6 @@ export default function App() {
     return [];
   }
 
-  function closeContextMenu() {
-    setContextMenu(null);
-  }
 
   // ------------------------------------------------------------
   // ------------------------------------------------------------
@@ -627,7 +614,6 @@ export default function App() {
             }}
             onSelectItem={(item) => openItemDetail(item)}
             openItemEditor={openItemEditor}
-            onContextMenu={openContextMenu}
             onInlineEdit={handleInlineEdit}
           />
         )}
@@ -785,19 +771,6 @@ export default function App() {
         activeItem={activeItem}
       />
 
-      {/* Context Menu */}
-      {contextMenu && (
-        <ContextMenu
-          x={contextMenu.x}
-          y={contextMenu.y}
-          actions={contextMenu.actions}
-          onAction={(action) => {
-            action.onClick();
-            closeContextMenu();
-          }}
-          onClose={closeContextMenu}
-        />
-      )}
     </div>
   );
 }

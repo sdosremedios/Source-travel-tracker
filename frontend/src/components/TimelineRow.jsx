@@ -9,7 +9,6 @@ import Markdown from "./Markdown";
 export default function TimelineRow({
   item,
   onClick,
-  onContextMenu,
   onInlineEdit
 }) {
   const isSegment = item.kind === "segment";
@@ -22,7 +21,6 @@ export default function TimelineRow({
       <div
         className="timeline-row note"
         onClick={() => onClick(item)}
-        onContextMenu={(e) => onContextMenu?.(e, item)}
       >
         <div className="timeline-icon">
           {kindIcon("note")}
@@ -44,7 +42,6 @@ export default function TimelineRow({
       <div
         className="timeline-row"
         onClick={() => onClick(item)}
-        onContextMenu={(e) => onContextMenu?.(e, item)}
       >
         <div className="timeline-icon">
           {item.mode ?
@@ -82,7 +79,6 @@ export default function TimelineRow({
       <div
         className="timeline-row"
         onClick={() => onClick(item)}
-        onContextMenu={(e) => onContextMenu?.(e, item)}
       >
         <div className="timeline-icon">{item.kind === "tour"
           ? tourIcon(item.category)

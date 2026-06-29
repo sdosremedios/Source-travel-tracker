@@ -19,7 +19,6 @@ export default function TripDetailScreen({
   onClose,
   onSelectItem,
   openItemEditor,
-  onContextMenu,
   onRefresh,
   rightPaneRef,
   onInlineEdit
@@ -138,7 +137,6 @@ export default function TripDetailScreen({
           <UnifiedTimeline
             items={timelineItems}
             onSelectItem={handleSelectItem}
-            onContextMenu={onContextMenu}
             onInlineEdit={onInlineEdit}
           />
         </div>
