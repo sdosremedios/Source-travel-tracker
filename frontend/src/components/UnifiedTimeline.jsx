@@ -11,22 +11,9 @@ export default function UnifiedTimeline({
   onInlineEdit
 }) {
   const [index, setIndex] = useState(0);
+
   const [collapsedDates, setCollapsedDates] = useState({});
-
-  useEffect(() => {
-    const map = {};
-    for (const item of items) {
-      map[item.date] = true;   // default collapsed
-    }
-    setCollapsedDates(map);
-  }, [items]);
-
-  function toggleDate(date) {
-    setCollapsedDates(prev => ({
-      ...prev,
-      [date]: !prev[date]
-    }));
-  }
+  const [allCollapsed, setAllCollapsed] = useState(true);
 
   function collapseAll() {
     const map = {};
@@ -34,6 +21,7 @@ export default function UnifiedTimeline({
       map[item.date] = true;
     }
     setCollapsedDates(map);
+    setAllCollapsed(true);
   }
 
   function expandAll() {
@@ -42,6 +30,22 @@ export default function UnifiedTimeline({
       map[item.date] = false;
     }
     setCollapsedDates(map);
+    setAllCollapsed(false);
+  }
+
+  useEffect(() => {
+    if (allCollapsed) {
+      collapseAll();
+    } else {
+      expandAll();
+    }
+  }, [items]);
+
+  function toggleDate(date) {
+    setCollapsedDates(prev => ({
+      ...prev,
+      [date]: !prev[date]
+    }));
   }
 
   let lastMonth = null;
@@ -77,11 +81,8 @@ export default function UnifiedTimeline({
   return (
     <div>
       <div className="timeline-controls">
-        <span class="icon pointer" title="Expand All" onClick={expandAll}>
-          {expandIcon} Expand All
-        </span>
-        <span class="icon pointer" title="Collapse All" onClick={collapseAll}>
-          {collapseIcon} Collapse All
+        <span className="icon pointer" title="Expand All" onClick={allCollapsed ? expandAll : collapseAll}>
+          {allCollapsed ? expandIcon : collapseIcon} {allCollapsed ? "Expand All" : "Collapse All"}
         </span>
       </div>
 

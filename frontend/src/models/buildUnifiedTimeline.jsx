@@ -14,7 +14,7 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     if (item.kind === "trip") {
       return {
         ...item,
-//      date: item.startDate,                 // already YYYY-MM-DD
+        //      date: item.startDate,                 // already YYYY-MM-DD
         date: date.toLocaleDateString("en-US"),
         weekday: date.toLocaleDateString("en-US", { weekday: "short" }),
         monthLabel: date.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
@@ -27,13 +27,18 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     // Notes have a single timestamp (startDate)
     if (item.kind === "note") {
       const start = new Date(item.dateTime);
-
+      console.log("RAW:", item.dateTime);
+      console.log("JSON:", JSON.stringify(item.dateTime));
+      console.log("PARSED:", new Date(item.dateTime).toString());
       return {
         ...item,
         date: start.toLocaleDateString("en-US"),
         weekday: start.toLocaleDateString("en-US", { weekday: "short" }),
         monthLabel: start.toLocaleDateString("en-US", { month: "long", year: "numeric" }),
-        startLabel: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
+        startLabel: start.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "2-digit"
+        }),
         endLabel: null,
         timelineSortKey: start.toISOString()
       };
@@ -71,5 +76,5 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
     return item;
   }
 
-  return items.sort((b, a) => a.timelineSortKey.localeCompare(b.timelineSortKey));
+  return items.sort((a, b) => b.timelineSortKey.localeCompare(a.timelineSortKey));
 }

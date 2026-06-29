@@ -5,6 +5,9 @@ import { formatMonth, formatWeekday, formatDateTime } from "../utils/dateHelpers
 export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
   const items = [];
 
+  console.log("SEGMENTS:", segments);
+  console.log("TOURS:", tours);
+  console.log("NOTES:", notes);
   //
   // Parse YYYY-MM-DD safely everywhere (date-only fields)
   //
@@ -32,63 +35,7 @@ export function buildUnifiedTimeline(segments = [], tours = [], notes = []) {
       .join(" ");
   }
 
-  //
-  // Shared duration + offset helpers
-  //
-export function hydrateItemForTimeline(item) {
-  // Trips are date-only, no time
-  if (item.kind === "trip") {
-    return {
-      ...item,
-      date: item.startDate,                 // already YYYY-MM-DD
-      startLabel: null,
-      endLabel: null,
-      timelineSortKey: item.startDate
-    };
-  }
-
-  // Notes have a single timestamp (startDate)
-  if (item.kind === "note") {
-    const start = new Date(item.startDate);
-
-    return {
-      ...item,
-      date: start.toLocaleDateString("en-CA"),
-      startLabel: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
-      endLabel: null,
-      timelineSortKey: start.toISOString()
-    };
-  }
-
-  // Tours + Segments both use startDate + endDate as UTC timestamps
-  if (item.kind === "tour" || item.kind === "segment") {
-    const start = new Date(item.startDate);
-    const end = new Date(item.endDate);
-
-    return {
-      ...item,
-
-      // Local date for grouping
-      date: start.toLocaleDateString("en-CA"),
-
-      // Local time labels
-      startLabel: start.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
-      endLabel: end.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }),
-
-      // Sorting key (UTC ISO)
-      timelineSortKey: start.toISOString(),
-
-      // Duration (segments only)
-      durationMinutes: item.kind === "segment"
-        ? Math.round((end - start) / 60000)
-        : null
-    };
-  }
-
-  // Fallback (should never hit)
-  return item;
-}
-
+  // --------------------------------------------------
   function computeDuration(start, end) {
     const minutes = Math.floor((end - start) / 60000);
     if (minutes <= 0) return "";
@@ -193,7 +140,13 @@ export function hydrateItemForTimeline(item) {
   // NOTES
   //
   notes.forEach(n => {
-    const d = normalizeToLocal(n.dateTime);
+    console.log("RAW NOTE TIME:", n.dateTime);
+    console.log("PARSED:", new Date(n.dateTime));
+
+    // Force UTC interpretation
+    const raw = n.dateTime;
+    const utcString = raw.endsWith("Z") ? raw : raw + "Z";
+    const d = new Date(utcString);
 
     items.push({
       kind: "note",
@@ -201,9 +154,15 @@ export function hydrateItemForTimeline(item) {
 
       rawDate: n.dateTime,
 
-      date: d.toLocaleDateString(),
+      date: d.toISOString().slice(0, 10),
       weekday: d.toLocaleString("default", { weekday: "short" }),
       monthLabel: d.toLocaleString("default", { month: "long", year: "numeric" }),
+
+      startLabel: d.toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: true
+      }),
 
       note: n.note,
 

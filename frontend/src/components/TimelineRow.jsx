@@ -27,7 +27,7 @@ export default function TimelineRow({
           <span className="timeline-category"><br />Note</span>
         </div>
         <div className="timeline-row-content">
-          <div className="timeline-note-time">{formatTime(item.dateTime)}</div>
+          <div className="timeline-note-time">{item.startLabel}</div>
         </div>
         <div className="markdown-text preview">
           <Markdown>{item.note}</Markdown>
