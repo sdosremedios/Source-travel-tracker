@@ -39,7 +39,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.5.5";
+  const appVersion = "0.6.0";
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
@@ -55,6 +55,9 @@ export default function App() {
   // Command palette + context menu
   const [isPaletteOpen, setPaletteOpen] = useState(false);
   const rightPaneRef = useRef(null);
+ 
+  // timeline state
+  const [tripCollapseState, setTripCollapseState] = useState({});
 
   useEffect(() => {
     fetch("/api/templates")
@@ -612,6 +615,13 @@ export default function App() {
               // ⭐ DO NOT setActiveScreen("tripDetail")
               // You're already on tripDetail, so this would cause a loop.
             }}
+            collapseState={tripCollapseState[activeTrip.id]}
+            setCollapseState={(state) =>
+              setTripCollapseState(prev => ({
+                ...prev,
+                [activeTrip.id]: state
+              }))
+            }
             onSelectItem={(item) => openItemDetail(item)}
             openItemEditor={openItemEditor}
             onInlineEdit={handleInlineEdit}

@@ -8,12 +8,19 @@ import { expandDayIcon, collapseDayIcon } from "../utils/icons";
 export default function UnifiedTimeline({
   items,
   onSelectItem,
-  onInlineEdit
+  onInlineEdit,
+  collapseState,
+  setCollapseState
 }) {
   const [index, setIndex] = useState(0);
 
-  const [collapsedDates, setCollapsedDates] = useState({});
-  const [allCollapsed, setAllCollapsed] = useState(true);
+  const [collapsedDates, setCollapsedDates] = useState(() =>
+    collapseState?.collapsedDates || {}
+  );
+
+  const [allCollapsed, setAllCollapsed] = useState(() =>
+    collapseState?.allCollapsed ?? false
+  );
 
   function collapseAll() {
     const map = {};
@@ -32,14 +39,41 @@ export default function UnifiedTimeline({
     setCollapsedDates(map);
     setAllCollapsed(false);
   }
+  useEffect(() => {
+    setCollapseState({ allCollapsed, collapsedDates });
+  }, [allCollapsed, collapsedDates]);
 
   useEffect(() => {
-    if (allCollapsed) {
-      collapseAll();
-    } else {
-      expandAll();
-    }
-  }, [items]);
+    setCollapsedDates(prev => {
+      const updated = { ...prev };
+      let changed = false;
+
+      for (const item of items) {
+        if (!(item.date in updated)) {
+          updated[item.date] = allCollapsed;
+          changed = true;
+        }
+      }
+
+      return changed ? updated : prev;
+    });
+  }, [items, allCollapsed]);
+
+  useEffect(() => {
+    setCollapsedDates(prev => {
+      const updated = { ...prev };
+      let changed = false;
+
+      for (const item of items) {
+        if (!(item.date in updated)) {
+          updated[item.date] = allCollapsed;
+          changed = true;
+        }
+      }
+
+      return changed ? updated : prev;
+    });
+  }, [items, allCollapsed]);
 
   function toggleDate(date) {
     setCollapsedDates(prev => ({

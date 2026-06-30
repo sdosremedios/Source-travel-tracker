@@ -17,6 +17,8 @@ export default function TripDetailScreen({
   notes,
   timelineItems,
   onClose,
+  collapseState,
+  setCollapseState,
   onSelectItem,
   openItemEditor,
   onRefresh,
@@ -32,6 +34,44 @@ export default function TripDetailScreen({
   const [showNotes, setTripNotes] = useState(false);
   console.log("TripDetailScreen trip:", trip);
 
+  const initial = collapseState || {
+    allCollapsed: false,
+    collapsedDates: {}
+  };
+
+  const [allCollapsed, setAllCollapsed] = useState(() =>
+    collapseState?.allCollapsed ?? false
+  );
+
+  const [collapsedDates, setCollapsedDates] = useState(() =>
+    collapseState?.collapsedDates ?? {}
+  );
+
+  // sync only when changed
+  useEffect(() => {
+    if (!collapseState ||
+      collapseState.allCollapsed !== allCollapsed ||
+      JSON.stringify(collapseState.collapsedDates) !== JSON.stringify(collapsedDates)) {
+      setCollapseState({ allCollapsed, collapsedDates });
+    }
+  }, [allCollapsed, collapsedDates, collapseState, setCollapseState]);
+
+  // merge new dates only when needed
+  useEffect(() => {
+    setCollapsedDates(prev => {
+      let changed = false;
+      const updated = { ...prev };
+
+      for (const item of timelineItems) {
+        if (!(item.date in updated)) {
+          updated[item.date] = allCollapsed;
+          changed = true;
+        }
+      }
+
+      return changed ? updated : prev;
+    });
+  }, [timelineItems, allCollapsed]);
 
   // Unified selection handler for timeline items
   function handleSelectItem(item) {
@@ -138,6 +178,11 @@ export default function TripDetailScreen({
             items={timelineItems}
             onSelectItem={handleSelectItem}
             onInlineEdit={onInlineEdit}
+            collapseState={{ allCollapsed, collapsedDates }}
+            setCollapseState={({ allCollapsed, collapsedDates }) => {
+              setAllCollapsed(allCollapsed);
+              setCollapsedDates(collapsedDates);
+            }}
           />
         </div>
       )}
