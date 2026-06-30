@@ -115,8 +115,11 @@ export default function UnifiedTimeline({
   return (
     <div>
       <div className="timeline-controls">
-        <span className="icon pointer" title="Expand All" onClick={allCollapsed ? expandAll : collapseAll}>
-          {allCollapsed ? expandIcon : collapseIcon} {allCollapsed ? "Expand All" : "Collapse All"}
+        <span className="icon pointer" title="Expand All" onClick={expandAll}>
+           <strong>{expandIcon} Expand All</strong>
+        </span>
+        <span className="icon pointer" title="Collapse All" onClick={collapseAll}>
+           <strong>{collapseIcon} Collapse All</strong>
         </span>
       </div>
 
