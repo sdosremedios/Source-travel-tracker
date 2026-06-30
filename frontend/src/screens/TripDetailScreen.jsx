@@ -35,12 +35,12 @@ export default function TripDetailScreen({
   console.log("TripDetailScreen trip:", trip);
 
   const initial = collapseState || {
-    allCollapsed: false,
+    allCollapsed: true,
     collapsedDates: {}
   };
 
   const [allCollapsed, setAllCollapsed] = useState(() =>
-    collapseState?.allCollapsed ?? false
+    collapseState?.allCollapsed ?? true
   );
 
   const [collapsedDates, setCollapsedDates] = useState(() =>
