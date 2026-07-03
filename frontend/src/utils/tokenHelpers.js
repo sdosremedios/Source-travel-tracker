@@ -78,9 +78,12 @@ export function parseTripDictionary(summaryText) {
     const idx = line.indexOf(":");
     if (idx === -1) continue;
 
-    const key = line.slice(0, idx).trim().toLowerCase();
-    const rawValue = line.slice(idx + 1).trim();
+    const rawKey = line.slice(0, idx).trim();
 
+    // Strip surrounding %...% and lowercase
+    const key = rawKey.replace(/^%|%$/g, "").toLowerCase();
+
+    const rawValue = line.slice(idx + 1).trim();
     const value = unescapeDictionaryValue(rawValue);
 
     dict[key] = value;
