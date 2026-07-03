@@ -16,9 +16,13 @@ export function applyNoteTokens(text, context = {}) {
 
     // Optional contextual tokens
     "[[tripName]]": trip?.name || "",
+    "[[startDate]]": trip?.startDate || "",
+    "[[endDate]]": trip?.endDate || "",
     "[[segmentFrom]]": segment?.fromLocation || "",
     "[[segmentTo]]": segment?.toLocation || "",
-    "[[tourName]]": tour?.name || ""
+    "[[tourName]]": tour?.name || "",
+    "[[tourCompany]]": tour?.company || "",
+    "[[tourLocation]]": tour?.location || ""
   };
 
   let output = text;
@@ -35,24 +39,59 @@ export function resolveDynamicAliases(text, trip) {
 
   const dynamicAliasRegex = /%([A-Za-z0-9_]+)(?:\[(\d+)\]|\((.*?)\))?%/g;
 
-  return text.replace(dynamicAliasRegex, (match, name, index, params) => {
-    if (trip.dictionary && trip.dictionary[name]) {
-      return trip.dictionary[name];
-    }
-    return match; // fallback
+  return text.replace(dynamicAliasRegex, (match, rawName, index, params) => {
+    const name = rawName.toLowerCase();
+
+    // 1. Dictionary lookup
+    if (trip.dictionary) {
+      const dictValue = trip.dictionary[name];
+      if (dictValue !== undefined) {
+        return dictValue;
+      }
+      // 2. Indexed dynamic functions (future)
+      if (index !== undefined && trip.dynamicFunctions?.[name]) {
+        return trip.dynamicFunctions[name](trip, Number(index));
+      }
+
+      // 3. Parameterized dynamic functions (future)
+      if (params !== undefined && trip.dynamicFunctions?.[name]) {
+        return trip.dynamicFunctions[name](trip, params);
+      }
+
+      // 4. Simple dynamic functions (future)
+      if (trip.dynamicFunctions?.[name]) {
+        return trip.dynamicFunctions[name](trip);
+      }
+
+      // 5. Unknown token → leave unchanged    
+    } return match; // fallback
   });
 }
 
-export function parseTripDictionary(text) {
+export function parseTripDictionary(summaryText) {
   const dict = {};
-  text
-    .split("\n")
-    .map(line => line.trim())
-    .filter(line => line.includes(":"))
-    .forEach(line => {
-      const [key, value] = line.split(":").map(s => s.trim());
-      if (key) dict[key] = value || "";
-    });
+  if (!summaryText) return dict;
+
+  const lines = summaryText.split("\n");
+
+  for (const line of lines) {
+    const idx = line.indexOf(":");
+    if (idx === -1) continue;
+
+    const key = line.slice(0, idx).trim().toLowerCase();
+    const rawValue = line.slice(idx + 1).trim();
+
+    const value = unescapeDictionaryValue(rawValue);
+
+    dict[key] = value;
+  }
+
   return dict;
 }
 
+export function unescapeDictionaryValue(value) {
+  return value
+    .replace(/\\n/g, "\n")     // newline
+    .replace(/\\t/g, "\t")     // tab (optional)
+    .replace(/\\r/g, "\r");    // carriage return (optional)
+}

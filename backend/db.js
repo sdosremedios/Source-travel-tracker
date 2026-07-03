@@ -71,12 +71,6 @@ CREATE TABLE IF NOT EXISTS templates (
     template TEXT
 );
 
-CREATE TABLE IF NOT EXISTS replacements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    token TEXT UNIQUE,
-    replacement TEXT
-);
-
 `);
 
 export default db;
