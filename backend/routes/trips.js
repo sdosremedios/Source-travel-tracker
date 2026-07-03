@@ -32,12 +32,12 @@ router.get("/:tripId", (req, res) => {
 
 // CREATE a trip
 router.post("/", (req, res) => {
-  const { name, startDate, endDate, tripNotes, type } = req.body;
+  const { name, startDate, endDate, tripSummary, tripNotes, type } = req.body;
 
   const result = db.prepare(`
-    INSERT INTO trips (name, startDate, endDate, tripNotes, type)
+    INSERT INTO trips (name, startDate, endDate, tripSummary, tripNotes, type)
     VALUES (?, ?, ?, ?, ?)
-  `).run(name, startDate, endDate, tripNotes, type);
+  `).run(name, startDate, endDate, tripSummary, tripNotes, type);
 
   const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(result.lastInsertRowid);
   res.json({ ...row, kind: "trip" });
@@ -46,13 +46,13 @@ router.post("/", (req, res) => {
 // UPDATE a trip
 router.patch("/:tripId", (req, res) => {
   const { tripId } = req.params;
-  const { name, startDate, endDate, tripNotes, type } = req.body;
+  const { name, startDate, endDate, tripSummary, tripNotes, type } = req.body;
 
   db.prepare(`
     UPDATE trips
-    SET name = ?, startDate = ?, endDate = ?, tripNotes = ?, type = ?
+    SET name = ?, startDate = ?, endDate = ?, tripSummary = ?, tripNotes = ?, type = ?
     WHERE id = ?
-  `).run(name, startDate, endDate, tripNotes, type, tripId);
+  `).run(name, startDate, endDate, tripSummary, tripNotes, type, tripId);
 
   const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(tripId);
   res.json({ ...row, kind: "trip" });

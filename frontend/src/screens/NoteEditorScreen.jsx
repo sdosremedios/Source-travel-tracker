@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { postNote, patchNote } from "../api/index";
 import { buildNotePayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
-import { applyNoteTokens } from "../utils/tokenHelpers";
+import { applyNoteTokens, resolveDynamicAliases, parseTripDictionary } from "../utils/tokenHelpers";
 import "../styles/NoteEditorScreen.css";
 import "../styles/markdownSplitScreen.css";
 
@@ -47,41 +47,45 @@ export default function NoteEditorScreen({
   function localToUtc(datetimeLocal) {
     return new Date(datetimeLocal).toISOString();
   }
-  // --- Save handler ---
-  async function handleSave() {
-    // Push local state back into activeItem
-    const dateObj = new Date();
-    const date = dateObj.toLocaleDateString("en-US", {
-      month: "2-digit",
-      day: "2-digit",
-      year: "numeric"
-    });
-    const time = dateObj.toLocaleTimeString("en-US", {
-      hour: "numeric",
-      minute: "2-digit",
-      hour12: true
-    });
-    const finalText = applyNoteTokens(text, {
-      dateObj,
-      trip: activeTrip,
-      segment: activeItem.kind === "segment" ? activeItem : null,
-      tour: activeItem.kind === "tour" ? activeItem : null,
-      note: activeItem.kind === "note" ? activeItem : null
-    });
-    const updatedItem = {
-      ...activeItem,
-      note: finalText,
-      dateTime: localToUtc(activeItem.dateTime)
-    };
+  // --- Save handler -------------------------------------------------------
+async function handleSave() {
+  const dateObj = new Date();
 
-    const payload = buildNotePayload(updatedItem);
+  // 1. Parse dictionary from tripSummary
+  const dictionary = parseTripDictionary(activeTrip.tripSummary || "");
 
-    const saved = isEditing
-      ? await patchNote(activeTrip.id, activeItem.id, payload)
-      : await postNote(activeTrip.id, payload);
+  // 2. Merge dictionary into trip object
+  const tripWithDict = {
+    ...activeTrip,
+    dictionary
+  };
 
-    onRefresh(saved);
-  }
+  // 3. PASS 1: dynamic tokens (%A%, %TripLeader%, %CITY[0]%, etc.)
+  const pass1 = resolveDynamicAliases(text, tripWithDict);
+
+  // 4. PASS 2: static tokens ([[date]], [[time]], etc.)
+  const pass2 = applyNoteTokens(pass1, {
+    dateObj,
+    trip: tripWithDict,
+    segment: activeItem.kind === "segment" ? activeItem : null,
+    tour: activeItem.kind === "tour" ? activeItem : null,
+    note: activeItem.kind === "note" ? activeItem : null
+  });
+
+  const updatedItem = {
+    ...activeItem,
+    note: pass2,
+    dateTime: localToUtc(activeItem.dateTime)
+  };
+
+  const payload = buildNotePayload(updatedItem);
+
+  const saved = isEditing
+    ? await patchNote(activeTrip.id, activeItem.id, payload)
+    : await postNote(activeTrip.id, payload);
+
+  onRefresh(saved);
+}
 
   const pageTitle = isEditing ? activeTrip.name + ": Note" : "New Note";
 

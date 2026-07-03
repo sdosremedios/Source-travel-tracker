@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { patchTrip, postTrip } from "../api/index";
 import { buildTripPayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
-import { applyNoteTokens } from "../utils/tokenHelpers";
+import { applyNoteTokens, resolveDynamicAliases, parseTripDictionary } from "../utils/tokenHelpers";
 import "../styles/markdownSplitScreen.css";
 import "../styles/TripEditorScreen.css";
 
@@ -19,6 +19,8 @@ export default function TripEditorScreen({
 
   const templates = allTemplates?.filter(t => t.types.includes("trip"));
   const [text, setText] = useState("");
+  const [tripSummary, setTripSummary] = useState(activeItem.tripSummary || "");
+
 
   useEffect(() => {
     setText(activeItem?.tripNotes || "");
@@ -29,28 +31,45 @@ export default function TripEditorScreen({
   }
 
   const isEditing = !!activeItem?.id;
+  // --------------------------------------------------------------------------
+async function handleSave() {
+  const start = new Date();
 
-  async function handleSave() {
-    const start = new Date();
-    const finalNotes = applyNoteTokens(text, {
-      dateObj: start,
-      trip: activeItem
-    });
-    // Sync textarea into payload
-    const payload = buildTripPayload({
-      ...activeItem,
-      tripNotes: finalNotes
-    });
+  // 1. Parse dictionary from tripSummary
+  const dictionary = parseTripDictionary(tripSummary || "");
 
-    console.log("TEXT LENGTH:", text.length);
-    console.log("PAYLOAD LENGTH:", JSON.stringify(payload).length);
-    
-    const updated = isEditing
-      ? await patchTrip(activeItem.id, payload)
-      : await postTrip(payload);
+  // 2. Merge dictionary into trip object
+  const tripWithDict = {
+    ...activeItem,
+    tripSummary,
+    dictionary
+  };
 
-    onRefresh(updated);
-  }
+  // 3. PASS 1: dynamic tokens (%A%, %TripLeader%, %CITY[0]%, etc.)
+  const pass1 = resolveDynamicAliases(text, tripWithDict);
+
+  // 4. PASS 2: static tokens ([[date]], [[time]], etc.)
+  const pass2 = applyNoteTokens(pass1, {
+    dateObj: start,
+    trip: tripWithDict,
+    segment: activeItem.kind === "segment" ? activeItem : null,
+    tour: activeItem.kind === "tour" ? activeItem : null,
+    note: activeItem.kind === "note" ? activeItem : null
+  });
+
+  // 5. Build payload
+  const payload = buildTripPayload({
+    ...tripWithDict,
+    tripNotes: pass2,
+    tripSummary
+  });
+
+  const updated = isEditing
+    ? await patchTrip(activeItem.id, payload)
+    : await postTrip(payload);
+
+  onRefresh(updated);
+}
 
   return (
     <div className="trip-editor-screen">
@@ -112,7 +131,16 @@ export default function TripEditorScreen({
           value={activeItem?.endDate}
           onChange={e => update("endDate", e.target.value)}
         />
+        {/* TRIP SUMMARY */}
+        <label>Trip Summary</label>
+        <textarea
+          value={tripSummary}
+          onChange={e => setTripSummary(e.target.value)}
+          placeholder="Enter token:value pairs or dynamic tokens here..."
+          rows={10}
+        />
       </div>
+
 
       {/* NOTES */}
       <div className="editor-row notes">

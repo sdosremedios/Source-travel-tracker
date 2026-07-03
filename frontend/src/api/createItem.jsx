@@ -37,6 +37,7 @@ export function createTrip() {
     name: "(untitled)",
     startDate: todayISO(),
     endDate: todayISO(),
+    tripSummary: "",
     tripNotes: "",
     type: ""
   };

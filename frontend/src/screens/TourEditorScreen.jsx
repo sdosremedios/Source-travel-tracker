@@ -6,7 +6,7 @@ import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";
 import { patchTour, postTour } from "../api/index";
 import { buildTourPayload } from "../api/createItem";
-import { applyNoteTokens } from "../utils/tokenHelpers";
+import { applyNoteTokens, parseTripDictionary, resolveDynamicAliases } from "../utils/tokenHelpers";
 
 export default function TourEditorScreen({
   activeItem,
@@ -30,48 +30,63 @@ export default function TourEditorScreen({
     setActiveItem(prev => ({ ...prev, [field]: value }));
   }
 
-  async function handleSave() {
-    const start = new Date();
-    const finalNotes = applyNoteTokens(text, {
-      dateObj: start,
-      tour: activeItem,
-      trip: activeTrip
-    });
-    const { startDate, startTime, endDate, endTime } = activeItem;
+async function handleSave() {
+  const start = new Date();
 
-    const hasStart = startDate && startTime;
-    const hasEnd = endDate && endTime;
+  // 1. Parse dictionary from tripSummary
+  const dictionary = parseTripDictionary(activeTrip.tripSummary || "");
 
-    if (hasStart && !isValidDateTime(startDate, startTime)) {
-      alert("Start date/time is invalid");
-      return;
-    }
+  // 2. Merge dictionary into trip object
+  const tripWithDict = {
+    ...activeTrip,
+    dictionary
+  };
 
-    if (hasEnd && !isValidDateTime(endDate, endTime)) {
-      alert("End date/time is invalid");
-      return;
-    }
+  // 3. PASS 1: dynamic tokens (%A%, %TripLeader%, %CITY[0]%, etc.)
+  const pass1 = resolveDynamicAliases(text, tripWithDict);
 
-    if (hasStart && hasEnd && !isChronological(startDate, startTime, endDate, endTime)) {
-      alert("End must be after start");
-      return;
-    }
+  // 4. PASS 2: static tokens ([[date]], [[time]], [[tourName]], etc.)
+  const finalNotes = applyNoteTokens(pass1, {
+    dateObj: start,
+    tour: activeItem,
+    trip: tripWithDict
+  });
 
-    // Sync textarea into payload
-    const payload = buildTourPayload({
-      ...activeItem,
-      notes: finalNotes
-    });
+  const { startDate, startTime, endDate, endTime } = activeItem;
 
-    const isEditing = !!activeItem?.id;
+  const hasStart = startDate && startTime;
+  const hasEnd = endDate && endTime;
 
-    const updated = isEditing
-      ? await patchTour(activeTrip.id, activeItem.id, payload)
-      : await postTour(activeTrip.id, payload);
-
-    onRefresh(updated);
-    onCancel();
+  if (hasStart && !isValidDateTime(startDate, startTime)) {
+    alert("Start date/time is invalid");
+    return;
   }
+
+  if (hasEnd && !isValidDateTime(endDate, endTime)) {
+    alert("End date/time is invalid");
+    return;
+  }
+
+  if (hasStart && hasEnd && !isChronological(startDate, startTime, endDate, endTime)) {
+    alert("End must be after start");
+    return;
+  }
+
+  // Sync textarea into payload
+  const payload = buildTourPayload({
+    ...activeItem,
+    notes: finalNotes
+  });
+
+  const isEditing = !!activeItem?.id;
+
+  const updated = isEditing
+    ? await patchTour(activeTrip.id, activeItem.id, payload)
+    : await postTour(activeTrip.id, payload);
+
+  onRefresh(updated);
+  onCancel();
+}
 
   return (
     <div className="tour-editor-screen">

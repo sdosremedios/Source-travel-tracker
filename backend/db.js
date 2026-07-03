@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS trips (
                       DEFAULT ('(undefined)'),
     startDate TEXT,
     endDate   TEXT,
+    tripSummary TEXT,
     tripNotes TEXT,
     type      TEXT
 );
@@ -68,6 +69,12 @@ CREATE TABLE IF NOT EXISTS templates (
     icon     TEXT    DEFAULT ('📝'),
     name     TEXT,
     template TEXT
+);
+
+CREATE TABLE IF NOT EXISTS replacements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    token TEXT UNIQUE,
+    replacement TEXT
 );
 
 `);

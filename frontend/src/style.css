@@ -33,6 +33,7 @@ textarea,
 button {
   font-family: inherit;
   font-size: inherit;
+  padding: 0.5em;
 }
 
 /* ============================================================

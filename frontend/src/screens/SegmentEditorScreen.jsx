@@ -4,7 +4,7 @@ import "../styles/markdownSplitScreen.css";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";
-import { applyNoteTokens } from "../utils/tokenHelpers";
+import { applyNoteTokens, parseTripDictionary, resolveDynamicAliases } from "../utils/tokenHelpers";
 
 export default function SegmentEditorScreen({
   activeItem,
@@ -30,27 +30,49 @@ export default function SegmentEditorScreen({
 
   const isEditing = activeItem?.id != null;
 
-async function handleSave() {
-  const start = new Date();
+  function localToUtc(datetimeLocal) {
+    return new Date(datetimeLocal).toISOString();
+  }
 
-  const finalNotes = applyNoteTokens(text, {
-    dateObj: start,
-    segment: activeItem,
-    trip: activeTrip
-  });
+  // --------------------------------------------------------------
+  async function handleSave() {
+    const dateObj = new Date();
 
-  // Build canonical UTC payload
-  const payload = buildSegmentPayload({
-    ...activeItem,
-    notes: finalNotes
-  });
+    // 1. Parse dictionary from tripSummary
+    const dictionary = parseTripDictionary(activeTrip.tripSummary || "");
 
-  const saved = isEditing
-    ? await patchSegment(activeTrip.id, activeItem.id, payload)
-    : await postSegment(activeTrip.id, payload);
+    // 2. Merge dictionary into trip object
+    const tripWithDict = {
+      ...activeTrip,
+      dictionary
+    };
 
-  onRefresh(saved);
-}
+    // 3. PASS 1: dynamic tokens (%A%, %TripLeader%, %CITY[0]%, etc.)
+    const pass1 = resolveDynamicAliases(text, tripWithDict);
+
+    // 4. PASS 2: static tokens ([[date]], [[time]], [[segmentFrom]], etc.)
+    const pass2 = applyNoteTokens(pass1, {
+      dateObj,
+      trip: tripWithDict,
+      segment: activeItem,   // segments always have segment context
+      tour: null,
+      note: null
+    });
+
+    const updatedItem = {
+      ...activeItem,
+      notes: pass2
+      //dateTime: localToUtc(activeItem.dateTime)
+    };
+
+    const payload = buildSegmentPayload(updatedItem);
+
+    const saved = isEditing
+      ? await patchSegment(activeTrip.id, activeItem.id, payload)
+      : await postSegment(activeTrip.id, payload);
+
+    onRefresh(saved);
+  }
 
   return (
     <div className="segment-editor-screen">
