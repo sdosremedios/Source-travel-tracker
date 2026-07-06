@@ -1,11 +1,13 @@
 .notes-container {
+  /*
   display: flex;
   flex: 1;
   min-height: 0;
+  */
   gap: 12px;
 }
 
-/* Left side: textarea */
+/* Left side: textarea 
 .notes-editor {
   flex: 1;
   display: flex;
@@ -20,7 +22,6 @@
   box-sizing: border-box;
 }
 
-/* Right side: preview */
 .notes-preview {
   flex: 1;
   min-height: 0;
@@ -31,3 +32,4 @@
   border-radius: 6px;
   border: 1px solid #d0d7e2;
 }
+*/

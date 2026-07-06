@@ -4,7 +4,7 @@ import { buildTripPayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
 import { applyNoteTokens, resolveDynamicAliases, parseTripDictionary } from "../utils/tokenHelpers";
 import "../styles/markdownSplitScreen.css";
-import "../styles/TripEditorScreen.css";
+// import "../styles/TripEditorScreen.css";
 
 export default function TripEditorScreen({
   activeItem,
