@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import Markdown from "../components/Markdown";
-import "../styles/markdownSplitScreen.css";
+// import "../styles/markdownSplitScreen.css";
 import "../styles/TourEditorScreen.css";
 import TourCategorySelector from "../components/TourCategorySelector";
 import { isValidDateTime, isChronological } from "../utils/dateHelpers";

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Markdown from "../components/Markdown";
-import "../styles/markdownSplitScreen.css";
+// import "../styles/markdownSplitScreen.css";
 import "../styles/SegmentEditorScreen.css";
 import { postSegment, patchSegment } from "../api/index";
 import { buildSegmentPayload } from "../api/createItem";

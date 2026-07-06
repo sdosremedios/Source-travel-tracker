@@ -4,7 +4,7 @@ import { buildNotePayload } from "../api/createItem";
 import Markdown from "../components/Markdown";
 import { applyNoteTokens, resolveDynamicAliases, parseTripDictionary } from "../utils/tokenHelpers";
 import "../styles/NoteEditorScreen.css";
-import "../styles/markdownSplitScreen.css";
+//import "../styles/markdownSplitScreen.css";
 
 export default function NoteEditorScreen({
   activeItem,

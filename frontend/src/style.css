@@ -108,26 +108,11 @@ button {
   display: flex;
   flex-direction: column;
   min-width: 600px;
+  min-height: 0;
   overflow-y: auto;
   padding: 0 10px;
 }
 
-/* ============================================================
-   TRIP / SEGMENT / TOUR / NOTE SCREENS
-   ============================================================ */
-.trip-detail-screen,
-.trip-editor-screen {
-  flex: 1;
-  min-height: 0;
-  overflow: auto;
-}
-
-/*
-.trip-editor-screen {
-  display: flex;
-  flex-direction: column;
-}
-  */
 /* ============================================================
    SEARCH
    ============================================================ */
@@ -201,6 +186,19 @@ button {
   line-height: 1.5em;
 }
 
+.trip-editor-screen,
+.segment-editor-screen,
+.se-pane,
+.tour-editor-screen,
+.note-editor-screen {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  overflow: visible;
+  padding: 0.75rem;
+  gap: 0.75rem;
+}
 
 /* ============================================================
    MARKDOWN EDITOR + PREVIEW
@@ -210,7 +208,7 @@ button {
   flex: 1;
   width: 100%;
   min-height: 0;
-  overflow-y: auto;
+  overflow-y: visible;
   font-size: var(--font-size-markdown);
   white-space: pre-wrap;
   line-height: var(--line-height-markdown);
@@ -274,11 +272,25 @@ button {
   padding: 0.5em;
   margin: 0;
 }
+.editor-row:not(.notes) {
+  margin-bottom: 0.75rem;  /* optional */
+}
+
+.editor-row.notes {
+  margin-bottom: 0;        /* ⭐ must be zero */
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
 
 .notes-container {
   display: flex;
-  gap: 12px;
+  flex-direction: row;
+  flex: 1;
   min-height: 0;
+  gap: 12px;
+  align-items: stretch;
 }
 
 .notes-editor,
@@ -304,8 +316,28 @@ button {
   background: var(--color-markdown-preview-bg);
 }
 
+.notes-editor,
+.markdown-edit {
+  background-color: var(--markdown-editor);
+  border: 1px solid var(--markdown-border);
+}
+
 textarea.markdown-edit {
   border: none;
+  overflow-y: visible;
+}
+
+.notes-editor textarea {
+  flex: 1;
+  min-height: 10em;
+  resize: vertical;
+  overflow-y: visible;
+  margin: 0;
+}
+
+textarea,
+.markdown-text {
+  padding: 1em;
 }
 
 /* Headings for desktop */
@@ -347,131 +379,6 @@ li {
   padding-bottom: 0.5em;
 }
 
-/* ============================================================
-   MOBILE (≤ 720px)
-   ============================================================ */
-@media (max-width: 720px) {
-
-  html {
-    font-size: 12px;
-  }
-
-  img {
-    max-width: 320px;
-  }
-
-  .app-root {
-    flex-direction: column;
-  }
-
-  .app-left {
-    display: none;
-    width: 100%;
-    min-width: 0;
-  }
-
-  .app-right {
-    width: 100%;
-    min-width: 0;
-  }
-
-  /* TripListScreen → left pane full width */
-  .app-root.tripList .app-left {
-    display: block;
-  }
-
-  .app-root.tripList .app-right {
-    display: none;
-  }
-
-  /* Editor/detail screens → right pane full width */
-  .app-root.tripDetail .app-right,
-  .app-root.tripEditor .app-right,
-  .app-root.segmentDetail .app-right,
-  .app-root.segmentEditor .app-right,
-  .app-root.tourDetail .app-right,
-  .app-root.tourEditor .app-right,
-  .app-root.noteDetail .app-right,
-  .app-root.noteEditor .app-right {
-    display: block;
-    width: 100%;
-  }
-
-  /* Form scaling */
-  .trip-editor-screen,
-  .se-pane,
-  .tour-editor-screen,
-  .note-editor-screen {
-    padding: 0.75rem;
-    gap: 0.75rem;
-  }
-
-  .editor-row,
-  .se-row {
-    gap: 0.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  /* Markdown stacking */
-  .notes-container {
-    flex-direction: column;
-  }
-
-  .notes-preview {
-    margin-top: 0.75rem;
-    padding: 0.5rem;
-    background: var(--color-pale-blue);
-  }
-
-  .notes-editor,
-  .notes-preview {
-    min-height: 320px;
-    padding: 0.5em;
-  }
-
-  .markdown-text {
-    padding: 0.5em;
-  }
-
-  .markdown-text.preview {
-    height: auto;
-    max-height: 150px;
-  }
-
-  .timeline-row-content {
-    margin-right: 0.5em;
-    width: 6em;
-  }
-
-  /* Headings for mobile */
-  h1 {
-    font-size: 130%;
-    vertical-align: middle;
-  }
-
-  h2 {
-    font-size: 110%;
-  }
-
-  h3 {
-    font-size: 100%;
-  }
-
-  h4 {
-    font-size: 90%;
-  }
-
-  h5 {
-    font-size: 80%;
-  }
-
-  h6 {
-    font-size: 70%;
-  }
-
-
-
-}
 
 /* ============================================================ */
 body {
@@ -541,11 +448,6 @@ button:active {
   border: 1px solid var(--markdown-border);
 }
 
-.notes-editor,
-.markdown-edit {
-  background-color: var(--markdown-editor);
-  border: 1px solid var(--markdown-border);
-}
 
 div.TripListScreen.tls-root .search {
   background-color: var(--tls-item-bg);
@@ -614,40 +516,154 @@ div.TripListScreen.tls-root .search {
   max-width: 240px;
 }
 
-.markdown-edit,
-.markdown-text.preview {
-  overflow-y: visible;
-  /* remove nested scroll */
-}
 
-.notes-editor {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 8px 0;
-  /* instead of margin */
-  margin: 0;
-  overflow: visible;
-}
+/*
 
-.notes-editor textarea {
+textarea {
   flex: 1;
   min-height: 10em;
   resize: vertical;
-  overflow-y: auto;
   margin: 0;
 }
-
-textarea,
-.markdown-text.preview {
-  flex: 1;
-  min-height: 10em;
-  resize: vertical;
-}
+*/
 
 /*
 textarea {
   min-height: 15em;
 }
 */
+/* ============================================================
+   MOBILE (≤ 720px)
+   ============================================================ */
+@media (max-width: 720px) {
+
+  html {
+    font-size: 12px;
+  }
+
+  img {
+    max-width: 320px;
+  }
+
+  .app-root {
+    flex-direction: column;
+  }
+
+  .app-left {
+    display: none;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-right {
+    width: 100%;
+    min-width: 0;
+  }
+
+  /* TripListScreen → left pane full width */
+  .app-root.tripList .app-left {
+    display: block;
+  }
+
+  .app-root.tripList .app-right {
+    display: none;
+  }
+
+  /* Editor/detail screens → right pane full width */
+  .app-root.tripDetail .app-right,
+  .app-root.tripEditor .app-right,
+  .app-root.segmentDetail .app-right,
+  .app-root.segmentEditor .app-right,
+  .app-root.tourDetail .app-right,
+  .app-root.tourEditor .app-right,
+  .app-root.noteDetail .app-right,
+  .app-root.noteEditor .app-right {
+    display: block;
+    width: 100%;
+  }
+
+  /* Form scaling */
+  .trip-editor-screen,
+  .segment-editor-screen,
+  .se-pane,
+  .tour-editor-screen,
+  .note-editor-screen {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    padding: 0.75rem;
+    gap: 0.75rem;
+    overflow-y: visible;
+  }
+
+  .editor-row,
+  .se-row {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-height: 0;
+    padding: 2em;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .editor-notes {
+    flex: 1;
+    /* ⭐ fills remaining vertical space */
+    min-height: 0;
+    /* ⭐ allows shrinking inside scroll container */
+    display: flex;
+    /* ⭐ ensures children stretch */
+    flex-direction: column;
+  }
+
+  .notes-preview {
+    margin-top: 0.75rem;
+    padding: 0.5rem;
+    background: var(--color-pale-blue);
+  }
+
+  .markdown-text {
+    padding: 0.5em;
+  }
+
+  .markdown-text.preview {
+    height: auto;
+    max-height: 150px;
+  }
+
+  .timeline-row-content {
+    margin-right: 0.5em;
+    width: 6em;
+  }
+
+  /* Headings for mobile */
+  h1 {
+    font-size: 130%;
+    vertical-align: middle;
+  }
+
+  h2 {
+    font-size: 110%;
+  }
+
+  h3 {
+    font-size: 100%;
+  }
+
+  h4 {
+    font-size: 90%;
+  }
+
+  h5 {
+    font-size: 80%;
+  }
+
+  h6 {
+    font-size: 70%;
+  }
+
+
+
+}
