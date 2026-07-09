@@ -195,7 +195,8 @@ button {
   flex-direction: column;
   flex: 1;
   min-height: 0;
-  overflow: visible;
+  overflow-x: hidden;
+  overflow-y: auto;
   padding: 0.75rem;
   gap: 0.75rem;
 }
@@ -208,12 +209,13 @@ button {
   flex: 1;
   width: 100%;
   min-height: 0;
-  overflow-y: visible;
   font-size: var(--font-size-markdown);
   white-space: pre-wrap;
   line-height: var(--line-height-markdown);
   padding: 0.5em;
 }
+
+.markdown-text {overflow-y: hidden;}
 
 .markdown-text.preview {
   height: var(--height-markdown-preview);
@@ -327,12 +329,14 @@ textarea.markdown-edit {
   overflow-y: visible;
 }
 
+.notes-editor .markdown-text,
+.notes-preview.markdown-text,
 .notes-editor textarea {
   flex: 1;
   min-height: 10em;
   resize: vertical;
-  overflow-y: visible;
   margin: 0;
+  overflow-y: auto;
 }
 
 textarea,
@@ -620,7 +624,6 @@ textarea {
 
   .notes-preview {
     margin-top: 0.75rem;
-    padding: 0.5rem;
     background: var(--color-pale-blue);
   }
 

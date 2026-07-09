@@ -39,7 +39,7 @@ import {
 import favicon from "./assets/favicon.png";
 
 export default function App() {
-  const appVersion = "0.7.8b"; 
+  const appVersion = "0.8.0"; 
   // Navigation state
   const [activeScreen, setActiveScreen] = useState("tripList");
   const [selectedTripId, setSelectedTripId] = useState(null);
