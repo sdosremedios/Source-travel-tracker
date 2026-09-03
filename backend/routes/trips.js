@@ -36,7 +36,7 @@ router.post("/", (req, res) => {
 
   const result = db.prepare(`
     INSERT INTO trips (name, startDate, endDate, tripSummary, tripNotes, type)
-    VALUES (?, ?, ?, ?, ?)
+    VALUES (?, ?, ?, ?, ?, ?)
   `).run(name, startDate, endDate, tripSummary, tripNotes, type);
 
   const row = db.prepare(`SELECT * FROM trips WHERE id = ?`).get(result.lastInsertRowid);
