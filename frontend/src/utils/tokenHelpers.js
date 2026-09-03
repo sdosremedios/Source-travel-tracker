@@ -23,7 +23,7 @@ export function applyNoteTokens(text, context = {}) {
     "[[tourName]]": tour?.name || "",
     "[[tourCompany]]": tour?.company || "",
     "[[tourLocation]]": tour?.location || "",
-    "[[OAT]]": "Overseas Adventure Travel"
+    "[[OAT]]": "🌐 Overseas Adventure Travel"
   };
 
   let output = text;

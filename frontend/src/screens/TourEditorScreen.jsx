@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import Markdown from "../components/Markdown";
 // import "../styles/markdownSplitScreen.css";
 import "../styles/TourEditorScreen.css";
 import TourCategorySelector from "../components/TourCategorySelector";
-import { isValidDateTime, isChronological } from "../utils/dateHelpers";
+import { isValidDateTime, isChronological, computeOffsetDays } from "../utils/dateHelpers";
 import { patchTour, postTour } from "../api/index";
 import { buildTourPayload } from "../api/createItem";
 import { applyNoteTokens, parseTripDictionary, resolveDynamicAliases } from "../utils/tokenHelpers";
@@ -51,6 +51,8 @@ async function handleSave() {
     tour: activeItem,
     trip: tripWithDict
   });
+
+  activeItem.company = applyNoteTokens(activeItem.company,{dateObj: start, trip: tripWithDict});
 
   const { startDate, startTime, endDate, endTime } = activeItem;
 
